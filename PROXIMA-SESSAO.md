@@ -1,7 +1,11 @@
 # Próxima sessão — checklist
 
-Migração pro VPS **concluída e validada** em 2026-08-05. Operação: **`OPERACAO-VPS.md`**.
-Repo: https://github.com/ZeMagao/promoliso-n8n (privado).
+Migração pro VPS **concluída e validada** em 2026-08-05, e as 4 pendências de infra **fechadas**.
+Operação: **`OPERACAO-VPS.md`**. Repo: https://github.com/ZeMagao/promoliso-n8n (privado).
+
+**O próximo trabalho não é mais infra — é o gate do validador de slides** (seção "Gargalo real"
+mais abaixo). A infra está estável: serviços no ar, HTTPS, alerta por e-mail funcionando, backup
+externo com restauração testada, 2FA, reboot resiliente.
 
 ---
 
@@ -18,14 +22,21 @@ Bucket `promoliso-backups`, prefixo `n8n/`, retenção 30 dias, upload no fim do
 Primeira cópia no ar: 163 MiB. **Restauração testada de verdade** (md5 igual, banco íntegro,
 7 credenciais decifram com a encryptionKey de dentro do backup). Detalhes em `OPERACAO-VPS.md`.
 
-### 3. Redirect URI no app do Meta
-Cadastrar **uma vez**: `https://n8n.promoliso.com.br/rest/oauth2-credential/callback`
-Publicar não depende disso (usa `~/ig-token.json`), só reconectar a conta por OAuth. Domínio é
-fixo agora, então nunca mais muda.
+### ~~3. Redirect URI no app do Meta~~ ✅ FEITO 2026-08-05
+`https://n8n.promoliso.com.br/rest/oauth2-credential/callback` cadastrado. Confirmado que o
+caminho responde HTTP 200 pelo domínio e que bate com o `N8N_EDITOR_BASE_URL` do unit.
 
-### 4. 2FA no owner do n8n
-A UI está exposta na internet e o owner (`<conta-owner-do-n8n>`) está com `mfaEnabled=0`.
-n8n → Settings → conta → habilitar 2FA (TOTP). Guardar os códigos de recuperação.
+> ⚠️ Sobrou pendente: **remover as duas entradas `*.trycloudflare.com`** da lista de OAuth
+> Redirect URIs. Não é só limpeza — aqueles hostnames são sorteados e voltam pro pool da
+> Cloudflare; enquanto forem redirect URI válido, quem receber o hostname pode capturar um code
+> de OAuth da conta.
+
+### ~~4. 2FA no owner do n8n~~ ✅ FEITO 2026-08-05
+`<conta-owner-do-n8n>` com `mfaEnabled=1`, secret e códigos de recuperação gravados.
+Se perder o autenticador **e** os códigos, destrava pelo VPS:
+```bash
+cd /opt/promoliso && sudo -u promo node node_modules/n8n/bin/n8n mfa:disable --email=<conta-owner-do-n8n>
+```
 
 ---
 
