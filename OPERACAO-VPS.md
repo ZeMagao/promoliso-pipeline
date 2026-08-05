@@ -72,23 +72,44 @@ journalctl -u promo-backup -n 20 --no-pager
 systemctl list-timers promo-backup
 ```
 
-### Cópia externa no Cloudflare R2
+### Cópia externa no Cloudflare R2 — ✅ ATIVA desde 2026-08-05
 
-`rclone` instalado. Falta plugar as credenciais **uma vez**:
+Bucket `promoliso-backups` (privado), prefixo `n8n/`, retenção 30 dias. Upload roda no fim do
+`promo-backup.sh`. Config em `/home/promo/.config/rclone/rclone.conf` (600, dono `promo`),
+nome do bucket em `/etc/promo-r2-bucket`.
 
-1. No dashboard da Cloudflare → **R2** → *Create bucket* → nome `promoliso-backups`, privado.
-2. **R2 → Manage R2 API Tokens → Create API token**: permissão *Object Read & Write*,
-   escopo só nesse bucket. Guarde `Access Key ID` e `Secret Access Key`.
-3. O `Account ID` está em **R2 → Overview**, canto direito.
-4. No VPS, como root:
-   ```bash
-   promo-r2-setup.sh <ACCOUNT_ID> <ACCESS_KEY_ID> <SECRET_ACCESS_KEY>
-   ```
-   Ele escreve `/home/promo/.config/rclone/rclone.conf` (600, dono `promo`), grava o nome do
-   bucket em `/etc/promo-r2-bucket` e testa leitura/escrita/delete.
-5. Validar: `systemctl start promo-backup.service && journalctl -u promo-backup -n 20 --no-pager`
+**rclone: use `/usr/local/bin/rclone` (1.75, zip oficial).** O do apt no Ubuntu 24.04 é o
+**1.60.1, de 2022** — funciona, mas está velho demais pra confiar com R2. Os scripts apontam pro
+caminho absoluto do 1.75 de propósito.
 
-Enquanto não configurar, o backup roda **só local** e loga o aviso — não quebra.
+```bash
+rclone --config /home/promo/.config/rclone/rclone.conf ls   r2:promoliso-backups/n8n/
+rclone --config /home/promo/.config/rclone/rclone.conf size r2:promoliso-backups
+```
+
+Pra reconfigurar (token novo, outra conta):
+
+```bash
+promo-r2-setup.sh <ACCOUNT_ID> <ACCESS_KEY_ID> <SECRET_ACCESS_KEY> [BUCKET]
+```
+Ele valida o formato (`ACCOUNT_ID`/`ACCESS_KEY` = 32 hex, `SECRET` = 64 hex) **antes** de gravar,
+cria o bucket se faltar, e só declara sucesso se leitura+escrita+delete passarem.
+
+**Como ler os erros do R2:**
+
+| erro | causa |
+|---|---|
+| `403 AccessDenied` | token sem permissão ou escopado noutro bucket. Precisa *Admin Read & Write* ou *Object Read & Write* |
+| `404 NoSuchBucket` | o bucket não existe **nessa conta** (o token já está ok) |
+
+⚠️ **Pegadinha:** com `no_check_bucket = true` na config, `rclone mkdir` vira **no-op** e o bucket
+nunca é criado (silenciosamente). Pra criar de fato:
+
+```bash
+rclone --config $CONF --s3-no-check-bucket=false mkdir r2:promoliso-backups
+```
+
+Enquanto não houver config, o backup roda **só local** e loga o aviso — não quebra.
 
 > O `.tar.gz` contém a **encryptionKey em texto claro**. Bucket privado é o mínimo; se quiser
 > defesa a mais, dá pra pôr um remote `crypt` do rclone na frente — mas aí a senha do crypt passa
@@ -96,12 +117,23 @@ Enquanto não configurar, o backup roda **só local** e loga o aviso — não qu
 
 ### Restaurar do R2
 
+Baixe como o user `promo` (o rclone roda como `promo`; pasta criada por root dá
+`permission denied`):
+
 ```bash
-rclone --config /home/promo/.config/rclone/rclone.conf ls r2:promoliso-backups/n8n/
-rclone --config /home/promo/.config/rclone/rclone.conf copy \
-  r2:promoliso-backups/n8n/backup-<stamp>.tar.gz /tmp/
+CONF=/home/promo/.config/rclone/rclone.conf
+install -d -o promo -g promo /home/promo/restore
+sudo -u promo rclone --config $CONF lsf r2:promoliso-backups/n8n/
+sudo -u promo rclone --config $CONF copy \
+  r2:promoliso-backups/n8n/backup-<stamp>.tar.gz /home/promo/restore/
 # depois segue o "Restaurar" abaixo
 ```
+
+**Restauração TESTADA de verdade em 2026-08-05** (não só o upload): md5 idêntico entre R2, cópia
+baixada e cópia local; `gzip -t` ok; banco extraído com `integrity_check` ok, 5 workflows
+(4 ativos), 7 credenciais, 99 execuções e a fila intacta; e a **encryptionKey de dentro do backup
+decifrou as 7 credenciais do próprio backup**. Ou seja: o `.tar.gz` sozinho reconstrói o sistema.
+Vale repetir esse teste depois de qualquer mudança no backup.
 
 ## Restaurar
 

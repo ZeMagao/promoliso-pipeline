@@ -5,22 +5,18 @@ Repo: https://github.com/ZeMagao/promoliso-n8n (privado).
 
 ---
 
-## AÇÕES SUAS (nenhuma eu consigo fazer daqui)
+## AÇÕES SUAS
 
-### 1. 🔴 URGENTE — porta do SMTP (o alerta está morto)
-A **Hetzner bloqueia saída nas portas 25 e 465**; só a **587** passa. A credencial `smtp` do n8n
-não tem porta definida → o n8n usa o default **465** → **todo alerta por e-mail dá timeout calado**
-(no Windows funcionava). Ou seja: hoje, se o pipeline quebrar, ninguém é avisado.
+### ~~1. Porta do SMTP~~ ✅ FEITO 2026-08-05 11:50
+A **Hetzner bloqueia saída nas portas 25 e 465**; só a **587** passa. A credencial `smtp` não tinha
+porta → n8n usava o default 465 → todo alerta dava timeout calado. Corrigido na UI
+(Port 587, SSL/TLS off) e **testado com envio real**. O aviso de falha do backup
+(`promo-backup-falhou.service`) também foi testado ponta a ponta.
 
-**Conserto (30 s):** https://n8n.promoliso.com.br → Credentials → **"SMTP account"** →
-**Port = `587`** e **desligar SSL/TLS** (fica STARTTLS) → Save.
-Depois teste no VPS: `echo "teste" | /usr/local/bin/promo-alerta.sh "[PromoLiso] teste"`
-
-### 2. Backup externo no Cloudflare R2 (falta só a credencial)
-`rclone` instalado, upload já integrado no backup diário, retenção 30 dias no R2, e-mail se falhar.
-Passo a passo (criar bucket + API token + rodar `promo-r2-setup.sh`) em **`OPERACAO-VPS.md`**,
-seção "Cópia externa no Cloudflare R2". Enquanto não fizer, o backup roda **só local** —
-VPS morto = perda total, inclusive a encryptionKey.
+### ~~2. Backup externo no Cloudflare R2~~ ✅ FEITO 2026-08-05 12:23
+Bucket `promoliso-backups`, prefixo `n8n/`, retenção 30 dias, upload no fim do backup diário.
+Primeira cópia no ar: 163 MiB. **Restauração testada de verdade** (md5 igual, banco íntegro,
+7 credenciais decifram com a encryptionKey de dentro do backup). Detalhes em `OPERACAO-VPS.md`.
 
 ### 3. Redirect URI no app do Meta
 Cadastrar **uma vez**: `https://n8n.promoliso.com.br/rest/oauth2-credential/callback`
