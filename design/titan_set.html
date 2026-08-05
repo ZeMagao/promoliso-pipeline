@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>PromoLiso — TITAN set</title>
+<style>
+  @font-face{font-family:PLDisplay;src:url('../assets/BarlowCondensed-ExtraBold.ttf') format('truetype');font-weight:800;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#17181c;font-family:system-ui,Arial,sans-serif;padding:34px 20px 80px;}
+  h1{color:#fff;font-size:20px;text-align:center;}
+  .sub{color:#8b93a0;text-align:center;font-size:13px;margin:6px 0 30px;}
+  .row{display:flex;gap:44px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+  .col{display:flex;flex-direction:column;align-items:center;}
+  .tag{color:var(--green);font-weight:800;letter-spacing:2px;font-size:14px;margin-bottom:10px;}
+  .slot{--s:.37;width:calc(1080px*var(--s));height:calc(1350px*var(--s));overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.6);}
+  .frame{transform-origin:top left;transform:scale(var(--s));width:1080px;height:1350px;position:relative;overflow:hidden;display:block;background:#05060A;color:#fff;}
+  @media(max-width:1280px){.slot{--s:.27;}}
+  :root{--dsp:PLDisplay,'Barlow Condensed',Impact,sans-serif;--green:#A6FF2E;--purple:#9A4DFF;--mut:#8791a0;--body:#c3cbd5;}
+
+  /* shared TITAN chrome */
+  .grain{position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.05) 1px,transparent 0);background-size:24px 24px;opacity:.5;}
+  .glow{position:absolute;inset:0;background:radial-gradient(52% 38% at 80% 2%,rgba(154,77,255,.30),transparent 60%),radial-gradient(58% 40% at 8% 100%,rgba(166,255,46,.13),transparent 60%);}
+  .slash{position:absolute;left:0;top:0;width:100%;height:8px;background:linear-gradient(90deg,var(--green),var(--purple));box-shadow:0 0 22px rgba(154,77,255,.7);}
+  .hd{position:absolute;left:64px;right:64px;top:50px;display:flex;align-items:center;justify-content:space-between;z-index:3;}
+  .wm{font-size:30px;font-weight:800;letter-spacing:3px;}
+  .wm b{color:var(--green);text-shadow:0 0 16px rgba(166,255,46,.7);}
+  .tab{font-family:var(--dsp);font-size:22px;letter-spacing:5px;color:#cbd2da;border:1px solid #2b303a;padding:8px 16px;}
+  .tab.pg b{color:#fff;} .tab.pg{color:var(--mut);letter-spacing:3px;}
+
+  .hero{position:absolute;left:64px;right:64px;background:#0a0c12;overflow:hidden;
+     clip-path:polygon(0 0,100% 0,100% calc(100% - 46px),calc(100% - 46px) 100%,0 100%);
+     box-shadow:0 0 40px rgba(154,77,255,.22),inset 0 0 60px rgba(0,0,0,.6);}
+  .hero .bg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) brightness(.34) saturate(1.2);transform:scale(1.08);}
+  .hero .fg{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(0 12px 26px rgba(0,0,0,.55));}
+  .hero .cover{position:absolute;inset:0;background-size:cover;background-position:center;filter:contrast(1.06) saturate(1.04);}
+  .hero .rim{position:absolute;inset:0;border:1.5px solid rgba(166,255,46,.35);clip-path:inherit;}
+  .hero .cap{position:absolute;left:0;bottom:0;background:rgba(5,6,10,.8);color:#c9cfd7;font-size:15px;font-weight:700;letter-spacing:2px;padding:8px 14px;}
+
+  .kick{display:inline-flex;align-items:center;gap:12px;background:var(--purple);color:#fff;font-family:var(--dsp);font-size:22px;letter-spacing:4px;padding:9px 18px;}
+  .kick.line{background:none;color:var(--green);padding:0;}
+  .kick.line:before{content:"";width:34px;height:3px;background:var(--green);}
+
+  h2{font-family:var(--dsp);line-height:.86;letter-spacing:-2px;text-transform:uppercase;
+     background:linear-gradient(180deg,#ffffff,#b9c2cc);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 20px rgba(166,255,46,.16));}
+  h2 .u{display:inline-block;color:var(--green);-webkit-text-fill-color:var(--green);border-bottom:6px solid var(--purple);text-shadow:0 0 22px rgba(166,255,46,.5);}
+
+  .strip{display:inline-flex;align-items:center;gap:14px;border:1px solid rgba(166,255,46,.5);background:linear-gradient(180deg,rgba(166,255,46,.06),transparent);
+     color:#eaffd0;font-family:var(--dsp);letter-spacing:-.5px;padding:12px 20px;box-shadow:inset 0 0 24px rgba(166,255,46,.08);}
+  .strip:before{content:"";width:14px;height:14px;background:var(--green);box-shadow:0 0 14px rgba(166,255,46,.8);flex:0 0 auto;}
+  .dek{color:var(--body);}
+  .foot{position:absolute;left:64px;right:64px;bottom:56px;display:flex;align-items:center;justify-content:space-between;z-index:3;color:var(--mut);font-size:21px;font-weight:700;letter-spacing:2px;border-top:1px solid #1b1f27;padding-top:20px;}
+  .foot .ar{font-family:var(--dsp);color:var(--green);font-size:30px;letter-spacing:4px;text-shadow:0 0 14px rgba(166,255,46,.5);}
+</style></head><body>
+<h1>PromoLiso — TITAN · set completo</h1>
+<div class="sub">Sistema aplicado em capa · slide de conteúdo · CTA. Só campos reais do pipeline (kicker · título · destaque · texto).</div>
+<div class="row" id="row"></div>
+<script>
+const B="https://res.cloudinary.com/fy2n2qvr/image/fetch/", S="https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg";
+const fill=(w,h,z=1.15)=>B+`c_fill,g_auto,z_${z},w_${w},h_${h},f_auto,q_auto:good/`+encodeURIComponent(S);
+
+const hd=(tab)=>`<div class="hd"><div class="wm">Promo<b>Liso</b></div><div class="tab">${tab}</div></div>`;
+const pg=(p,t)=>`<div class="hd"><div class="wm">Promo<b>Liso</b></div><div class="tab pg"><b>${p}</b> / ${t}</div></div>`;
+
+/* CAPA */
+const capa=`<div class="frame"><div class="grain"></div><div class="glow"></div><div class="slash"></div>
+  ${hd('NOTÍCIA')}
+  <div class="hero" style="top:130px;height:600px;"><div class="bg" style="background-image:url('${fill(1200,900)}')"></div><div class="fg" style="background-image:url('${fill(1000,760,1)}')"></div><div class="rim"></div><div class="cap">FOTO · ADRENALINE</div></div>
+  <div style="position:absolute;left:64px;right:64px;top:772px;">
+    <div class="kick line">BREAK NEWS</div>
+    <h2 style="font-size:120px;margin-top:22px;">GMKTEC ENTRA<br>FORTE NO <span class="u">SFF</span></h2>
+    <div style="margin-top:26px;"><span class="strip" style="font-size:56px;">RTX 5070 · 14,6 L</span></div>
+    <div class="dek" style="font-size:30px;line-height:1.36;margin-top:26px;max-width:900px;">PC compacto para jogos e tarefas pesadas, com Ryzen 9 9955HX3D e placa RTX 5070.</div>
+  </div>
+  <div class="foot"><div>@promoliso0 · GAMES · HARDWARE</div><div class="ar">ARRASTE →</div></div>
+</div>`;
+
+/* CONTENT SLIDE (evidência) */
+const slide=`<div class="frame"><div class="grain"></div><div class="glow"></div><div class="slash"></div>
+  ${pg('03','06')}
+  <div class="hero" style="top:130px;height:452px;"><div class="cover" style="background-image:url('${fill(1000,660)}')"></div><div class="rim"></div><div class="cap">FOTO · ADRENALINE</div></div>
+  <div style="position:absolute;left:64px;right:64px;top:626px;">
+    <div class="kick">CONFIRMADO</div>
+    <h2 style="font-size:90px;margin-top:20px;">RYZEN 9 9955HX3D<br>+ RTX <span class="u">5070</span></h2>
+    <div style="margin-top:20px;"><span class="strip" style="font-size:48px;">64 MB de 3D V-Cache</span></div>
+    <div class="dek" style="font-size:33px;line-height:1.4;margin-top:26px;">As especificações citadas incluem o Ryzen 9 9955HX3D com 64 MB extras de cache e a GeForce RTX 5070.</div>
+  </div>
+  <div class="foot"><div>@promoliso0</div><div class="ar">ARRASTE →</div></div>
+</div>`;
+
+/* CTA */
+const cta=`<div class="frame"><div class="grain"></div><div class="glow"></div><div class="slash"></div>
+  <div class="hd"><div class="wm">Promo<b>Liso</b></div></div>
+  <div style="position:absolute;left:64px;right:500px;top:250px;">
+    <div class="kick">SÓ QUEM SEGUE VÊ 1º</div>
+    <h2 style="font-size:118px;margin-top:26px;">ENTRE NO<br>GRUPO DE<br><span class="u">PROMOÇÕES</span></h2>
+    <div class="dek" style="font-size:30px;line-height:1.38;margin-top:32px;max-width:470px;">As melhores ofertas de games e hardware caem primeiro no grupo.</div>
+    <div style="margin-top:40px;"><span class="strip" style="font-size:44px;padding:16px 26px;">LINK NA BIO ↗</span></div>
+    <div style="margin-top:24px;color:#fff;font-size:30px;font-weight:800;letter-spacing:1px;">@promoliso0</div>
+  </div>
+  <div style="position:absolute;right:56px;bottom:120px;width:430px;height:600px;border:1px dashed #2b303a;display:flex;align-items:flex-end;justify-content:center;color:#3a3f47;font-size:22px;padding-bottom:20px;">mascote (foto)</div>
+</div>`;
+
+const items=[["CAPA · 01",capa],["SLIDE · 03",slide],["CTA · 06",cta]];
+document.getElementById('row').innerHTML=items.map(([t,h])=>`<div class="col"><div class="tag">${t}</div><div class="slot">${h}</div></div>`).join('');
+</script>
+</body></html>

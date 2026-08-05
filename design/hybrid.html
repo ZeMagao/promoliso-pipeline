@@ -1,0 +1,115 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>PromoLiso — Dark Editorial</title>
+<style>
+  @font-face{font-family:PLDisplay;src:url('../assets/BarlowCondensed-ExtraBold.ttf') format('truetype');font-weight:800;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#202227;font-family:system-ui,Arial,sans-serif;padding:34px 20px 70px;}
+  h1{color:#fff;font-size:19px;text-align:center;}
+  .sub{color:#8b93a0;text-align:center;font-size:13px;margin:6px 0 30px;}
+  .row{display:flex;gap:40px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+  .col{display:flex;flex-direction:column;align-items:center;}
+  .tag{color:#9BFF25;font-weight:700;letter-spacing:2px;font-size:13px;margin-bottom:10px;}
+  .slot{--s:.36;width:calc(1080px*var(--s));height:calc(1350px*var(--s));overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.6);}
+  .frame{transform-origin:top left;transform:scale(var(--s));width:1080px;height:1350px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#0B0C0F 0%,#0E1014 62%,#0B0C0F 100%);}
+  @media(max-width:1300px){.slot{--s:.26;}}
+
+  /* tokens */
+  :root{--green:#9BFF25;--purple:#9A4DFF;--ink:#07080A;--hair:#22262D;--mut:#9AA2AE;--body:#DCE2EA;--dsp:PLDisplay,'Barlow Condensed',Impact,sans-serif;}
+
+  /* header */
+  .hd{position:absolute;left:72px;right:72px;top:56px;display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:14px;color:#fff;font-size:33px;font-weight:800;letter-spacing:.3px;}
+  .brand .tick{width:6px;height:34px;background:var(--green);}
+  .brand b{color:var(--green);font-weight:800;}
+  .pg{display:flex;align-items:center;gap:12px;color:var(--mut);font-size:22px;font-weight:700;letter-spacing:3px;}
+  .pg b{color:#fff;}
+  .pg .dot{width:10px;height:10px;background:var(--purple);}
+
+  /* hero */
+  .hero{position:absolute;left:72px;right:72px;overflow:hidden;background:#0A0D11;border:1px solid var(--hair);}
+  .hero .bg{position:absolute;inset:-24px;background-size:cover;background-position:center;filter:blur(26px) brightness(.32) saturate(1.2);transform:scale(1.08);}
+  .hero .fg{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(0 14px 26px rgba(0,0,0,.55));}
+  .hero .cap{position:absolute;right:0;bottom:0;background:rgba(7,8,10,.82);color:#c9cfd7;font-size:14px;font-weight:700;letter-spacing:2px;padding:9px 15px;}
+
+  /* kicker (editorial) */
+  .kick{display:flex;align-items:center;gap:14px;color:var(--purple);font-family:var(--dsp);font-size:26px;font-weight:800;letter-spacing:5px;}
+  .kick:before{content:"";width:34px;height:3px;background:var(--purple);}
+
+  /* headline */
+  .hl{font-family:var(--dsp);font-weight:800;color:#fff;text-transform:uppercase;line-height:.9;letter-spacing:-1px;}
+  .g{color:var(--green);}
+
+  /* slab — the single energy moment */
+  .slab{display:inline-block;background:var(--green);color:var(--ink);font-family:var(--dsp);font-weight:800;text-transform:uppercase;line-height:1.04;letter-spacing:-1px;padding:4px 16px;}
+
+  .dek{color:var(--body);font-weight:400;}
+  .mut{color:var(--mut);}
+
+  /* footer */
+  .ft{position:absolute;left:72px;right:72px;bottom:56px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--hair);padding-top:22px;}
+  .ft .h{color:var(--mut);font-size:22px;font-weight:700;letter-spacing:1px;}
+  .ft .ar{color:var(--green);font-family:var(--dsp);font-size:28px;font-weight:800;letter-spacing:3px;}
+</style></head><body>
+<h1>PromoLiso — Dark Editorial (híbrido)</h1>
+<div class="sub">Base dark premium · tipografia de revista · UM slab verde de energia. Sem brackets/chevrons/roxo estrutural.</div>
+<div class="row" id="row"></div>
+<script>
+const base="https://res.cloudinary.com/fy2n2qvr/image/fetch/";
+const src="https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg";
+const fill=(w,h)=>base+`c_fill,g_auto,w_${w},h_${h},f_auto,q_auto:good/`+encodeURIComponent(src);
+const fit=(w,h)=>base+`c_fit,w_${w},h_${h},f_auto,q_auto:good/`+encodeURIComponent(src);
+
+const hd=(pg,tot)=>`<div class="hd"><div class="brand"><span class="tick"></span>Promo<b>Liso</b></div><div class="pg"><span class="dot"></span><span><b>${pg}</b> / ${tot}</span></div></div>`;
+
+/* ---------- CAPA ---------- */
+const capa=`<div class="frame">${hd('01','06')}
+  <div class="hero" style="top:124px;height:600px;">
+    <div class="bg" style="background-image:url('${fill(1300,900)}')"></div>
+    <div class="fg" style="background-image:url('${fit(1200,860)}')"></div>
+    <div class="cap">FOTO · ADRENALINE</div>
+  </div>
+  <div style="position:absolute;left:72px;right:72px;top:772px;">
+    <div class="kick">BREAK NEWS</div>
+    <div class="hl" style="font-size:112px;margin-top:24px;">GMKtec entra<br>forte no <span class="g">SFF</span></div>
+    <div style="margin-top:22px;"><span class="slab" style="font-size:74px;">RTX 5070 em 14,6L</span></div>
+    <div class="dek" style="font-size:31px;line-height:1.34;margin-top:26px;max-width:900px;">PC compacto para jogos e tarefas pesadas, com Ryzen 9 9955HX3D e placa RTX 5070.</div>
+  </div>
+  <div class="ft"><div class="h">@promoliso0</div><div class="ar">ARRASTE →</div></div>
+</div>`;
+
+/* ---------- SLIDE (evidência) ---------- */
+const slide=`<div class="frame">${hd('03','06')}
+  <div class="hero" style="top:124px;height:470px;">
+    <div class="bg" style="background-image:url('${fill(1300,700)}')"></div>
+    <div class="fg" style="background-image:url('${fit(1180,640)}')"></div>
+    <div class="cap">FOTO · ADRENALINE</div>
+  </div>
+  <div style="position:absolute;left:72px;right:72px;top:648px;">
+    <div class="kick">CONFIRMADO</div>
+    <div class="hl" style="font-size:92px;margin-top:20px;">Ryzen 9 9955HX3D<br>+ RTX 5070</div>
+    <div style="margin-top:18px;"><span class="slab" style="font-size:60px;">64 MB de 3D V-Cache</span></div>
+    <div class="dek" style="font-size:33px;line-height:1.36;margin-top:26px;">As especificações citadas incluem o Ryzen 9 9955HX3D com 64 MB extras de cache e a GeForce RTX 5070.</div>
+  </div>
+  <div class="ft"><div class="h">@promoliso0</div><div class="ar">ARRASTE →</div></div>
+</div>`;
+
+/* ---------- CTA ---------- */
+const cta=`<div class="frame">${hd('06','06')}
+  <div style="position:absolute;left:72px;right:520px;top:300px;">
+    <div class="kick">SÓ QUEM SEGUE VÊ 1º</div>
+    <div class="hl" style="font-size:120px;margin-top:26px;">Entre no<br>grupo de</div>
+    <div style="margin-top:14px;"><span class="slab" style="font-size:120px;line-height:.98;">Promoções</span></div>
+    <div class="dek mut" style="font-size:30px;line-height:1.36;margin-top:30px;max-width:470px;">As melhores ofertas de games e hardware caem primeiro no grupo.</div>
+  </div>
+  <div style="position:absolute;right:64px;bottom:150px;width:430px;height:560px;border:1px dashed #333;display:flex;align-items:flex-end;justify-content:center;color:#3a3f47;font-size:22px;padding-bottom:20px;">mascote (foto)</div>
+  <div style="position:absolute;left:72px;bottom:70px;display:flex;align-items:center;gap:0;">
+    <div class="slab" style="font-size:40px;padding:16px 28px;">LINK NA BIO ↗</div>
+    <div style="margin-left:26px;color:#fff;font-size:30px;font-weight:800;">@promoliso0</div>
+  </div>
+</div>`;
+
+const items=[["CAPA",capa],["SLIDE",slide],["CTA",cta]];
+document.getElementById('row').innerHTML=items.map(([t,h])=>`<div class="col"><div class="tag">${t}</div><div class="slot">${h}</div></div>`).join('');
+</script>
+</body></html>

@@ -1,0 +1,11 @@
+{
+  "name": "promoliso-n8n-local",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node ./node_modules/n8n/bin/n8n start"
+  },
+  "dependencies": {
+    "n8n": "2.30.4"
+  }
+}

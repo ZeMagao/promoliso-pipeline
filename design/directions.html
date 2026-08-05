@@ -1,0 +1,117 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>PromoLiso — direções</title>
+<style>
+  @font-face{font-family:Barlow;src:url('../assets/BarlowCondensed-ExtraBold.ttf') format('truetype');font-weight:800;}
+  :root{--bar:"Barlow, Impact, sans-serif";}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#232529;font-family:system-ui,Arial,sans-serif;padding:36px 24px 80px;}
+  h1{color:#fff;font-size:20px;text-align:center;margin-bottom:6px;letter-spacing:.5px;}
+  .sub{color:#8b93a0;text-align:center;font-size:13px;margin-bottom:34px;}
+  .row{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;justify-content:center;}
+  .col{display:flex;flex-direction:column;align-items:center;width:calc(1080px * .34);}
+  .tag{color:#fff;font-weight:700;letter-spacing:1px;margin-bottom:4px;font-size:15px;}
+  .desc{color:#9aa2ae;font-size:12px;text-align:center;margin-bottom:12px;line-height:1.4;min-height:32px;}
+  .slot{--s:.34;width:calc(1080px * var(--s));height:calc(1350px * var(--s));overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+  .frame{transform-origin:top left;transform:scale(var(--s));width:1080px;height:1350px;position:relative;overflow:hidden;display:flex;}
+  @media(max-width:1250px){.col{width:calc(1080px * .24);}.slot{--s:.24;}}
+
+  /* ---- shared photo ---- */
+  .ph{background-size:cover;background-position:center;}
+
+  /* ============ A · EDITORIAL PREMIUM (paper) ============ */
+  .A{background:#F3EFE6;color:#191510;}
+  .A .hero{position:absolute;left:0;top:0;width:1080px;height:760px;}
+  .A .hero .ph{position:absolute;inset:0;}
+  .A .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35) 100%);}
+  .A .src{position:absolute;left:64px;bottom:26px;color:#fff;font-size:20px;letter-spacing:3px;font-weight:600;opacity:.9;}
+  .A .brand{position:absolute;left:64px;top:48px;z-index:2;color:#fff;font-size:30px;font-weight:800;letter-spacing:.5px;text-shadow:0 2px 12px rgba(0,0,0,.5);}
+  .A .brand b{color:#0FB981;}
+  .A .num{position:absolute;right:64px;top:52px;z-index:2;color:#fff;font-size:22px;font-weight:700;letter-spacing:2px;opacity:.85;}
+  .A .body{position:absolute;left:64px;right:64px;top:812px;}
+  .A .kick{display:flex;align-items:center;gap:14px;color:#0FB981;font-size:22px;font-weight:800;letter-spacing:4px;}
+  .A .kick:before{content:"";width:38px;height:3px;background:#0FB981;}
+  .A h2{font-family:Barlow,Impact,sans-serif;font-weight:800;font-size:112px;line-height:.92;letter-spacing:-1px;margin:26px 0 0;text-transform:uppercase;}
+  .A .hl{color:#0FB981;}
+  .A .dek{margin-top:30px;font-size:34px;line-height:1.34;color:#3a352c;font-weight:400;max-width:900px;}
+  .A .foot{position:absolute;left:64px;right:64px;bottom:60px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #191510;padding-top:22px;}
+  .A .foot .h{font-size:24px;font-weight:700;letter-spacing:1px;}
+  .A .foot .cta{font-size:24px;font-weight:800;color:#0FB981;letter-spacing:2px;}
+
+  /* ============ B · MINIMAL DARK KEYNOTE ============ */
+  .B{background:radial-gradient(120% 80% at 50% 8%,#17181c 0%,#08090b 60%);color:#fff;flex-direction:column;}
+  .B .brand{position:absolute;left:50%;transform:translateX(-50%);top:70px;font-size:26px;font-weight:700;letter-spacing:3px;opacity:.85;}
+  .B .brand b{color:#3DDC97;}
+  .B .kick{position:absolute;left:50%;transform:translateX(-50%);top:150px;color:#3DDC97;font-size:22px;font-weight:700;letter-spacing:8px;}
+  .B .hero{position:absolute;left:50%;top:300px;transform:translateX(-50%);width:820px;height:520px;}
+  .B .hero .ph{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 30px 60px rgba(0,0,0,.7));}
+  .B .glow{position:absolute;left:50%;top:360px;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(circle,rgba(61,220,151,.20) 0%,rgba(61,220,151,0) 65%);}
+  .B h2{position:absolute;left:0;right:0;top:880px;text-align:center;font-family:Barlow,Impact,sans-serif;font-weight:800;font-size:130px;line-height:.86;letter-spacing:-2px;text-transform:uppercase;}
+  .B .hl{display:block;color:#3DDC97;}
+  .B .dek{position:absolute;left:120px;right:120px;top:1150px;text-align:center;font-size:32px;line-height:1.35;color:#aeb6c0;font-weight:300;}
+  .B .foot{position:absolute;left:0;right:0;bottom:56px;text-align:center;color:#5f6672;font-size:20px;letter-spacing:3px;}
+
+  /* ============ C · MODERN RETAIL BLOCK ============ */
+  .C{background:#0FB981;color:#04150F;}
+  .C .top{position:absolute;left:0;top:0;width:1080px;height:150px;display:flex;align-items:center;justify-content:space-between;padding:0 64px;}
+  .C .brand{font-size:34px;font-weight:800;letter-spacing:.5px;color:#04150F;}
+  .C .brand b{color:#fff;}
+  .C .badge{background:#04150F;color:#fff;font-size:20px;font-weight:800;letter-spacing:3px;padding:12px 20px;}
+  .C .hero{position:absolute;left:64px;top:180px;width:952px;height:640px;background:#04150F;overflow:hidden;}
+  .C .hero .ph{position:absolute;inset:0;}
+  .C .body{position:absolute;left:64px;right:64px;top:854px;}
+  .C .kick{color:#04150F;font-size:24px;font-weight:800;letter-spacing:5px;}
+  .C h2{font-family:Barlow,Impact,sans-serif;font-weight:800;font-size:120px;line-height:.9;letter-spacing:-1px;text-transform:uppercase;margin-top:14px;color:#04150F;}
+  .C .hl{display:inline-block;background:#04150F;color:#3DDC97;padding:2px 18px;margin-top:14px;font-family:Barlow,Impact,sans-serif;font-size:92px;line-height:1.05;text-transform:uppercase;letter-spacing:-1px;}
+  .C .foot{position:absolute;left:64px;right:64px;bottom:60px;display:flex;justify-content:space-between;align-items:center;}
+  .C .foot .pill{background:#04150F;color:#fff;font-size:30px;font-weight:800;letter-spacing:1px;padding:16px 30px;}
+  .C .foot .h{color:#04150F;font-size:24px;font-weight:800;letter-spacing:1px;}
+</style></head><body>
+<h1>PromoLiso — 3 direções de repaginação</h1>
+<div class="sub">Mesma capa (GMKTEC · RTX 5070). Sem HUD gamer. Escolha a base pra aplicar em capa+slides+CTA.</div>
+<div class="row" id="row"></div>
+
+<script>
+const IMG = "https://res.cloudinary.com/fy2n2qvr/image/fetch/c_fill,g_auto,w_1400,h_980,f_auto,q_auto:good/" + encodeURIComponent("https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg");
+const IMGc = "https://res.cloudinary.com/fy2n2qvr/image/fetch/c_fit,w_1200,h_820,f_auto,q_auto:good/" + encodeURIComponent("https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg");
+
+const A = `<div class="frame A">
+  <div class="brand">Promo<b>Liso</b></div><div class="num">01 / 06</div>
+  <div class="hero"><div class="ph" style="background-image:url('${IMG}')"></div><div class="src">FOTO · ADRENALINE</div></div>
+  <div class="body">
+    <div class="kick">NOTÍCIA</div>
+    <h2>GMKtec entra forte no <span class="hl">SFF</span></h2>
+    <div class="dek">PC compacto de 14,6 L com Ryzen 9 9955HX3D e placa RTX 5070 — desktop-class em caixa mínima.</div>
+  </div>
+  <div class="foot"><div class="h">@promoliso0</div><div class="cta">ARRASTE →</div></div>
+</div>`;
+
+const B = `<div class="frame B">
+  <div class="brand">Promo<b>Liso</b></div>
+  <div class="kick">NOTÍCIA</div>
+  <div class="glow"></div>
+  <div class="hero"><div class="ph" style="background-image:url('${IMGc}')"></div></div>
+  <h2>GMKtec entra forte no SFF<span class="hl">RTX 5070 em 14,6 L</span></h2>
+  <div class="dek">Um mini-PC com Ryzen 9 9955HX3D mirando potência de desktop.</div>
+  <div class="foot">@promoliso0 · ARRASTE PARA VER</div>
+</div>`;
+
+const C = `<div class="frame C">
+  <div class="top"><div class="brand">Promo<b>Liso</b></div><div class="badge">NOTÍCIA</div></div>
+  <div class="hero"><div class="ph" style="background-image:url('${IMG}')"></div></div>
+  <div class="body">
+    <div class="kick">GAMES · HARDWARE</div>
+    <h2>GMKtec entra forte no SFF</h2>
+    <div class="hl">RTX 5070 em 14,6 L</div>
+  </div>
+  <div class="foot"><div class="pill">ARRASTE PRA VER →</div><div class="h">@promoliso0</div></div>
+</div>`;
+
+const dirs = [
+  ["A · Editorial Premium","Fundo papel, foto grande, tipografia de revista. Verde só como acento fino. Sofisticado, calmo.",A],
+  ["B · Minimal Dark","Preto keynote, produto flutuando com brilho suave, título gigante centrado, muito respiro.",B],
+  ["C · Retail Moderno","Bloco verde vibrante, energia de oferta mas limpo — sem brackets/chevrons. Preço/destaque em foco.",C],
+];
+document.getElementById('row').innerHTML = dirs.map(([t,d,h])=>
+  `<div class="col"><div class="tag">${t.split(' · ')[0]}</div><div class="desc">${d}</div><div class="slot">${h}</div></div>`).join('');
+</script>
+</body></html>

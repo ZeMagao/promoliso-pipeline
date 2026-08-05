@@ -1,0 +1,54 @@
+# ============================================================
+# SEGREDOS / DADOS SENSÍVEIS — NUNCA subir pro GitHub
+# ============================================================
+# data/ tem o database.sqlite (credenciais CIFRADAS: OpenAI, Anthropic, Instagram,
+# Cloudinary, Tavily, Brave) + data/.n8n/config (encryptionKey que as descriptografa)
+# + community nodes editados. Subir isso = vazar TODAS as chaves.
+data/
+backups/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Token do Instagram (fica no home ~/ig-token.json, mas por garantia)
+ig-token.json
+ig-token-debug.log
+
+# ============================================================
+# Dependências
+# ============================================================
+node_modules/
+
+# ============================================================
+# Runtime / efêmero (gerado ao rodar; muda toda hora)
+# ============================================================
+*.pid
+*.log
+tunnel-url.txt
+newversion-*.txt
+n8n.stdout.log
+n8n.stderr.log
+tunnel.stdout.log
+
+# ============================================================
+# Artefatos de teste/preview (regeneráveis) e dumps de dados
+# ============================================================
+design/*.jpg
+design/preview.html
+design/*.json
+design/newversion.txt
+
+# Arquivo local (one-shots já aplicados, guardados como histórico; não versionar)
+_arquivo/
+
+# Config local do Claude Code (permissões/preferências pessoais)
+.claude/settings.local.json
+
+# ============================================================
+# OS / editor
+# ============================================================
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

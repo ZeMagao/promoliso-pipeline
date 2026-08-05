@@ -1,0 +1,152 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>PromoLiso — 3 opções refinadas</title>
+<style>
+  @font-face{font-family:PLDisplay;src:url('../assets/BarlowCondensed-ExtraBold.ttf') format('truetype');font-weight:800;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#1c1e22;font-family:system-ui,Arial,sans-serif;padding:34px 20px 80px;}
+  h1{color:#fff;font-size:20px;text-align:center;}
+  .sub{color:#8b93a0;text-align:center;font-size:13px;margin:6px 0 32px;}
+  .row{display:flex;gap:44px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+  .col{display:flex;flex-direction:column;align-items:center;max-width:calc(1080px*.38);}
+  .tag{color:#fff;font-weight:800;letter-spacing:1px;font-size:16px;margin-bottom:4px;}
+  .desc{color:#9aa2ae;font-size:12px;text-align:center;margin-bottom:14px;line-height:1.45;min-height:50px;padding:0 6px;}
+  .slot{--s:.38;width:calc(1080px*var(--s));height:calc(1350px*var(--s));overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.62);}
+  .frame{transform-origin:top left;transform:scale(var(--s));width:1080px;height:1350px;position:relative;overflow:hidden;display:block;}
+  @media(max-width:1320px){.col{max-width:calc(1080px*.27);}.slot{--s:.27;}}
+  :root{--dsp:PLDisplay,'Barlow Condensed',Impact,sans-serif;--green:#9BFF25;--purple:#9A4DFF;}
+
+  /* ============================================================
+     OPT 1 · COBALT EDITORIAL — premium tech magazine
+     ============================================================ */
+  .o1{background:radial-gradient(150% 105% at 50% -12%,#13161d 0%,#080a0d 55%,#060708 100%);color:#fff;}
+  .o1 .mast{position:absolute;left:72px;right:72px;top:56px;display:flex;align-items:center;justify-content:space-between;}
+  .o1 .wm{display:flex;align-items:center;gap:14px;font-size:27px;font-weight:800;letter-spacing:6px;}
+  .o1 .wm .d{width:12px;height:12px;background:var(--green);border-radius:50%;box-shadow:0 0 14px rgba(155,255,37,.7);}
+  .o1 .iss{color:#7d858f;font-size:19px;font-weight:600;letter-spacing:4px;}
+  .o1 .rule{position:absolute;left:72px;right:72px;height:1px;background:linear-gradient(90deg,#2b2f36,transparent);}
+  .o1 .hero{position:absolute;left:72px;right:72px;top:132px;height:632px;overflow:hidden;}
+  .o1 .hero .img{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .o1 .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,8,0) 46%,rgba(6,7,8,.86) 100%);}
+  .o1 .hero .edge{position:absolute;inset:0;border:1px solid rgba(255,255,255,.10);}
+  .o1 .cap{position:absolute;left:24px;bottom:22px;color:#c9cfd7;font-size:16px;font-weight:600;letter-spacing:3px;}
+  .o1 .body{position:absolute;left:72px;right:72px;top:812px;}
+  .o1 .kick{display:flex;align-items:center;gap:16px;color:var(--green);font-family:var(--dsp);font-size:25px;font-weight:800;letter-spacing:6px;}
+  .o1 .kick:before{content:"";width:40px;height:3px;background:var(--green);}
+  .o1 h2{font-family:var(--dsp);font-size:108px;line-height:.92;letter-spacing:-1px;font-weight:800;margin-top:22px;}
+  .o1 h2 .g{color:var(--green);}
+  .o1 .hr2{width:120px;height:2px;background:#2b2f36;margin:30px 0 26px;}
+  .o1 .dek{font-family:Georgia,'Times New Roman',serif;font-size:33px;line-height:1.42;color:#c3c9d1;max-width:900px;}
+  .o1 .foot{position:absolute;left:72px;right:72px;bottom:58px;display:flex;align-items:center;justify-content:space-between;}
+  .o1 .foot .h{color:#7d858f;font-size:22px;font-weight:700;letter-spacing:2px;}
+  .o1 .dots{display:flex;gap:10px;align-items:center;}
+  .o1 .dots i{width:12px;height:12px;border-radius:50%;background:#2f343b;display:block;}
+  .o1 .dots i.on{background:var(--green);box-shadow:0 0 12px rgba(155,255,37,.6);}
+
+  /* ============================================================
+     OPT 2 · SYNTH NEON — refined cyber / GPU-keynote
+     ============================================================ */
+  .o2{background:#06070D;color:#fff;}
+  .o2 .aura{position:absolute;inset:0;background:
+     radial-gradient(60% 40% at 82% 6%,rgba(154,77,255,.30),transparent 60%),
+     radial-gradient(60% 45% at 10% 92%,rgba(155,255,37,.16),transparent 60%);}
+  .o2 .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px);mix-blend-mode:overlay;}
+  .o2 .floor{position:absolute;left:-20%;right:-20%;bottom:-120px;height:520px;
+     background-image:linear-gradient(rgba(154,77,255,.55) 2px,transparent 2px),linear-gradient(90deg,rgba(154,77,255,.35) 2px,transparent 2px);
+     background-size:120px 120px;transform:perspective(560px) rotateX(66deg);transform-origin:bottom;opacity:.5;
+     -webkit-mask-image:linear-gradient(180deg,transparent,#000 60%);mask-image:linear-gradient(180deg,transparent,#000 60%);}
+  .o2 .mast{position:absolute;left:72px;right:72px;top:58px;display:flex;align-items:center;justify-content:space-between;}
+  .o2 .wm{font-size:30px;font-weight:800;letter-spacing:2px;}
+  .o2 .wm b{color:var(--green);text-shadow:0 0 16px rgba(155,255,37,.7);}
+  .o2 .pill{border:1.5px solid rgba(155,255,37,.8);color:var(--green);font-family:var(--dsp);font-size:22px;letter-spacing:4px;padding:8px 18px;box-shadow:0 0 20px rgba(155,255,37,.28),inset 0 0 18px rgba(155,255,37,.12);}
+  .o2 .hero{position:absolute;left:96px;right:96px;top:150px;height:560px;background:rgba(255,255,255,.03);
+     border:1.5px solid rgba(154,77,255,.55);box-shadow:0 0 40px rgba(154,77,255,.35),inset 0 0 60px rgba(154,77,255,.10);overflow:hidden;}
+  .o2 .hero:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--green),var(--purple));box-shadow:0 0 18px rgba(154,77,255,.8);}
+  .o2 .hero .img{position:absolute;inset:22px;background-size:contain;background-repeat:no-repeat;background-position:center;filter:drop-shadow(0 10px 30px rgba(0,0,0,.6));}
+  .o2 .body{position:absolute;left:96px;right:96px;top:760px;}
+  .o2 h2{font-family:var(--dsp);font-size:118px;line-height:.86;letter-spacing:-2px;font-weight:800;
+     background:linear-gradient(92deg,#eaffd0 0%,var(--green) 42%,#7ef0ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+     filter:drop-shadow(0 0 22px rgba(155,255,37,.35));}
+  .o2 .slab{display:inline-block;margin-top:20px;font-family:var(--dsp);font-size:70px;letter-spacing:-1px;color:#fff;
+     border-bottom:5px solid var(--green);padding-bottom:4px;text-shadow:0 0 24px rgba(154,77,255,.6);}
+  .o2 .dek{margin-top:28px;font-size:31px;line-height:1.36;color:#a9b6c6;max-width:880px;}
+  .o2 .foot{position:absolute;left:96px;right:96px;bottom:60px;display:flex;align-items:center;justify-content:space-between;}
+  .o2 .foot .h{color:#8ea0b4;font-size:22px;font-weight:700;letter-spacing:2px;}
+  .o2 .foot .ar{font-family:var(--dsp);font-size:30px;letter-spacing:4px;color:var(--green);text-shadow:0 0 16px rgba(155,255,37,.6);}
+
+  /* ============================================================
+     OPT 3 · HYPE BLOCK — bold retail / sport-hype
+     ============================================================ */
+  .o3{background:#0b0b0c;color:#fff;}
+  .o3 .tickcol{position:absolute;left:0;top:0;width:66px;height:1350px;background:var(--green);display:flex;align-items:center;justify-content:center;}
+  .o3 .tickcol span{transform:rotate(180deg);writing-mode:vertical-rl;font-family:var(--dsp);font-size:34px;letter-spacing:8px;color:#07080A;font-weight:800;}
+  .o3 .mast{position:absolute;left:112px;right:56px;top:52px;display:flex;align-items:center;justify-content:space-between;}
+  .o3 .wm{font-size:32px;font-weight:800;letter-spacing:1px;}
+  .o3 .wm b{color:var(--green);}
+  .o3 .cat{background:var(--purple);color:#fff;font-family:var(--dsp);font-size:22px;letter-spacing:3px;padding:9px 18px;}
+  .o3 .hero{position:absolute;left:112px;right:56px;top:126px;height:560px;overflow:hidden;background:#141416;}
+  .o3 .hero .img{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .o3 .hero .bar{position:absolute;left:0;bottom:0;width:100%;height:10px;background:var(--green);}
+  .o3 .plate{position:absolute;left:88px;right:40px;top:640px;}
+  .o3 .kick{display:inline-block;background:var(--green);color:#07080A;font-family:var(--dsp);font-size:24px;letter-spacing:3px;padding:8px 16px;font-weight:800;}
+  .o3 h2{font-family:var(--dsp);font-size:150px;line-height:.82;letter-spacing:-3px;font-weight:800;text-transform:uppercase;margin-top:20px;}
+  .o3 h2 .stroke{color:transparent;-webkit-text-stroke:3px #fff;}
+  .o3 .slab{display:inline-block;margin-top:20px;background:var(--green);color:#07080A;font-family:var(--dsp);font-size:84px;line-height:1;letter-spacing:-1px;padding:6px 20px;transform:skewX(-6deg);}
+  .o3 .slab span{display:inline-block;transform:skewX(6deg);}
+  .o3 .foot{position:absolute;left:112px;right:56px;bottom:56px;display:flex;align-items:center;justify-content:space-between;border-top:3px solid #1e1f22;padding-top:22px;}
+  .o3 .foot .ar{font-family:var(--dsp);font-size:40px;letter-spacing:2px;color:#fff;}
+  .o3 .foot .ar b{color:var(--green);}
+  .o3 .foot .h{color:#7d828a;font-size:24px;font-weight:800;letter-spacing:1px;}
+</style></head><body>
+<h1>PromoLiso — 3 opções refinadas</h1>
+<div class="sub">Mesma capa (GMKTEC · RTX 5070). Cada uma um rumo distinto, digno de página gamer premium.</div>
+<div class="row" id="row"></div>
+<script>
+const B="https://res.cloudinary.com/fy2n2qvr/image/fetch/", S="https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg";
+const fill=(w,h)=>B+`c_fill,g_auto,w_${w},h_${h},f_auto,q_auto:good/`+encodeURIComponent(S);
+const fit=(w,h)=>B+`c_fit,w_${w},h_${h},f_auto,q_auto:good/`+encodeURIComponent(S);
+
+const O1=`<div class="frame o1">
+  <div class="mast"><div class="wm"><span class="d"></span>PROMOLISO</div><div class="iss">EDIÇÃO 087 · NOTÍCIA</div></div>
+  <div class="rule" style="top:110px;"></div>
+  <div class="hero"><div class="img" style="background-image:url('${fill(1300,1140)}')"></div><div class="edge"></div><div class="cap">FOTO · ADRENALINE</div></div>
+  <div class="body">
+    <div class="kick">HARDWARE</div>
+    <h2>GMKtec entra forte<br>no <span class="g">SFF</span></h2>
+    <div class="hr2"></div>
+    <div class="dek">PC compacto voltado a jogos e tarefas pesadas, com Ryzen 9 9955HX3D e placa RTX 5070 — desempenho de desktop em 14,6 litros.</div>
+  </div>
+  <div class="foot"><div class="h">@PROMOLISO0</div><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div></div>
+</div>`;
+
+const O2=`<div class="frame o2">
+  <div class="aura"></div><div class="floor"></div><div class="scan"></div>
+  <div class="mast"><div class="wm">Promo<b>Liso</b></div><div class="pill">NOTÍCIA</div></div>
+  <div class="hero"><div class="img" style="background-image:url('${fit(1180,940)}')"></div></div>
+  <div class="body">
+    <h2>GMKTEC<br>NEO X1 PRO</h2>
+    <div class="slab">RTX 5070 · 14,6 L</div>
+    <div class="dek">Mini-PC com Ryzen 9 9955HX3D mirando potência de desktop num corpo mínimo.</div>
+  </div>
+  <div class="foot"><div class="h">@promoliso0</div><div class="ar">ARRASTE →</div></div>
+</div>`;
+
+const O3=`<div class="frame o3">
+  <div class="tickcol"><span>GAMES • HARDWARE • OFERTAS</span></div>
+  <div class="mast"><div class="wm">Promo<b>Liso</b></div><div class="cat">NOTÍCIA</div></div>
+  <div class="hero"><div class="img" style="background-image:url('${fill(1200,760)}')"></div><div class="bar"></div></div>
+  <div class="plate">
+    <div class="kick">HARDWARE</div>
+    <h2>GMKTEC<br><span class="stroke">NO SFF</span></h2>
+    <div class="slab"><span>RTX 5070 · 14,6 L</span></div>
+  </div>
+  <div class="foot"><div class="ar">ARRASTE<b> →</b></div><div class="h">@promoliso0</div></div>
+</div>`;
+
+const items=[
+  ["1 · COBALT EDITORIAL","Revista tech premium. Foto cinematográfica, título em caixa suave, dek serifada, verde só como acento. Sóbrio e caro.",O1],
+  ["2 · SYNTH NEON","Cyber refinado tipo keynote de GPU. Painel de vidro com rim-light, grid synthwave, título em gradiente neon com glow controlado.",O2],
+  ["3 · HYPE BLOCK","Retail/hype ousado. Ticker lateral, tipografia gigante com contorno, slab inclinado. Energia de oferta, muito impacto.",O3],
+];
+document.getElementById('row').innerHTML=items.map(([t,d,h])=>`<div class="col"><div class="tag">${t}</div><div class="desc">${d}</div><div class="slot">${h}</div></div>`).join('');
+</script>
+</body></html>
