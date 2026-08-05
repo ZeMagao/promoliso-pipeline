@@ -32,7 +32,7 @@ journalctl -u promo-renderer -n 50
 Env relevantes ficam **no unit** (`/etc/systemd/system/promo-n8n.service`), não em `.env`:
 `N8N_USER_FOLDER`, `N8N_EDITOR_BASE_URL`/`N8N_WEBHOOK_URL` = domínio fixo,
 `TZ=America/Sao_Paulo`, `N8N_SECURE_COOKIE=true`, `N8N_PUBLIC_API_DISABLED=true`,
-`EXECUTIONS_DATA_PRUNE` (336 h / 500 execuções), `MemoryHigh=2800M`.
+`EXECUTIONS_DATA_PRUNE` (**168 h / 150 execuções**), `MemoryHigh=2800M`.
 Depois de editar: `systemctl daemon-reload && systemctl restart promo-n8n`.
 
 ## Healthchecks
@@ -43,18 +43,65 @@ curl 127.0.0.1:5678/healthz    # {"status":"ok"}
 curl https://n8n.promoliso.com.br/healthz
 ```
 
+## ⚠️ A Hetzner bloqueia saída nas portas 25 e 465 — só 587 funciona
+
+Descoberto em 2026-08-05, **depois** da migração. Isso quebra silenciosamente todo o alerta por
+e-mail: a credencial `smtp` do n8n não tinha `port` definido, e o default do n8n é **465** → todo
+`emailSend` dá timeout sem barulho. No Windows funcionava (465 aberto).
+
+**Correção:** na UI do n8n → Credentials → "SMTP account" → **Port = 587** e **SSL/TLS desligado**
+(usa STARTTLS). Testar depois com:
+
+```bash
+echo "teste" | /usr/local/bin/promo-alerta.sh "[PromoLiso] teste"
+```
+
+Se algum dia precisar da 465/25, dá pra pedir desbloqueio pro suporte da Hetzner (eles liberam
+depois de a conta ter algum tempo), mas a 587 resolve.
+
 ## Backup
 
 `/usr/local/bin/promo-backup.sh` → `/opt/promoliso/backups/backup-<stamp>.tar.gz`
-(`.backup` do SQLite = quente e seguro, + o `config` com a **encryptionKey**; retenção 7 dias).
+(`.backup` do SQLite = quente e seguro, + o `config` com a **encryptionKey**).
+Retenção: **7 dias local, 30 dias no R2**. Timer diário 03:30 BRT.
+Falha do backup → e-mail automático via `promo-backup-falhou.service`.
 
 ```bash
 systemctl start promo-backup.service     # rodar na hora
+journalctl -u promo-backup -n 20 --no-pager
 systemctl list-timers promo-backup
 ```
 
-> ⚠️ **Pendente:** o backup é **local**. VPS morto = tudo perdido. Falta destino externo
-> (rclone → object storage, ou `scp` pra outra máquina).
+### Cópia externa no Cloudflare R2
+
+`rclone` instalado. Falta plugar as credenciais **uma vez**:
+
+1. No dashboard da Cloudflare → **R2** → *Create bucket* → nome `promoliso-backups`, privado.
+2. **R2 → Manage R2 API Tokens → Create API token**: permissão *Object Read & Write*,
+   escopo só nesse bucket. Guarde `Access Key ID` e `Secret Access Key`.
+3. O `Account ID` está em **R2 → Overview**, canto direito.
+4. No VPS, como root:
+   ```bash
+   promo-r2-setup.sh <ACCOUNT_ID> <ACCESS_KEY_ID> <SECRET_ACCESS_KEY>
+   ```
+   Ele escreve `/home/promo/.config/rclone/rclone.conf` (600, dono `promo`), grava o nome do
+   bucket em `/etc/promo-r2-bucket` e testa leitura/escrita/delete.
+5. Validar: `systemctl start promo-backup.service && journalctl -u promo-backup -n 20 --no-pager`
+
+Enquanto não configurar, o backup roda **só local** e loga o aviso — não quebra.
+
+> O `.tar.gz` contém a **encryptionKey em texto claro**. Bucket privado é o mínimo; se quiser
+> defesa a mais, dá pra pôr um remote `crypt` do rclone na frente — mas aí a senha do crypt passa
+> a ser tão crítica quanto a encryptionKey (perdeu a senha, perdeu o backup).
+
+### Restaurar do R2
+
+```bash
+rclone --config /home/promo/.config/rclone/rclone.conf ls r2:promoliso-backups/n8n/
+rclone --config /home/promo/.config/rclone/rclone.conf copy \
+  r2:promoliso-backups/n8n/backup-<stamp>.tar.gz /tmp/
+# depois segue o "Restaurar" abaixo
+```
 
 ## Restaurar
 
@@ -96,6 +143,34 @@ para dentro do destino → apagar o dir `*win32*`. **Nunca** rodar `npm install`
 
 - `n8n-nodes-image-sharp/dist/nodes/ImageSharp/ImageSharpDefaults.js` → jpeg q95 4:4:4
 - `n8n-nodes-instagram-integrations/dist/nodes/Instagram/GenericFunctions.js` → token de `~/ig-token.json`
+
+## Tamanho do banco
+
+`execution_data` é ~95% do banco: **~8 MB por execução** (o produtor carrega 309 itens de feed
+com conteúdo inteiro + payloads dos agentes). São ~14 execuções/dia somando produtor, publicador,
+watchdog e monitor → **~110 MB/dia**.
+
+Com a retenção de 7 dias, o estado estável é **~800 MB** (não ~200 MB — medido). Em 2026-08-05 o
+prune de 82 execuções antigas + `VACUUM` levou 1006 MB → 824 MB. `VACUUM` **sozinho não serve**:
+o freelist fica em ~1 MB, ou seja não há páginas mortas, é dado vivo. Se precisar encolher de
+verdade, o lever é `EXECUTIONS_DATA_MAX_AGE` (3 dias ≈ 350 MB).
+
+Prune manual imediato (o prune do n8n só faz hard-delete ~1 h depois do soft-delete):
+
+```bash
+systemctl stop promo-n8n
+sqlite3 $DB "PRAGMA foreign_keys=ON;"   # o CLI vem com FK OFF -> CASCADE não dispara
+# apagar execution_data / execution_metadata / execution_annotations e depois execution_entity
+sqlite3 $DB "PRAGMA wal_checkpoint(TRUNCATE); VACUUM;"
+systemctl start promo-n8n
+```
+
+## Alerta por e-mail fora do n8n
+
+`/usr/local/bin/promo-alerta.sh "<assunto>"` (corpo pelo stdin) manda e-mail **reusando a
+credencial SMTP do próprio n8n** — lê o blob cifrado do banco e decifra com a encryptionKey local,
+então não existe senha duplicada em nenhum arquivo. Usa o `nodemailer` que já vem com o n8n.
+É o que o `promo-backup-falhou.service` chama. Depende da correção da porta 587 acima.
 
 ## Gotchas
 
