@@ -54,9 +54,16 @@ isolados e funcionam.
 
 ---
 
-## 📦 PRONTO PRA RODAR NA PRÓXIMA SESSÃO — mensagens do validador
+## ✅ DEPLOYADO 2026-08-05 14:54 BRT — mensagens do validador
 
-Já escrito, dry-run feito e harness passando. **Não foi deployado** — é só executar.
+`versionId = 24acccfa-fe68-43a1-9697-b882f5a53d26`. Harness rodou **6/6 veredito idêntico**
+(inclusive contra os slides reais das execs 179/180, que agora **passam**), dry-run OK, os 4
+workflows reativaram, zero erro no journal. Caps preservados em 42/38.
+
+> O harness `design/test_validador_mensagens.cjs` **não estava no VPS** (só o patch tinha sido
+> copiado). Foi copiado nesta sessão com `ssh host 'cat > arquivo' < local`.
+
+Registro do que estava escrito antes do deploy:
 
 **O quê:** as mensagens de reprovação do validador são genéricas demais. `'Estrutura dos cinco
 slides inválida'` cobre 5 falhas diferentes (contagem, ordem, título vazio, destaque vazio,
@@ -140,6 +147,39 @@ de slides (certo) **e** o fix dos caps (que era independente e correto). O promp
 inválida, sem fonte primária, nenhuma imagem válida). Corrigir os caps não faz toda pauta passar —
 só para de reprovar as boas. Confirmar com uma pauta que só tenha o erro de estrutura.
 Pendente também: `imagens_baixa_resolucao` (thumb 768x480 do adrenaline) barrou a exec 180 junto.
+
+## ⏳ O FIX DOS CAPS AINDA NÃO FOI EXERCITADO (medido 2026-08-05 14:50)
+
+**Nenhuma execução do produtor rodou com os caps 42/38 ainda.** O fix subiu às **14:30 BRT** e a
+última rodada do produtor foi a **exec 184, às 14:00–14:03 BRT** — 27 min antes. A primeira
+rodada de verdade sob o fix é a das **16:00 BRT**.
+
+A exec 184 reprovou com **só um erro**, e ele desaparece com o fix:
+
+```
+erros: ["Estrutura dos cinco slides inválida"]
+categoria NOTICIA · fontes_primarias 1 · imagens_validas 6 · imagens_baixa_resolucao []
+run 0  titulos 42,40,32,41,30   destaques 30,32,32,36,33   textos 214,243,255,218,238
+run 1  titulos 36,36,38,38,42   destaques 31,31,35,36,26   textos 179,237,247,282,232
+```
+
+Tudo ≤42/≤38/≤300 — reprovou porque a checagem no ar naquele momento ainda era 34/30. Rodando o
+predicado real contra esses dados: `slidesValidos = true` nos dois runs. Ou seja: **assinatura
+exata do bug dos caps, e o fix cobre**. Fila continua **0 READY** (5 FAILED + 6 PUBLISHED) porque
+184 foi a última tentativa.
+
+### ⚠️ Armadilha que quase inverteu o diagnóstico: dois fusos no mesmo banco
+
+| coluna | fuso |
+|---|---|
+| `execution_entity.startedAt/stoppedAt`, `data_table_*.published_at` (n8n escreve) | **UTC** |
+| `workflow_entity.updatedAt`, `workflow_history.createdAt` (nossos `patch_*.cjs`) | **local (BRT)** |
+
+Os `patch_*.cjs` têm um `now()` que monta a string com `getHours()` — hora local. O n8n grava UTC.
+Então `updatedAt = 14:30:19` é **11:30 se você assumir UTC** e conclui (errado) que o fix já estava
+no ar na exec 184. Confira sempre contra o `journalctl` (que é local) e contra o horário do cron.
+Conversões úteis: produtor 08–22h BRT = 11–01h UTC; `datetime(col,'localtime')` só está certo pras
+colunas que o n8n escreveu.
 
 ## GARGALO REAL — sintomas observados
 

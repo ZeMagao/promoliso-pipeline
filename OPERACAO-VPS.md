@@ -206,6 +206,11 @@ então não existe senha duplicada em nenhum arquivo. Usa o `nodemailer` que já
 
 ## Gotchas
 
+- **Dois fusos no mesmo banco.** O n8n grava `execution_entity.startedAt/stoppedAt` e
+  `data_table_*.published_at` em **UTC**; nossos `patch_*.cjs` gravam `workflow_entity.updatedAt` e
+  `workflow_history.createdAt` em **hora local** (o `now()` deles usa `getHours()`). Comparar os
+  dois direto faz você errar por 3 h e concluir que um patch já estava no ar quando não estava.
+  Ancore no `journalctl` (local) e no horário do cron. Produtor 08–22h BRT = 11–01h UTC.
 - **`npm ci` não funciona** neste projeto: o `package-lock.json` está fora de sincronia com a
   árvore do n8n 2.30.4. Usar `npm install` (o n8n segue pinado em 2.30.4 no `package.json`).
 - **`n8n execute` (CLI) não serve pra testar** os workflows: o processo avulso não registra os
