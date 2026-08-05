@@ -54,6 +54,59 @@ isolados e funcionam.
 
 ---
 
+## 📦 PRONTO PRA RODAR NA PRÓXIMA SESSÃO — mensagens do validador
+
+Já escrito, dry-run feito e harness passando. **Não foi deployado** — é só executar.
+
+**O quê:** as mensagens de reprovação do validador são genéricas demais. `'Estrutura dos cinco
+slides inválida'` cobre 5 falhas diferentes (contagem, ordem, título vazio, destaque vazio,
+tamanho) e não diz qual slide nem qual campo — foi isso que escondeu o bug dos caps por semanas.
+E `if (!imagemCapa || imagensValidas.length !== 6)` dispara a mensagem de **HTTPS** mesmo quando o
+problema é **contagem**, ou seja, mente sobre a causa. Essas mensagens vão pro e-mail do Monitor de
+erros e do watchdog — mensagem boa = alerta útil.
+
+**Arquivos (já no repo e já copiados pro VPS):**
+- `design/patch_mensagens_validador.cjs` — o patch
+- `design/test_validador_mensagens.cjs` — harness offline que compara lógica antiga × nova
+
+**Não muda o que passa ou reprova.** Provado pelo harness contra os slides REAIS das execs 179/180
++ 4 casos sintéticos: veredito idêntico em 6/6. Exemplo do ganho:
+
+```
+antes:  Estrutura dos cinco slides inválida
+depois: Estrutura dos cinco slides inválida -> slide 3 (evidencia): destaque vazio
+depois: Estrutura dos cinco slides inválida -> esperava 5 slides e vieram 4
+depois: Esperava 6 imagens válidas (capa + 5 slides) e passaram 5
+```
+
+**Como rodar (no VPS):**
+
+```bash
+ssh root@<IP-DO-VPS>
+cd /opt/promoliso
+
+# 1. harness (só leitura) — tem que terminar com "VEREDITO IDENTICO EM TODOS OS CASOS"
+sudo -u promo node design/test_validador_mensagens.cjs
+
+# 2. dry-run — tem que dar "OK mudança A" e "OK mudança B"
+sudo -u promo node design/patch_mensagens_validador.cjs --dry
+
+# 3. deploy (backup + para n8n + aplica + religa + valida)
+AUTO=1 bash deploy-vps.sh design/patch_mensagens_validador.cjs
+```
+
+O patch aborta sozinho se: draft ≠ published, nodes divergindo do `workflow_history`, âncora não
+encontrada ou encontrada mais de uma vez (ex.: já aplicado), caps não estiverem em 42/38, ou se o
+código resultante não compilar.
+
+**Fica de fora de propósito** (muda comportamento, decidir à parte): aceitar os tipos de slide
+**fora de ordem**. Hoje L573 exige a sequência exata `capa, contexto, evidencia, impacto, acao`;
+se o agente inverter dois, reprova. O patch do carrossel variável já tinha trocado isso por
+`tipos.includes(tipo)` + exigir `slides[0]==='capa'`, e o rollback reverteu junto — mesma história
+dos caps. Vale decidir se volta.
+
+---
+
 ## 🎯 CAUSA RAIZ ENCONTRADA (2026-08-05 12:40) — bug de 2 linhas
 
 O nó **`Validar antes de publicar`** (produtor `NL8eVLKErgnIXBQq`) **se contradiz**:
