@@ -54,7 +54,41 @@ isolados e funcionam.
 
 ---
 
-## GARGALO REAL (pré-existente, não é da migração)
+## 🎯 CAUSA RAIZ ENCONTRADA (2026-08-05 12:40) — bug de 2 linhas
+
+O nó **`Validar antes de publicar`** (produtor `NL8eVLKErgnIXBQq`) **se contradiz**:
+
+| linha do `jsCode` | o que faz |
+|---|---|
+| L429-431 | `limitar(slide.titulo, 42)` · `limitar(slide.destaque, 38)` · `limitar(slide.texto, 300)` |
+| L576-581 | valida `slide.titulo.length <= 34` · `slide.destaque.length <= 30` · `texto <= 300` |
+
+Trunca em **42/38** e reprova acima de **34/30**. Título de 35-42 chars ou destaque de 31-38 chars
+= `Estrutura dos cinco slides inválida`, sempre. São 10 campos por pauta (5 títulos + 5 destaques),
+então quase toda pauta estoura pelo menos um. **É a explicação do "quase nunca publica".**
+
+Medido nas execuções reais (o agente entregou 5 slides na ordem certa `capa, contexto, evidencia,
+impacto, acao` nas duas — não é problema do agente):
+
+```
+exec 179  titulos 40, 33, 39, 39, 32    destaques 25, 31, 38, 38, 36
+exec 180  titulos 38, 42, 32, 34, 34    destaques 31, 32, 30, 37, 33
+```
+
+**Origem:** o rollback do carrossel variável (05/08) reverteu duas coisas de uma vez — a contagem
+de slides (certo) **e** o fix dos caps (que era independente e correto). O prompt do agente e o
+`limitar()` usam 42/38; só a checagem ficou no valor velho.
+
+**Correção:** L576 `34` → `42` e L579 `30` → `38`. Deploy pelo padrão do projeto
+(`patch_*.cjs` + novo `versionId` + `workflow_history` + `activeVersionId` — ver
+[[deploy-draft-vs-published]]); no VPS o restart é `systemctl restart promo-n8n`, não os `.ps1`.
+
+**Cuidado ao validar o fix:** a exec 181 reprovou por motivos diferentes e legítimos (categoria
+inválida, sem fonte primária, nenhuma imagem válida). Corrigir os caps não faz toda pauta passar —
+só para de reprovar as boas. Confirmar com uma pauta que só tenha o erro de estrutura.
+Pendente também: `imagens_baixa_resolucao` (thumb 768x480 do adrenaline) barrou a exec 180 junto.
+
+## GARGALO REAL — sintomas observados
 
 As execuções 179 e 180 morreram no gate `Pauta validada? → falso`:
 
