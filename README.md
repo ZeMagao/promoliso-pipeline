@@ -60,6 +60,7 @@ Monitoramento:
 | `*.md` | Planos e runbooks (migração, buffer, melhorias, tutoriais) |
 | `_arquivo/` | Scripts/one-shots já usados, guardados como referência |
 | `data/` (ignorado) | n8n user folder: DB, encryptionKey, community nodes |
+| `OPERACAO-VPS.md` | Runbook de operação do VPS (serviços, backup, restore, gotchas) |
 
 ## Como o deploy funciona (importante)
 
@@ -68,21 +69,28 @@ O n8n 2.30 roda em modo **draft/published**: o schedule executa a versão **publ
 `workflow_history` + setar `activeVersionId`. Os `patch_*.cjs` + `deploy-*.ps1` fazem isso
 (param o n8n, fazem backup do DB, aplicam, religam). Ver `design/patch_*.cjs`.
 
-## Rodar localmente (Windows)
+## Onde roda (produção)
 
-```powershell
-.\start-promoliso.ps1   # sobe n8n + renderizador + túnel
-.\stop-promoliso.ps1    # para tudo
+**VPS Hetzner, desde 2026-08-05** — `https://n8n.promoliso.com.br`.
+Serviços via systemd (`promo-n8n`, `promo-renderer`, `caddy`), backup diário do banco.
+Operação, healthchecks, restore e gotchas: **`OPERACAO-VPS.md`**.
+
+```bash
+systemctl status promo-n8n promo-renderer caddy
+systemctl restart promo-n8n      # o "deploy" agora é isto
+journalctl -u promo-n8n -f
 ```
 
-Pré-requisitos: Node 24, o renderizador rodando (`:5680`), `~/ig-token.json` com token válido,
-e as credenciais cadastradas no n8n (não vêm no repo).
+A máquina Windows foi **aposentada** (o autostart do n8n está desativado de propósito —
+dois n8n publicando na mesma conta = post duplicado). Os `start-promoliso.ps1` /
+`deploy-*.ps1` / `*.cmd` ficam no repo como histórico do setup antigo.
 
-## Migração para VPS
+## Migração
 
-Em andamento — ver `MIGRACAO-HETZNER.md`. VPS Hetzner já contratada; falta o cutover.
-Objetivo: tirar a dependência da máquina Windows + túnel efêmero (endereço fixo via domínio + HTTPS).
+Executada. Runbook original em `MIGRACAO-HETZNER.md` (histórico); o que valeu na prática
+está em `OPERACAO-VPS.md`.
 
 ## Status
 
-Autônomo, publicando em produção. Ver o histórico de decisões e o estado atual nas notas do projeto.
+Autônomo, publicando em produção a partir do VPS. Ver o histórico de decisões e o estado
+atual nas notas do projeto.

@@ -1,4 +1,8 @@
-# Migração PromoLiso → Hetzner Cloud CX32 (runbook)
+# Migração PromoLiso → Hetzner Cloud (runbook)
+
+> ✅ **EXECUTADA em 2026-08-05.** Este arquivo fica como histórico do plano.
+> A realidade do que subiu (VPS **CX23**, não CX32; serviços, backup, restore,
+> gotchas, troca dos binários nativos win32→linux) está em **`OPERACAO-VPS.md`** — use aquele.
 
 Escrito 2026-08-01. Executar numa NOVA sessão, **depois** do primeiro post TITAN sair.
 Objetivo: tirar da máquina Windows + túnel efêmero → VPS com **domínio fixo** (mata o
