@@ -1,0 +1,8 @@
+# O snapshot em workflows/ tem que permanecer com LF, igual ao que está no banco do n8n.
+# Se virar CRLF na working copy, quem montar um patch_*.cjs a partir desses arquivos escreve
+# âncoras de regex com \r\n e elas não casam com o código real — falha silenciosa e confusa.
+workflows/** text eol=lf
+
+# Os patches e o exportador rodam no VPS (Linux); manter LF evita o mesmo problema.
+*.cjs text eol=lf
+*.sh text eol=lf
