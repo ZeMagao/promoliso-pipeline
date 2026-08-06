@@ -1,0 +1,2 @@
+const pub=$('Publish a post').item.json||{};
+return [{ json:{ content_key:$('Preparar verificação').item.json.content_key, status:'PUBLISHED', published_at:new Date().toISOString(), instagram_post_id:String(pub.id||pub.media_id||pub.post_id||'') } }];

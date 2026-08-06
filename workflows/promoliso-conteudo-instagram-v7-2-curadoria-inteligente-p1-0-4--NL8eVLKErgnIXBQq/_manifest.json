@@ -1,0 +1,1252 @@
+{
+  "id": "NL8eVLKErgnIXBQq",
+  "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
+  "active": true,
+  "versionId": "00113b5c-f191-4f49-b4c6-7643bb8f4dc0",
+  "activeVersionId": "00113b5c-f191-4f49-b4c6-7643bb8f4dc0",
+  "draft_igual_publicado": true,
+  "total_nos": 117,
+  "nos": [
+    {
+      "nome": "Agente Curador PromoLiso AI",
+      "tipo": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Agente Verificador de Confiabilidade",
+      "tipo": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Aggregate",
+      "tipo": "n8n-nodes-base.aggregate",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Aguardar processamento do carrossel",
+      "tipo": "n8n-nodes-base.wait",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "AI Agent",
+      "tipo": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "onError": "continueRegularOutput",
+      "prompt": "ai-agent.prompt.md",
+      "prompt_chars": 15917
+    },
+    {
+      "nome": "Aprovar pauta curada",
+      "tipo": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "nome": "Aprovar publicação",
+      "tipo": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "nome": "Atualizar decisão da curadoria",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Bloquear por falha no banco",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "bloquear-por-falha-no-banco.js",
+      "linhas": 1
+    },
+    {
+      "nome": "Busca detalhada",
+      "tipo": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Buscar capa",
+      "tipo": "@brave/n8n-nodes-brave-search.braveSearchTool",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Carregar curadorias PromoLiso AI",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "alwaysOutputData": true
+    },
+    {
+      "nome": "Carregar histórico persistente",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "alwaysOutputData": true
+    },
+    {
+      "nome": "Carrossel ainda processando?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel pronto para publicar?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel publicado?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Code in JavaScript",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "code-in-javascript.js",
+      "linhas": 292
+    },
+    {
+      "nome": "Code in JavaScript1",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "code-in-javascript1.js",
+      "linhas": 295
+    },
+    {
+      "nome": "Configuração PromoLiso AI",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "configuracao-promoliso-ai.js",
+      "linhas": 25
+    },
+    {
+      "nome": "Confirmar persistência da curadoria",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "confirmar-persistencia-da-curadoria.js",
+      "linhas": 20
+    },
+    {
+      "nome": "Consolidar candidatos aprovados",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "consolidar-candidatos-aprovados.js",
+      "linhas": 35
+    },
+    {
+      "nome": "Consolidar decisão determinística",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "consolidar-decisao-deterministica.js",
+      "linhas": 113
+    },
+    {
+      "nome": "Consultar status do carrossel",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Contêiner do carrossel criado?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Convert HTML to JPEG image",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Convert HTML to JPEG image1",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4
+    },
+    {
+      "nome": "Create a carousel post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Create a story",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Criar imagem do story",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4
+    },
+    {
+      "nome": "Decisão aprovada?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Delete table or rows",
+      "tipo": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "desabilitado": true
+    },
+    {
+      "nome": "Edit Fields",
+      "tipo": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "nome": "Embeddings OpenAI",
+      "tipo": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Encerrar após curadoria",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "encerrar-apos-curadoria.js",
+      "linhas": 1
+    },
+    {
+      "nome": "Encerrar sem pauta segura",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "encerrar-sem-pauta-segura.js",
+      "linhas": 9
+    },
+    {
+      "nome": "Enriquecer: aplicar",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueRegularOutput",
+      "codigo": "enriquecer-aplicar.js",
+      "linhas": 33
+    },
+    {
+      "nome": "Enriquecer: buscar og",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Enriquecer: separar",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueRegularOutput",
+      "codigo": "enriquecer-separar.js",
+      "linhas": 9
+    },
+    {
+      "nome": "Estruturar Saída",
+      "tipo": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3
+    },
+    {
+      "nome": "Existe pauta para aprovação?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Feed Adrenaline",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed Flow Games",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed GameVicio",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed oficial Intel",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed oficial Nintendo",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed oficial NVIDIA Gaming",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed oficial PlayStation",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed oficial Xbox",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Fila: montar row",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueRegularOutput",
+      "codigo": "fila-montar-row.js",
+      "linhas": 26
+    },
+    {
+      "nome": "Fila: render story",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Fila: upload story",
+      "tipo": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Formatar legenda",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueRegularOutput",
+      "codigo": "formatar-legenda.js",
+      "linhas": 38
+    },
+    {
+      "nome": "GPT 5.4 mini",
+      "tipo": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.4
+    },
+    {
+      "nome": "GPT auxiliar de estruturacao",
+      "tipo": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Há notícias novas?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Image Sharp",
+      "tipo": "n8n-nodes-image-sharp.imageSharp",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Image Sharp1",
+      "tipo": "n8n-nodes-image-sharp.imageSharp",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Imagem do slide válida?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Interpretar status do carrossel",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "interpretar-status-do-carrossel.js",
+      "linhas": 22
+    },
+    {
+      "nome": "Liberar fluxo atual?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Loop Over Items",
+      "tipo": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3
+    },
+    {
+      "nome": "Memória Postgres",
+      "tipo": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "desabilitado": true
+    },
+    {
+      "nome": "Modelo de Confiabilidade PromoLiso AI",
+      "tipo": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Modelo do Curador PromoLiso AI",
+      "tipo": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Montar contexto editorial",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "montar-contexto-editorial.js",
+      "linhas": 89
+    },
+    {
+      "nome": "Normalizar notícias PromoLiso AI",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "normalizar-noticias-promoliso-ai.js",
+      "linhas": 288
+    },
+    {
+      "nome": "Obter noticias",
+      "tipo": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "desabilitado": true
+    },
+    {
+      "nome": "Obter URL primeira imagem",
+      "tipo": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "nome": "Pauta validada?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Pensar",
+      "tipo": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Persistência confirmada?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Preparar 2 tentativas",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-2-tentativas.js",
+      "linhas": 16
+    },
+    {
+      "nome": "Preparar candidatos",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-candidatos.js",
+      "linhas": 88
+    },
+    {
+      "nome": "Preparar carrossel publicado",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-carrossel-publicado.js",
+      "linhas": 21
+    },
+    {
+      "nome": "Preparar decisão manual da curadoria",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-decisao-manual-da-curadoria.js",
+      "linhas": 23
+    },
+    {
+      "nome": "Preparar falha ao criar carrossel",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-falha-ao-criar-carrossel.js",
+      "linhas": 36
+    },
+    {
+      "nome": "Preparar falha ao publicar carrossel",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-falha-ao-publicar-carrossel.js",
+      "linhas": 41
+    },
+    {
+      "nome": "Preparar falha do story",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-falha-do-story.js",
+      "linhas": 17
+    },
+    {
+      "nome": "Preparar falha no processamento",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-falha-no-processamento.js",
+      "linhas": 42
+    },
+    {
+      "nome": "Preparar fila de curadoria",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-fila-de-curadoria.js",
+      "linhas": 112
+    },
+    {
+      "nome": "Preparar publicação concluída",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-publicacao-concluida.js",
+      "linhas": 26
+    },
+    {
+      "nome": "Preparar registro pendente",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-registro-pendente.js",
+      "linhas": 29
+    },
+    {
+      "nome": "Preparar verificação do carrossel",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-verificacao-do-carrossel.js",
+      "linhas": 8
+    },
+    {
+      "nome": "Preservar retorno do Curador",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preservar-retorno-do-curador.js",
+      "linhas": 20
+    },
+    {
+      "nome": "PromoLiso AI — Fase 1",
+      "tipo": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Publish a post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Registrar curadoria PromoLiso AI",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Registrar preparação",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Registrar rejeição",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "registrar-rejeicao.js",
+      "linhas": 25
+    },
+    {
+      "nome": "Renderizar slide com fallback",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4
+    },
+    {
+      "nome": "Requer análise de IA?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Resultado DUPLICADO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "resultado-duplicado.js",
+      "linhas": 10
+    },
+    {
+      "nome": "Resultado FALHA_PUBLICACAO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "resultado-falha-publicacao.js",
+      "linhas": 13
+    },
+    {
+      "nome": "Resultado PUBLICADO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "resultado-publicado.js",
+      "linhas": 11
+    },
+    {
+      "nome": "Resultado REJEITADO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "resultado-rejeitado.js",
+      "linhas": 10
+    },
+    {
+      "nome": "Salvar carrossel publicado",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Salvar falha de publicação",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Salvar na fila",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Salvar publicação concluída",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Salvar rejeição",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Schedule Trigger",
+      "tipo": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Selecionar melhor pauta",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "selecionar-melhor-pauta.js",
+      "linhas": 54
+    },
+    {
+      "nome": "Split Out",
+      "tipo": "n8n-nodes-base.splitOut",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Sticky Note",
+      "tipo": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Story publicado?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Tentar outra pauta",
+      "tipo": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3
+    },
+    {
+      "nome": "Unir feeds oficiais",
+      "tipo": "n8n-nodes-base.merge",
+      "typeVersion": 3.2
+    },
+    {
+      "nome": "Unir resultados da curadoria",
+      "tipo": "n8n-nodes-base.merge",
+      "typeVersion": 3.2
+    },
+    {
+      "nome": "Upload an asset from file data",
+      "tipo": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Upload an asset from file data1",
+      "tipo": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Upload an asset from file data2",
+      "tipo": "n8n-nodes-cloudinary.cloudinary",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Usar capa como fallback",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "usar-capa-como-fallback.js",
+      "linhas": 85
+    },
+    {
+      "nome": "Validar antes de publicar",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "validar-antes-de-publicar.js",
+      "linhas": 927
+    },
+    {
+      "nome": "Validar e consolidar curadoria",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "validar-e-consolidar-curadoria.js",
+      "linhas": 352
+    },
+    {
+      "nome": "Verificar pauta inédita",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Verificar pauta repetida",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "When clicking ‘Execute workflow’",
+      "tipo": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    }
+  ],
+  "conexoes": {
+    "AI Agent": [
+      [
+        "Validar antes de publicar"
+      ]
+    ],
+    "Agente Curador PromoLiso AI": [
+      [
+        "Preservar retorno do Curador"
+      ]
+    ],
+    "Agente Verificador de Confiabilidade": [
+      [
+        "Validar e consolidar curadoria"
+      ]
+    ],
+    "Aggregate": [
+      [
+        "Preparar registro pendente"
+      ]
+    ],
+    "Aguardar processamento do carrossel": [
+      [
+        "Consultar status do carrossel"
+      ]
+    ],
+    "Aprovar pauta curada": [
+      [
+        "Preparar decisão manual da curadoria"
+      ]
+    ],
+    "Aprovar publicação": [
+      [
+        "Decisão aprovada?"
+      ]
+    ],
+    "Atualizar decisão da curadoria": [
+      [
+        "Liberar fluxo atual?"
+      ]
+    ],
+    "Busca detalhada": [],
+    "Carregar curadorias PromoLiso AI": [
+      [
+        "Preparar fila de curadoria"
+      ]
+    ],
+    "Carregar histórico persistente": [
+      [
+        "Montar contexto editorial"
+      ]
+    ],
+    "Carrossel ainda processando?": [
+      [
+        "Aguardar processamento do carrossel"
+      ],
+      [
+        "Preparar falha no processamento"
+      ]
+    ],
+    "Carrossel pronto para publicar?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Carrossel ainda processando?"
+      ]
+    ],
+    "Carrossel publicado?": [
+      [
+        "Preparar carrossel publicado"
+      ],
+      [
+        "Preparar falha ao publicar carrossel"
+      ]
+    ],
+    "Code in JavaScript": [
+      [
+        "Convert HTML to JPEG image"
+      ]
+    ],
+    "Code in JavaScript1": [
+      [
+        "Convert HTML to JPEG image1"
+      ]
+    ],
+    "Configuração PromoLiso AI": [
+      [
+        "Normalizar notícias PromoLiso AI"
+      ]
+    ],
+    "Confirmar persistência da curadoria": [
+      [
+        "Persistência confirmada?"
+      ]
+    ],
+    "Consolidar candidatos aprovados": [
+      [
+        "Carregar histórico persistente"
+      ]
+    ],
+    "Consolidar decisão determinística": [
+      [
+        "Unir resultados da curadoria"
+      ]
+    ],
+    "Consultar status do carrossel": [
+      [
+        "Interpretar status do carrossel"
+      ]
+    ],
+    "Contêiner do carrossel criado?": [
+      [
+        "Preparar verificação do carrossel"
+      ],
+      [
+        "Preparar falha ao criar carrossel"
+      ]
+    ],
+    "Convert HTML to JPEG image": [
+      [
+        "Imagem do slide válida?"
+      ]
+    ],
+    "Convert HTML to JPEG image1": [
+      [
+        "Image Sharp1"
+      ]
+    ],
+    "Create a carousel post": [
+      [
+        "Contêiner do carrossel criado?"
+      ]
+    ],
+    "Create a story": [
+      [
+        "Story publicado?"
+      ]
+    ],
+    "Criar imagem do story": [
+      [
+        "Upload an asset from file data1"
+      ]
+    ],
+    "Decisão aprovada?": [
+      [
+        "Fila: render story"
+      ],
+      [
+        "Registrar rejeição"
+      ]
+    ],
+    "Delete table or rows": [
+      []
+    ],
+    "Edit Fields": [
+      [
+        "Split Out"
+      ]
+    ],
+    "Embeddings OpenAI": [],
+    "Enriquecer: aplicar": [
+      [
+        "Configuração PromoLiso AI"
+      ]
+    ],
+    "Enriquecer: buscar og": [
+      [
+        "Enriquecer: aplicar"
+      ]
+    ],
+    "Enriquecer: separar": [
+      [
+        "Enriquecer: buscar og"
+      ]
+    ],
+    "Existe pauta para aprovação?": [
+      [
+        "Aprovar pauta curada"
+      ],
+      [
+        "Encerrar após curadoria"
+      ]
+    ],
+    "Feed Adrenaline": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed Flow Games": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed GameVicio": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed oficial Intel": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed oficial NVIDIA Gaming": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed oficial Nintendo": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed oficial PlayStation": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed oficial Xbox": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Fila: montar row": [
+      [
+        "Salvar na fila"
+      ]
+    ],
+    "Fila: render story": [
+      [
+        "Fila: upload story"
+      ]
+    ],
+    "Fila: upload story": [
+      [
+        "Fila: montar row"
+      ]
+    ],
+    "Formatar legenda": [
+      [
+        "Edit Fields"
+      ]
+    ],
+    "GPT 5.4 mini": [],
+    "GPT auxiliar de estruturacao": [],
+    "Há notícias novas?": [
+      [
+        "Requer análise de IA?"
+      ],
+      [
+        "Encerrar após curadoria"
+      ]
+    ],
+    "Image Sharp": [
+      [
+        "Loop Over Items"
+      ]
+    ],
+    "Image Sharp1": [
+      [
+        "Upload an asset from file data2"
+      ]
+    ],
+    "Imagem do slide válida?": [
+      [
+        "Image Sharp"
+      ],
+      [
+        "Usar capa como fallback"
+      ]
+    ],
+    "Interpretar status do carrossel": [
+      [
+        "Carrossel pronto para publicar?"
+      ]
+    ],
+    "Liberar fluxo atual?": [
+      [
+        "Consolidar candidatos aprovados"
+      ],
+      [
+        "Encerrar após curadoria"
+      ]
+    ],
+    "Loop Over Items": [
+      [
+        "Upload an asset from file data"
+      ],
+      [
+        "Code in JavaScript"
+      ]
+    ],
+    "Modelo de Confiabilidade PromoLiso AI": [],
+    "Modelo do Curador PromoLiso AI": [],
+    "Montar contexto editorial": [
+      [
+        "Preparar 2 tentativas"
+      ]
+    ],
+    "Normalizar notícias PromoLiso AI": [
+      [
+        "Carregar curadorias PromoLiso AI"
+      ]
+    ],
+    "Obter URL primeira imagem": [
+      [
+        "Formatar legenda"
+      ]
+    ],
+    "Pauta validada?": [
+      [
+        "Code in JavaScript1"
+      ],
+      [
+        "Tentar outra pauta"
+      ]
+    ],
+    "Pensar": [],
+    "Persistência confirmada?": [
+      [
+        "Selecionar melhor pauta"
+      ],
+      [
+        "Bloquear por falha no banco"
+      ]
+    ],
+    "Preparar 2 tentativas": [
+      [
+        "Tentar outra pauta"
+      ]
+    ],
+    "Preparar candidatos": [
+      [
+        "Enriquecer: separar"
+      ]
+    ],
+    "Preparar carrossel publicado": [
+      [
+        "Salvar carrossel publicado"
+      ]
+    ],
+    "Preparar decisão manual da curadoria": [
+      [
+        "Atualizar decisão da curadoria"
+      ]
+    ],
+    "Preparar falha ao criar carrossel": [
+      [
+        "Salvar falha de publicação"
+      ]
+    ],
+    "Preparar falha ao publicar carrossel": [
+      [
+        "Salvar falha de publicação"
+      ]
+    ],
+    "Preparar falha do story": [
+      [
+        "Salvar falha de publicação"
+      ]
+    ],
+    "Preparar falha no processamento": [
+      [
+        "Salvar falha de publicação"
+      ]
+    ],
+    "Preparar fila de curadoria": [
+      [
+        "Há notícias novas?"
+      ]
+    ],
+    "Preparar publicação concluída": [
+      [
+        "Salvar publicação concluída"
+      ]
+    ],
+    "Preparar registro pendente": [
+      [
+        "Verificar pauta inédita",
+        "Verificar pauta repetida"
+      ]
+    ],
+    "Preparar verificação do carrossel": [
+      [
+        "Aguardar processamento do carrossel"
+      ]
+    ],
+    "Preservar retorno do Curador": [
+      [
+        "Agente Verificador de Confiabilidade"
+      ]
+    ],
+    "Publish a post": [
+      [
+        "Carrossel publicado?"
+      ]
+    ],
+    "Registrar curadoria PromoLiso AI": [
+      [
+        "Confirmar persistência da curadoria"
+      ]
+    ],
+    "Registrar preparação": [
+      [
+        "Aprovar publicação"
+      ]
+    ],
+    "Registrar rejeição": [
+      [
+        "Salvar rejeição"
+      ]
+    ],
+    "Renderizar slide com fallback": [
+      [
+        "Image Sharp"
+      ]
+    ],
+    "Requer análise de IA?": [
+      [
+        "Agente Curador PromoLiso AI"
+      ],
+      [
+        "Consolidar decisão determinística"
+      ]
+    ],
+    "Salvar carrossel publicado": [
+      [
+        "Criar imagem do story"
+      ]
+    ],
+    "Salvar falha de publicação": [
+      [
+        "Resultado FALHA_PUBLICACAO"
+      ]
+    ],
+    "Salvar publicação concluída": [
+      [
+        "Resultado PUBLICADO"
+      ]
+    ],
+    "Salvar rejeição": [
+      [
+        "Resultado REJEITADO"
+      ]
+    ],
+    "Schedule Trigger": [
+      [
+        "Feed oficial PlayStation",
+        "Feed oficial Xbox",
+        "Feed oficial Nintendo",
+        "Feed oficial NVIDIA Gaming",
+        "Feed oficial Intel",
+        "Feed Adrenaline",
+        "Feed Flow Games",
+        "Feed GameVicio"
+      ]
+    ],
+    "Selecionar melhor pauta": [
+      [
+        "Existe pauta para aprovação?"
+      ]
+    ],
+    "Split Out": [
+      [
+        "Loop Over Items"
+      ]
+    ],
+    "Story publicado?": [
+      [
+        "Preparar publicação concluída"
+      ],
+      [
+        "Preparar falha do story"
+      ]
+    ],
+    "Tentar outra pauta": [
+      [
+        "Encerrar sem pauta segura"
+      ],
+      [
+        "AI Agent"
+      ]
+    ],
+    "Unir feeds oficiais": [
+      [
+        "Preparar candidatos"
+      ]
+    ],
+    "Unir resultados da curadoria": [
+      [
+        "Registrar curadoria PromoLiso AI"
+      ]
+    ],
+    "Upload an asset from file data": [
+      [
+        "Aggregate"
+      ]
+    ],
+    "Upload an asset from file data1": [
+      [
+        "Create a story"
+      ]
+    ],
+    "Upload an asset from file data2": [
+      [
+        "Obter URL primeira imagem"
+      ]
+    ],
+    "Usar capa como fallback": [
+      [
+        "Renderizar slide com fallback"
+      ]
+    ],
+    "Validar antes de publicar": [
+      [
+        "Pauta validada?"
+      ]
+    ],
+    "Validar e consolidar curadoria": [
+      [
+        "Unir resultados da curadoria"
+      ]
+    ],
+    "Verificar pauta inédita": [
+      [
+        "Registrar preparação"
+      ]
+    ],
+    "Verificar pauta repetida": [
+      [
+        "Resultado DUPLICADO"
+      ]
+    ],
+    "When clicking ‘Execute workflow’": [
+      [
+        "Feed oficial PlayStation",
+        "Feed oficial Xbox",
+        "Feed oficial Nintendo",
+        "Feed oficial NVIDIA Gaming",
+        "Feed oficial Intel",
+        "Feed Adrenaline",
+        "Feed Flow Games",
+        "Feed GameVicio"
+      ]
+    ]
+  }
+}

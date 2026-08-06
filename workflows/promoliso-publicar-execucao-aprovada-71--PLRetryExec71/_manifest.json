@@ -1,0 +1,186 @@
+{
+  "id": "PLRetryExec71",
+  "name": "PromoLiso - Publicar execução aprovada 71",
+  "active": false,
+  "versionId": "0bff7363-64d0-4538-9b66-e9db2a906ad7",
+  "activeVersionId": null,
+  "draft_igual_publicado": false,
+  "total_nos": 16,
+  "nos": [
+    {
+      "nome": "Aguardar processamento 1",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-1.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Aguardar processamento 2",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-2.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Aguardar processamento 3",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-3.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Carrossel pronto 1?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel pronto 2?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel pronto 3?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Consultar status 1",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Consultar status 2",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Consultar status 3",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Create a carousel post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Dados aprovados da execução 71",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "dados-aprovados-da-execucao-71.js",
+      "linhas": 16
+    },
+    {
+      "nome": "FALHA_PROCESSAMENTO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "falha-processamento.js",
+      "linhas": 4
+    },
+    {
+      "nome": "Preparar verificação",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-verificacao.js",
+      "linhas": 10
+    },
+    {
+      "nome": "PUBLICADO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "publicado.js",
+      "linhas": 16
+    },
+    {
+      "nome": "Publicar execução 71",
+      "tipo": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Publish a post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    }
+  ],
+  "conexoes": {
+    "Aguardar processamento 1": [
+      [
+        "Consultar status 1"
+      ]
+    ],
+    "Aguardar processamento 2": [
+      [
+        "Consultar status 2"
+      ]
+    ],
+    "Aguardar processamento 3": [
+      [
+        "Consultar status 3"
+      ]
+    ],
+    "Carrossel pronto 1?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Aguardar processamento 2"
+      ]
+    ],
+    "Carrossel pronto 2?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Aguardar processamento 3"
+      ]
+    ],
+    "Carrossel pronto 3?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "FALHA_PROCESSAMENTO"
+      ]
+    ],
+    "Consultar status 1": [
+      [
+        "Carrossel pronto 1?"
+      ]
+    ],
+    "Consultar status 2": [
+      [
+        "Carrossel pronto 2?"
+      ]
+    ],
+    "Consultar status 3": [
+      [
+        "Carrossel pronto 3?"
+      ]
+    ],
+    "Create a carousel post": [
+      [
+        "Preparar verificação"
+      ]
+    ],
+    "Dados aprovados da execução 71": [
+      [
+        "Create a carousel post"
+      ]
+    ],
+    "Preparar verificação": [
+      [
+        "Aguardar processamento 1"
+      ]
+    ],
+    "Publicar execução 71": [
+      [
+        "Dados aprovados da execução 71"
+      ]
+    ],
+    "Publish a post": [
+      [
+        "PUBLICADO"
+      ]
+    ]
+  }
+}

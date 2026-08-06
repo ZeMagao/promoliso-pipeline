@@ -1,0 +1,1 @@
+return [{ json: { status: 'ERRO_BANCO_CURADORIA', publicar: false, motivo: $json.erro_persistencia || 'Falha ao registrar a curadoria', execution_id: String($execution.id || '') } }];

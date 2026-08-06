@@ -1,0 +1,62 @@
+{
+  "id": "PRMLERR20260725A",
+  "name": "PromoLiso - Monitor de erros operacionais",
+  "active": true,
+  "versionId": "9a276b27-5c5b-46a8-84f6-03039b55f06f",
+  "activeVersionId": "9a276b27-5c5b-46a8-84f6-03039b55f06f",
+  "draft_igual_publicado": true,
+  "total_nos": 5,
+  "nos": [
+    {
+      "nome": "Enviar alerta por email",
+      "tipo": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1
+    },
+    {
+      "nome": "Erro em outro workflow",
+      "tipo": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Preparar erro operacional",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-erro-operacional.js",
+      "linhas": 29
+    },
+    {
+      "nome": "Registrar erro operacional",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1
+    },
+    {
+      "nome": "Resultado ERRO_REGISTRADO",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "resultado-erro-registrado.js",
+      "linhas": 7
+    }
+  ],
+  "conexoes": {
+    "Enviar alerta por email": [
+      [
+        "Resultado ERRO_REGISTRADO"
+      ]
+    ],
+    "Erro em outro workflow": [
+      [
+        "Preparar erro operacional"
+      ]
+    ],
+    "Preparar erro operacional": [
+      [
+        "Registrar erro operacional"
+      ]
+    ],
+    "Registrar erro operacional": [
+      [
+        "Enviar alerta por email"
+      ]
+    ]
+  }
+}

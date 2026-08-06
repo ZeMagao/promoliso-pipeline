@@ -1,0 +1,265 @@
+{
+  "id": "E27F7yVdsZRj",
+  "name": "PromoLiso - Publicador (fila)",
+  "active": true,
+  "versionId": "51499260-2a45-4302-b65d-c655a82881f2",
+  "activeVersionId": "51499260-2a45-4302-b65d-c655a82881f2",
+  "draft_igual_publicado": true,
+  "total_nos": 23,
+  "nos": [
+    {
+      "nome": "Aguardar processamento 1",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-1.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Aguardar processamento 2",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-2.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Aguardar processamento 3",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "aguardar-processamento-3.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Carrossel pronto 1?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel pronto 2?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Carrossel pronto 3?",
+      "tipo": "n8n-nodes-base.if",
+      "typeVersion": 2.3
+    },
+    {
+      "nome": "Consultar status 1",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Consultar status 2",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Consultar status 3",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Create a carousel post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Create a story",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Enviar alerta FALHA",
+      "tipo": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1
+    },
+    {
+      "nome": "Executar Publicador",
+      "tipo": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Ler fila",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Marcar FALHA",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Marcar PUBLISHED",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Marcar PUBLISHING",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Preparar FALHA",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-falha.js",
+      "linhas": 1
+    },
+    {
+      "nome": "Preparar PUBLISHED",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-published.js",
+      "linhas": 2
+    },
+    {
+      "nome": "Preparar verificação",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "preparar-verificacao.js",
+      "linhas": 4
+    },
+    {
+      "nome": "Publish a post",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Selecionar READY",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "selecionar-ready.js",
+      "linhas": 16
+    },
+    {
+      "nome": "Slots de publicação",
+      "tipo": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2
+    }
+  ],
+  "conexoes": {
+    "Aguardar processamento 1": [
+      [
+        "Consultar status 1"
+      ]
+    ],
+    "Aguardar processamento 2": [
+      [
+        "Consultar status 2"
+      ]
+    ],
+    "Aguardar processamento 3": [
+      [
+        "Consultar status 3"
+      ]
+    ],
+    "Carrossel pronto 1?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Aguardar processamento 2"
+      ]
+    ],
+    "Carrossel pronto 2?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Aguardar processamento 3"
+      ]
+    ],
+    "Carrossel pronto 3?": [
+      [
+        "Publish a post"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Consultar status 1": [
+      [
+        "Carrossel pronto 1?"
+      ]
+    ],
+    "Consultar status 2": [
+      [
+        "Carrossel pronto 2?"
+      ]
+    ],
+    "Consultar status 3": [
+      [
+        "Carrossel pronto 3?"
+      ]
+    ],
+    "Create a carousel post": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Create a story": [
+      [
+        "Preparar PUBLISHED"
+      ]
+    ],
+    "Executar Publicador": [
+      [
+        "Ler fila"
+      ]
+    ],
+    "Ler fila": [
+      [
+        "Selecionar READY"
+      ]
+    ],
+    "Marcar FALHA": [
+      [
+        "Enviar alerta FALHA"
+      ]
+    ],
+    "Marcar PUBLISHING": [
+      [
+        "Create a carousel post"
+      ]
+    ],
+    "Preparar FALHA": [
+      [
+        "Marcar FALHA"
+      ]
+    ],
+    "Preparar PUBLISHED": [
+      [
+        "Marcar PUBLISHED"
+      ]
+    ],
+    "Preparar verificação": [
+      [
+        "Aguardar processamento 1"
+      ]
+    ],
+    "Publish a post": [
+      [
+        "Create a story"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Selecionar READY": [
+      [
+        "Marcar PUBLISHING"
+      ]
+    ],
+    "Slots de publicação": [
+      [
+        "Ler fila"
+      ]
+    ]
+  }
+}

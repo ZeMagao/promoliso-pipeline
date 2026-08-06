@@ -1,0 +1,1 @@
+return [{ json: { content_key: $('Selecionar READY').item.json.content_key, status: 'FAILED' } }];

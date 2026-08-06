@@ -1,0 +1,72 @@
+{
+  "id": "MJly91QFGKep",
+  "name": "PromoLiso - Monitor de saude (watchdog)",
+  "active": true,
+  "versionId": "f6392260-0753-42ae-a335-8da285a25f6c",
+  "activeVersionId": "f6392260-0753-42ae-a335-8da285a25f6c",
+  "draft_igual_publicado": true,
+  "total_nos": 6,
+  "nos": [
+    {
+      "nome": "Avaliar saude",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "avaliar-saude.js",
+      "linhas": 46
+    },
+    {
+      "nome": "Checagem de saude",
+      "tipo": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2
+    },
+    {
+      "nome": "Colapsar",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "colapsar.js",
+      "linhas": 1
+    },
+    {
+      "nome": "Enviar alerta saude",
+      "tipo": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1
+    },
+    {
+      "nome": "Ler curadoria",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
+      "nome": "Ler fila",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    }
+  ],
+  "conexoes": {
+    "Avaliar saude": [
+      [
+        "Enviar alerta saude"
+      ]
+    ],
+    "Checagem de saude": [
+      [
+        "Ler curadoria"
+      ]
+    ],
+    "Colapsar": [
+      [
+        "Ler fila"
+      ]
+    ],
+    "Ler curadoria": [
+      [
+        "Colapsar"
+      ]
+    ],
+    "Ler fila": [
+      [
+        "Avaliar saude"
+      ]
+    ]
+  }
+}

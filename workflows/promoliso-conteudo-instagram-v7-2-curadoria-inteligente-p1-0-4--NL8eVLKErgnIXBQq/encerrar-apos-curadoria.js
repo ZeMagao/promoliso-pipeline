@@ -1,0 +1,1 @@
+return [{ json: { status: 'CURADORIA_SEM_PAUTA_APROVADA', motivo: $json.motivo || 'Nenhuma pauta liberada', execution_id: String($execution.id || '') } }];
