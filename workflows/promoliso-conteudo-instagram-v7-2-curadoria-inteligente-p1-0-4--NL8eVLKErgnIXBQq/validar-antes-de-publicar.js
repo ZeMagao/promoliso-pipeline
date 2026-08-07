@@ -51,6 +51,12 @@ if (!output || typeof output !== 'object') {
   }];
 }
 
+// Limites de texto dos slides em UM lugar. Estavam em três: aqui no limitar(), na checagem de
+// estrutura, e no prompt do agente. Em 2026-08-05 um rollback reverteu só uma cópia — o validador
+// truncava em 42/38 e reprovava acima de 34/30, e quase nenhuma pauta passou por semanas.
+// A cópia do prompt é texto estático de outro nó; `design/verifica_limites.cjs` compara os dois.
+const LIMITES = { selo: 22, titulo: 42, destaque: 38, texto: 300, legenda: 1800 };
+
 function limitar(value, maximo) {
   const texto = String(value || '').trim();
   if (texto.length <= maximo) return texto;
@@ -170,11 +176,24 @@ function sobreposicaoSemantica(tokensPauta, tokensFonte) {
 }
 
 function valorNumerico(value) {
-  const texto = String(value || '').replace(/[^\d,.-]/g, '').trim();
-  if (!texto) return 0;
-  const normalizado = texto.includes(',')
-    ? texto.replace(/\./g, '').replace(',', '.')
-    : texto;
+  const texto = String(value || '');
+  // Antes: replace(/[^\d,.-]/g,'') colava números distintos —
+  // "R$ 3.989,05 (ou 12x de R$ 332,43 sem juros)" virava "3.989,0512332,43" -> NaN -> 0, e a
+  // oferta legítima da exec 168 foi reprovada com "Preço atual inválido".
+  // Agora pega UM valor: de preferência o que vem logo depois de um "R$" (assim "12x de R$ 332,43"
+  // não devolve 12). Formato BR: ponto separa milhar, vírgula é decimal.
+  const NUM = '\\d{1,3}(?:\\.\\d{3})+(?:,\\d{1,2})?|\\d+,\\d{1,2}|\\d+\\.\\d{1,2}|\\d+';
+  const comMoeda = texto.match(new RegExp('R\\$\\s*(' + NUM + ')', 'i'));
+  const bruto = comMoeda
+    ? comMoeda[1]
+    : (texto.match(new RegExp(NUM)) || [])[0];
+  if (!bruto) return 0;
+  // Com vírgula, o ponto é separador de milhar. SEM vírgula, "1.299" também é milhar e não
+  // 1,299 — tratar como decimal devolvia 1.299 para "R$ 1.299" (pego pelo harness).
+  const soMilhar = /^\d{1,3}(?:\.\d{3})+$/.test(bruto);
+  const normalizado = bruto.includes(',')
+    ? bruto.replace(/\./g, '').replace(',', '.')
+    : (soMilhar ? bruto.replace(/\./g, '') : bruto);
   const numero = Number(normalizado);
   return Number.isFinite(numero) ? numero : 0;
 }
@@ -449,10 +468,10 @@ if (recuperacaoDeImagemHabilitada) {
 if (Array.isArray(output.slides)) {
   output.slides = output.slides.map((slide) => ({
     ...slide,
-    selo: limitar(slide.selo, 22),
-    titulo: limitar(slide.titulo, 42),
-    destaque: limitar(slide.destaque, 38),
-    texto: limitar(slide.texto, 300),
+    selo: limitar(slide.selo, LIMITES.selo),
+    titulo: limitar(slide.titulo, LIMITES.titulo),
+    destaque: limitar(slide.destaque, LIMITES.destaque),
+    texto: limitar(slide.texto, LIMITES.texto),
   }));
 }
 
@@ -611,18 +630,18 @@ if (!Array.isArray(output.slides)) {
     }
     if (typeof slide?.titulo !== 'string' || slide.titulo.length === 0) {
       problemasSlides.push(onde + ': titulo vazio');
-    } else if (slide.titulo.length > 42) {
-      problemasSlides.push(onde + ': titulo com ' + slide.titulo.length + ' chars (max 42)');
+    } else if (slide.titulo.length > LIMITES.titulo) {
+      problemasSlides.push(onde + ': titulo com ' + slide.titulo.length + ' chars (max ' + LIMITES.titulo + ')');
     }
     if (typeof slide?.destaque !== 'string' || slide.destaque.length === 0) {
       problemasSlides.push(onde + ': destaque vazio');
-    } else if (slide.destaque.length > 38) {
-      problemasSlides.push(onde + ': destaque com ' + slide.destaque.length + ' chars (max 38)');
+    } else if (slide.destaque.length > LIMITES.destaque) {
+      problemasSlides.push(onde + ': destaque com ' + slide.destaque.length + ' chars (max ' + LIMITES.destaque + ')');
     }
     if (typeof slide?.texto !== 'string') {
       problemasSlides.push(onde + ': texto ausente');
-    } else if (slide.texto.length > 300) {
-      problemasSlides.push(onde + ': texto com ' + slide.texto.length + ' chars (max 300)');
+    } else if (slide.texto.length > LIMITES.texto) {
+      problemasSlides.push(onde + ': texto com ' + slide.texto.length + ' chars (max ' + LIMITES.texto + ')');
     }
   });
 }
@@ -788,7 +807,7 @@ if (imagensBaixaResolucao.length > 0) {
 if (
   typeof output.legenda !== 'string' ||
   output.legenda.length === 0 ||
-  output.legenda.length > 1800 ||
+  output.legenda.length > LIMITES.legenda ||
   /\*\*|\x60{3}/.test(output.legenda)
 ) {
   erros.push('Legenda ausente, longa demais ou com Markdown');
@@ -813,7 +832,13 @@ if (output.categoria === 'OFERTA') {
   if (!urlOferta || !hostIn(urlOferta.host, dominiosLojas)) {
     erros.push('Oferta sem URL direta de uma loja conhecida');
   }
-  if (precoAtual <= 0) erros.push('Preço atual inválido');
+  // Jogo grátis é oferta legítima e recorrente (Epic toda semana), mas caía aqui: a exec 200
+  // reprovou "Epic Games Store libera Beacon Pines" com preco_atual "Grátis (R$ 0,00)".
+  // Só aceita quando o texto DIZ que é grátis — preço vazio ou ilegível continua sendo erro,
+  // senão uma falha de extração passaria disfarçada de promoção.
+  const ofertaGratuita =
+    /\b(?:gr[áa]tis|free|de\s+gra[çc]a|sem\s+custo)\b/i.test(String(oferta.preco_atual || ''));
+  if (precoAtual <= 0 && !ofertaGratuita) erros.push('Preço atual inválido');
   if (precoReferencia > 0 && precoReferencia < precoAtual) {
     erros.push('Preço de referência menor que o preço atual');
   }
