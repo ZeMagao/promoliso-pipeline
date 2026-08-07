@@ -2,8 +2,8 @@
   "id": "E27F7yVdsZRj",
   "name": "PromoLiso - Publicador (fila)",
   "active": true,
-  "versionId": "3fa0e07c-3c33-437d-8ee7-4bbb556b250b",
-  "activeVersionId": "3fa0e07c-3c33-437d-8ee7-4bbb556b250b",
+  "versionId": "cf3b717c-2285-4c00-abde-c67df9671c54",
+  "activeVersionId": "cf3b717c-2285-4c00-abde-c67df9671c54",
   "draft_igual_publicado": true,
   "total_nos": 23,
   "nos": [
@@ -137,7 +137,12 @@
     {
       "nome": "Slots de publicação",
       "tipo": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2
+      "typeVersion": 1.2,
+      "cron": [
+        "0 30 12 * * *",
+        "0 30 20 * * *",
+        "0 30 16 * * 2,3,5"
+      ]
     }
   ],
   "conexoes": {

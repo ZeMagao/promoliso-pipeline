@@ -611,7 +611,10 @@
     {
       "nome": "Schedule Trigger",
       "tipo": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2
+      "typeVersion": 1.2,
+      "cron": [
+        "0 0 8-22/2 * * *"
+      ]
     },
     {
       "nome": "Selecionar melhor pauta",

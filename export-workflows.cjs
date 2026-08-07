@@ -104,8 +104,10 @@ function slug(nome) {
       }
       // cron fica no manifest: agendamento é regra de negócio e já nos morderam nele
       // (publicador e produtor com slot no MESMO minuto às 20:00)
+      // o n8n guarda {field:'cronExpression', expression:'0 30 12 * * *'} — o cron está em
+      // `expression`. Ler `i.cronExpression` (como eu fiz primeiro) devolve undefined sempre.
       const crons = (((p.rule || {}).interval) || [])
-        .map((i) => i.cronExpression)
+        .map((i) => (i && i.field === 'cronExpression' ? i.expression : undefined))
         .filter(Boolean);
       if (crons.length) info.cron = crons;
 

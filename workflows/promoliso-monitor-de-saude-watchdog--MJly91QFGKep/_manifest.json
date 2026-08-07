@@ -17,7 +17,11 @@
     {
       "nome": "Checagem de saude",
       "tipo": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2
+      "typeVersion": 1.2,
+      "cron": [
+        "0 0 13 * * *",
+        "0 30 21 * * *"
+      ]
     },
     {
       "nome": "Colapsar",

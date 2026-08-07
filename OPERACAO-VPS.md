@@ -28,6 +28,30 @@ journalctl -u promo-renderer -n 50
 | `promo-n8n.service` | n8n 2.30.4, escuta 127.0.0.1:5678 (só o Caddy expõe) |
 | `caddy.service` | Reverse proxy HTTPS → 5678 |
 | `promo-backup.timer` | Backup diário do banco às **03:30 BRT** |
+| `promo-writeback.timer` | De hora em hora: escreve de volta em `promoliso_publicacoes` o que a fila publicou |
+
+### `promo-writeback` — por que existe
+
+O publicador só escreve na FILA (`Marcar PUBLISHED`); ninguém escrevia em `promoliso_publicacoes`
+desde a virada. Em 2026-08-06 a tabela tinha **1** linha `PUBLISHED` (de 29/07, era do publish
+inline) contra 16 em `PREPARED`, incluindo posts que saíram de verdade. Isso quebrava duas coisas:
+
+- `blocksTopic()` do "Montar contexto editorial" bloqueia tema por `operational_status='PUBLISHED'`
+  **ou** `PREPARED com <= 6 h`. Sem nada virar PUBLISHED, a trava contra republicar durava só 6 h.
+- o `instagram_post_id` só existia no `execution_data`, podado em 7 dias — sem auditoria possível.
+
+`promo-fila-writeback.cjs` roda de fora do n8n de propósito: escrever de dentro exigiria inserir nó
+no publicador, e cirurgia de workflow é o que quebrou a publicação por 3 dias no carrossel variável.
+Rodando de hora em hora, ele captura o `post_id` bem dentro da retenção do `execution_data`.
+
+Só faz `UPDATE`, nunca `INSERT`/`DELETE`; só toca linha cujo `content_key` está PUBLISHED na fila
+(prova de publicação); nunca sobrescreve `instagram_post_id` que já tenha valor. É idempotente.
+
+```bash
+sudo -u promo node /opt/promoliso/promo-fila-writeback.cjs --dry   # mostra sem gravar
+systemctl start promo-writeback.service                            # rodar na hora
+journalctl -u promo-writeback -n 20 --no-pager
+```
 
 Env relevantes ficam **no unit** (`/etc/systemd/system/promo-n8n.service`), não em `.env`:
 `N8N_USER_FOLDER`, `N8N_EDITOR_BASE_URL`/`N8N_WEBHOOK_URL` = domínio fixo,
