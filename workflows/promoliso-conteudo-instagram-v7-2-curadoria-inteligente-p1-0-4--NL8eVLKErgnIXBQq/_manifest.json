@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "00113b5c-f191-4f49-b4c6-7643bb8f4dc0",
-  "activeVersionId": "00113b5c-f191-4f49-b4c6-7643bb8f4dc0",
+  "versionId": "73d2e16a-35a6-4168-8e99-2f29e22a7886",
+  "activeVersionId": "73d2e16a-35a6-4168-8e99-2f29e22a7886",
   "draft_igual_publicado": true,
   "total_nos": 117,
   "nos": [
@@ -677,7 +677,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "validar-antes-de-publicar.js",
-      "linhas": 927
+      "linhas": 940
     },
     {
       "nome": "Validar e consolidar curadoria",

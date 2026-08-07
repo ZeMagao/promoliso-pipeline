@@ -270,6 +270,27 @@ const imagensBloqueadas = [
   'fbcdn.net',
 ];
 
+// Regra ÚNICA de "imagem utilizável". Antes ela existia só lá embaixo, dentro do filtro de
+// imagensValidas, e o bloco de recuperação de mídia (mais acima) escolhia imagens sem consultá-la:
+// foi assim que a exec 199 recebeu uma thumbnail de i.ytimg.com como capa e em seguida se reprovou
+// por ela. Declarada aqui pra que os DOIS lados usem a mesma definição.
+const hostsImagemConhecidos = [
+  'image.mux.com', 'res.cloudinary.com', 'thesourcemediaassets.com',
+];
+const pareceImagemUrl = (u) =>
+  /\.(?:jpe?g|png|webp|gif|avif)$/.test(String(u).split(/[?#]/)[0].toLowerCase());
+function imagemUtilizavel(imagem) {
+  if (!imagem || !imagem.url) return false;
+  if (hostIn(imagem.host, imagensBloqueadas)) return false;
+  const caminho = imagem.url.split(/[?#]/)[0].toLowerCase();
+  if (/\.(?:html?|php|asp|aspx)$/.test(caminho)) return false;
+  if (/\/(?:search|busca)(?:\/|$)/.test(caminho)) return false;
+  // precisa parecer imagem (extensao) OU vir de host de imagem conhecido —
+  // barra capa fabricada tipo xbox.com/games/... (pagina HTML, nao imagem)
+  return pareceImagemUrl(imagem.url) || hostIn(imagem.host, hostsImagemConhecidos);
+}
+const urlUtilizavel = (url) => imagemUtilizavel(urlInfo(url));
+
 
 let candidatoEditorialAprovado = null;
 try {
@@ -294,6 +315,9 @@ const imagensOficiaisDoCandidato = [
 ]
   .map((url) => String(url || '').trim())
   .filter((url) => /^https:\/\//i.test(url))
+  // MESMA regra que o gate aplica. Sem isto o recovery distribuía imagem que o próprio
+  // validador rejeita depois (exec 199: i.ytimg.com virou capa e reprovou a pauta).
+  .filter(urlUtilizavel)
   .filter((url, index, array) => array.indexOf(url) === index);
 
 const urlCandidato = String(candidatoEditorialAprovado?.url || '').trim();
@@ -614,20 +638,9 @@ const imagens = [
     ? output.slides.map((slide) => slide?.imagem)
     : []),
 ].map(urlInfo);
-const hostsImagemConhecidos = [
-  'image.mux.com', 'res.cloudinary.com', 'thesourcemediaassets.com',
-];
-const pareceImagemUrl = (u) =>
-  /\.(?:jpe?g|png|webp|gif|avif)$/.test(String(u).split(/[?#]/)[0].toLowerCase());
-const imagensValidas = imagens.filter((imagem) => {
-  if (!imagem || hostIn(imagem.host, imagensBloqueadas)) return false;
-  const caminho = imagem.url.split(/[?#]/)[0].toLowerCase();
-  if (/\.(?:html?|php|asp|aspx)$/.test(caminho)) return false;
-  if (/\/(?:search|busca)(?:\/|$)/.test(caminho)) return false;
-  // precisa parecer imagem (extensao) OU vir de host de imagem conhecido —
-  // barra capa fabricada tipo xbox.com/games/... (pagina HTML, nao imagem)
-  return pareceImagemUrl(imagem.url) || hostIn(imagem.host, hostsImagemConhecidos);
-});
+// usa a definição única declarada no topo (antes havia uma cópia da regra aqui, e o
+// bloco de recuperação de mídia não a consultava)
+const imagensValidas = imagens.filter(imagemUtilizavel);
 const urlsImagens = [...new Set(imagensValidas.map((imagem) => urlCanonica(imagem.url)))];
 const hostsImagens = [...new Set(imagensValidas.map((imagem) => imagem.host))];
 

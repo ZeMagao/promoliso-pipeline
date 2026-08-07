@@ -21,12 +21,13 @@ mostrasse esse drift. Com o snapshot versionado, ele aparece como diff.
 ## Como regenerar
 
 ```bash
-ssh root@<IP-DO-VPS>
-cd /opt/promoliso && sudo -u promo node export-workflows.cjs      # escreve em workflows/
-# trazer pra máquina local:
-ssh root@<IP-DO-VPS> 'cd /opt/promoliso && tar -cz workflows' > /tmp/wf.tgz
-cd <repo> && rm -rf workflows && tar -xzf /tmp/wf.tgz
+ssh root@<IP-DO-VPS> 'cd /opt/promoliso && sudo -u promo node export-workflows.cjs && tar -cz workflows' > /tmp/wf.tgz
+cd <repo> && tar -xzf /tmp/wf.tgz
 ```
+
+⚠️ **Não** faça `rm -rf workflows` antes de extrair. O exportador já apaga as subpastas de cada
+workflow (para nó removido não virar arquivo fantasma), e este `README.md` mora na raiz de
+`workflows/` — apagar a pasta inteira o remove junto. Aconteceu de verdade em 2026-08-06.
 
 Rodar duas vezes sem deploy no meio **não** produz diff: não há timestamp de geração e tudo é
 ordenado por nome. O que muda o `_manifest.json` é deploy de verdade (`activeVersionId`).
