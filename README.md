@@ -82,13 +82,25 @@ journalctl -u promo-n8n -f
 ```
 
 A máquina Windows foi **aposentada** (o autostart do n8n está desativado de propósito —
-dois n8n publicando na mesma conta = post duplicado). Os `start-promoliso.ps1` /
-`deploy-*.ps1` / `*.cmd` ficam no repo como histórico do setup antigo.
+dois n8n publicando na mesma conta = post duplicado). Os launchers e os `deploy-*.ps1` antigos
+estão em **`_arquivo/windows/`**, fora da raiz justamente para que ninguém os execute por engano;
+o aviso está no `_arquivo/windows/README.md`.
 
 ## Migração
 
-Executada. Runbook original em `MIGRACAO-HETZNER.md` (histórico); o que valeu na prática
+Executada. Runbook original em `docs/historico/MIGRACAO-HETZNER.md`; o que valeu na prática
 está em `OPERACAO-VPS.md`.
+
+## Onde fica o quê
+
+| pasta | conteúdo |
+|---|---|
+| `workflows/` | **snapshot do código que roda** no n8n (jsCode, prompt, manifest). Cópia para leitura e diff — a fonte de verdade é o banco. Regerar com `export-workflows.cjs` |
+| `design/` | ferramentas vivas: harnesses `test_*`, `verifica_limites.cjs`, previews, geradores de nó, e os `patch_*.cjs` (histórico de cada mudança) |
+| `docs/historico/` | planos e runbooks já executados |
+| `_arquivo/` | código morto guardado como registro — `windows/` (⚠️ não executar), `mockups/`, `patches/`, `deploys/` |
+| `assets/` | fonte e template de story |
+| `data/`, `backups/`, `node_modules/` | locais, fora do git |
 
 ## Status
 
