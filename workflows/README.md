@@ -22,12 +22,17 @@ mostrasse esse drift. Com o snapshot versionado, ele aparece como diff.
 
 ```bash
 ssh root@<IP-DO-VPS> 'cd /opt/promoliso && sudo -u promo node export-workflows.cjs && tar -cz workflows' > /tmp/wf.tgz
-cd <repo> && tar -xzf /tmp/wf.tgz
+cd <repo> && tar -xzf /tmp/wf.tgz --exclude='workflows/README.md'
+git diff --stat workflows/     # deve mostrar só o que o deploy mudou
 ```
 
-⚠️ **Não** faça `rm -rf workflows` antes de extrair. O exportador já apaga as subpastas de cada
-workflow (para nó removido não virar arquivo fantasma), e este `README.md` mora na raiz de
-`workflows/` — apagar a pasta inteira o remove junto. Aconteceu de verdade em 2026-08-06.
+⚠️ **Duas armadilhas, as duas já aconteceram em 2026-08-06:**
+
+1. **Não** faça `rm -rf workflows` antes de extrair. O exportador já apaga as subpastas de cada
+   workflow (para nó removido não virar arquivo fantasma), e este `README.md` mora na raiz de
+   `workflows/` — apagar a pasta inteira o leva junto.
+2. **Use o `--exclude` acima.** Este arquivo é mantido no git, não gerado pelo exportador; se a
+   cópia que está no VPS estiver velha, extrair sem excluir sobrescreve a versão boa com a antiga.
 
 Rodar duas vezes sem deploy no meio **não** produz diff: não há timestamp de geração e tudo é
 ordenado por nome. O que muda o `_manifest.json` é deploy de verdade (`activeVersionId`).

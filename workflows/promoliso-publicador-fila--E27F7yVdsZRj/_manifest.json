@@ -2,8 +2,8 @@
   "id": "E27F7yVdsZRj",
   "name": "PromoLiso - Publicador (fila)",
   "active": true,
-  "versionId": "51499260-2a45-4302-b65d-c655a82881f2",
-  "activeVersionId": "51499260-2a45-4302-b65d-c655a82881f2",
+  "versionId": "3fa0e07c-3c33-437d-8ee7-4bbb556b250b",
+  "activeVersionId": "3fa0e07c-3c33-437d-8ee7-4bbb556b250b",
   "draft_igual_publicado": true,
   "total_nos": 23,
   "nos": [
@@ -132,7 +132,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "selecionar-ready.js",
-      "linhas": 16
+      "linhas": 35
     },
     {
       "nome": "Slots de publicação",
