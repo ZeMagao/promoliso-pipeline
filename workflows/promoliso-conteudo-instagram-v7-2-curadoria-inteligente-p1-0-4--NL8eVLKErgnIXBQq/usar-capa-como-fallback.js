@@ -38,7 +38,13 @@ let trocou = false;
 // URL aqui com outra transformação NUNCA casa com o HTML — era por isso que este nó só
 // sabia estourar, virando erro fatal da execução. Trocamos só a URL de ORIGEM dentro do
 // fetch que já está no HTML, preservando a transformação do builder.
-const RE_FETCH = /(https:\/\/res\.cloudinary\.com\/fy2n2qvr\/image\/fetch\/[^/]+\/)([^"'\s)]+)/;
+// A transformação pode ter QUALQUER número de componentes (a capa usa condicional: if_/if_else/
+// if_end). Ancorar a origem em https%3A%2F%2F em vez de contar barras: encodeURIComponent troca
+// toda barra por %2F, então a última barra do casamento é sempre o fim da transformação. Com o
+// [^/]+ antigo, uma transformação de várias componentes fazia o grupo 2 capturar pedaço de
+// transformação como se fosse a origem — e, com uma imagem só no HTML, o nó trocava em cima
+// disso e marcava sucesso.
+const RE_FETCH = /(https:\/\/res\.cloudinary\.com\/fy2n2qvr\/image\/fetch\/(?:[^"'\s)]+\/)?)(https?%3A%2F%2F[^"'\s)]+)/i;
 // Cloudinary image/fetch não consegue buscar image.mux.com, e refetchar uma URL que já é
 // Cloudinary é desperdício: nesses casos o fetch inteiro é substituído.
 const fallbackDireto =
