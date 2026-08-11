@@ -230,37 +230,116 @@ function buildSlide(slide){
 }
 
 // ---------- CAPA ----------
+const CAPA_MIN_W = 1000, CAPA_MIN_H = 800;
+
+function capaImg(source){
+  // e_trim tira a tarja preta do screenshot cinematográfico ANTES do corte. Sem ele o recorte
+  // vertical corta as LATERAIS e preserva as barras — a capa nascia com faixa morta no topo.
+  const cheia = 'e_trim:10/c_fill,g_auto,w_1728,h_2160';
+  const contida = 'e_trim:10/c_pad,g_north,w_1728,h_2160,b_rgb:05060A';
+  // QUAL fica FORA do condicional, depois do if_end. Com f_auto dentro dos ramos o Cloudinary
+  // devolve 400 quando o cliente aceita AVIF/WebP — ou seja, some no Chrome do renderizador e
+  // funciona em qualquer teste que peça a URL com Accept: */*.
+  const t = 'if_iw_gte_' + CAPA_MIN_W + '_and_ih_gte_' + CAPA_MIN_H + '/' + cheia + '/if_else/' + contida + '/if_end/' + QUAL;
+  return '<img src="' + cloud(source, t) + '" style="position:absolute;inset:0;width:1080px;height:1350px;object-fit:cover;filter:contrast(1.06) saturate(1.06);" />';
+}
+
+// Escurece o rodapé pro texto ganhar contraste sem apagar a foto no topo. `inicio` é onde o
+// degradê começa a fechar (em % da altura).
+function capaScrim(inicio){
+  const i = inicio || 38;
+  return '<div style="position:absolute;inset:0;display:flex;background:linear-gradient(180deg,rgba(5,6,10,0) ' + i + '%,rgba(5,6,10,.55) ' + (i+16) + '%,rgba(5,6,10,.90) ' + (i+32) + '%,#05060A 100%);"></div>';
+}
+function capaVinheta(forca){
+  const f = forca == null ? 0.45 : forca;
+  return '<div style="position:absolute;inset:0;display:flex;background:radial-gradient(120% 80% at 50% 28%,rgba(0,0,0,0) 45%,rgba(0,0,0,' + f + ') 100%);"></div>';
+}
+
+// Wordmark em caixa, pra sobreviver em cima de qualquer foto.
+function capaWordmark(){
+  return '<div style="display:inline-flex;align-items:center;background:rgba(5,6,10,.82);border:2px solid rgba(166,255,46,.55);padding:8px 16px;">'
+    + '<div style="display:flex;color:#fff;font-size:27px;font-weight:800;letter-spacing:2px;">Promo<span style="color:' + GREEN + ';">Liso</span></div></div>';
+}
+// Wordmark sem caixa, só com sombra — pra composição mais limpa.
+function capaWordmarkLimpo(){
+  return '<div style="display:flex;color:#fff;font-size:30px;font-weight:800;letter-spacing:2px;text-shadow:0 3px 14px rgba(0,0,0,.9);">Promo<span style="color:' + GREEN + ';">Liso</span></div>';
+}
+
+// Rodapé comum: assinatura + crédito da foto à esquerda, chamada de arraste à direita.
+function capaRodape(credit){
+  return '<div style="position:absolute;left:72px;right:72px;bottom:52px;display:flex;align-items:center;justify-content:space-between;color:' + MUT + ';font-size:22px;font-weight:700;letter-spacing:2px;">'
+    + '<div style="display:flex;">@promoliso0 · FOTO ' + credit + '</div>'
+    + '<div style="display:flex;font-family:' + DISPLAY + ';color:' + GREEN + ';font-size:30px;letter-spacing:4px;">ARRASTE →</div></div>';
+}
+
+// Quebra o título em linhas equilibradas e devolve também o corpo escolhido.
+function capaLinhas(text, containerW, capMax, capMin, fator){
+  const clean = String(text||'').replace(/[.\s]+$/,'');
+  if(!clean) return { lines: [], size: capMin };
+  const lines = balanceLines(clean, 15);
+  return { lines: lines, size: fitSize(lines, containerW, capMax, capMin, fator || 0.46) };
+}
+
+// Fonte de origem da capa: a imagem do slide quando é URL, senão a capa da pauta.
+function capaFonte(output){
+  const slide = output.slides[0];
+  return /^https:\/\//i.test(String(slide.imagem||'')) ? slide.imagem : output.capa;
+}
+function capaCredito(output){
+  const slide = output.slides[0];
+  return esc(slide.fonte_imagem || (output.fontes&&output.fontes[0]&&output.fontes[0].nome) || 'OFICIAL');
+}
+
+function capaTituloB(text, containerW, capMax, capMin){
+  const t = capaLinhas(text, containerW, capMax, capMin, 0.50);
+  if(!t.lines.length) return '';
+  const padY = Math.round(t.size*0.12), padX = Math.round(t.size*0.16);
+  const rows = t.lines.map(function(l,i){
+    const ultima = i === t.lines.length-1;
+    const fundo = ultima ? GREEN : 'rgba(5,6,10,.92)';
+    const cor = ultima ? INK : '#fff';
+    return '<div style="display:flex;background:' + fundo + ';color:' + cor + ';padding:' + padY + 'px ' + padX + 'px;">'
+      + esc(l.toUpperCase()) + '</div>';
+  }).join('');
+  return '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-family:' + DISPLAY + ';'
+    + 'font-weight:800;text-transform:uppercase;font-size:' + t.size + 'px;line-height:.86;letter-spacing:-1px;">'
+    + rows + '</div>';
+}
+
+// Destaque no mesmo idioma dos blocos: tinta chapada, texto verde, sem moldura.
+function capaDestaqueB(text, size){
+  if(!String(text||'').trim()) return '';
+  const s = size || 40;
+  const mk = Math.max(9, Math.round(s*0.22));
+  return '<div style="display:inline-flex;align-items:center;gap:14px;background:rgba(5,6,10,.92);padding:' + Math.round(s*0.30) + 'px ' + Math.round(s*0.42) + 'px;">'
+    + '<span style="width:' + mk + 'px;height:' + mk + 'px;background:' + GREEN + ';display:block;flex:0 0 auto;"></span>'
+    + '<span style="display:flex;color:#fff;font-family:' + DISPLAY + ';font-size:' + s + 'px;font-weight:800;letter-spacing:.5px;">'
+    + esc(String(text).trim().toUpperCase()) + '</span></div>';
+}
+
 function buildCapa(output){
   const slide = output.slides[0];
-  const source = /^https:\/\//i.test(String(slide.imagem||'')) ? slide.imagem : output.capa;
-  const kicker = output.categoria || slide.selo || 'NOTÍCIA';
-  const credit = esc(slide.fonte_imagem || (output.fontes&&output.fontes[0]&&output.fontes[0].nome) || 'OFICIAL');
-  function subCap(t){ t=String(t||'').trim(); const dot=t.search(/[.!?]\s/); if(dot>0&&dot<=95) return t.slice(0,dot+1); if(t.length<=92) return t; let c=t.slice(0,92); const sp=c.lastIndexOf(' '); return (sp>50?c.slice(0,sp):c).replace(/[\s,;:]+$/,'')+'…'; }
-  const subtitulo = esc(slide.subtitulo || subCap(slide.texto) || slide.destaque);
-
-  const HX=72, HY=124, HW=936, HH=520, CW=936;
-  const T_MAX=90, T_MIN=54, BLOCK_TOP=700, BLOCK_BOT=150;
-  const tm = titleMetrics(slide.titulo, CW, T_MAX, T_MIN);
-  const titleH = tm.count * tm.size * 0.9;
-  const stripH = slide.destaque ? 52*1.2 + 24 : 0;
-  const used = 34 + 22 + titleH + 24 + stripH;
-  const availDek = (1350 - BLOCK_TOP - BLOCK_BOT) - used;
-  const dekSize = fitBody(subtitulo, 930, Math.max(60, availDek), 30, 22);
+  const source = capaFonte(output);
+  const selo = slide.selo || output.categoria || 'NOTÍCIA';
 
   const html = `${STYLE}
 <div style="width:1080px;height:1350px;position:relative;display:flex;overflow:hidden;background:${INK};font-family:Arial,Helvetica,sans-serif;">
-  ${bgLayer()}${grain()}${glow()}${slash()}
-  ${titanHeader(tabLabel(kicker))}
-  ${heroBoxTitan(source, 'full', 'FOTO · '+credit, HX,HY,HW,HH)}
+  ${capaImg(source)}
+  ${capaVinheta(0.5)}
+  <div style="position:absolute;left:0;right:0;bottom:0;height:260px;display:flex;background:linear-gradient(180deg,rgba(5,6,10,0) 0,rgba(5,6,10,.82) 60%,#05060A 100%);"></div>
+  ${grain()}
+  ${slash()}
 
-  <div style="position:absolute;left:72px;right:72px;top:${BLOCK_TOP}px;bottom:${BLOCK_BOT}px;display:flex;flex-direction:column;overflow:hidden;">
-    <div style="display:flex;">${kickerLine(slide.selo || kicker)}</div>
-    <div style="display:flex;margin-top:22px;">${titleMetal(slide.titulo, CW, T_MAX, T_MIN)}</div>
-    <div style="display:flex;margin-top:24px;">${stripDestaque(slide.destaque, 52)}</div>
-    <div style="display:flex;width:930px;margin-top:24px;color:${BODY};font-size:${dekSize}px;line-height:1.34;">${subtitulo}</div>
+  <div style="position:absolute;left:72px;right:72px;top:50px;display:flex;align-items:center;">
+    ${capaWordmark()}<div style="display:flex;margin-left:14px;">${kickerChip(selo)}</div>
   </div>
 
-  ${footer('ARRASTE →')}
+  <div style="position:absolute;left:64px;bottom:126px;display:flex;flex-direction:column;align-items:flex-start;width:952px;">
+    ${capaTituloB(slide.titulo, 952, 112, 62)}
+    ${slide.destaque ? '<div style="display:flex;margin-top:20px;">'+capaDestaqueB(slide.destaque, 40)+'</div>' : ''}
+  </div>
+
+  ${capaRodape(capaCredito(output))}
 </div>`;
   return [{ json: { html, capaUsada: source, output } }];
 }

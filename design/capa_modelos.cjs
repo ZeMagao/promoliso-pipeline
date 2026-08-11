@@ -21,8 +21,13 @@ const AMOSTRAS = process.argv[2]
 const SUFIXO = { 'silenthill_output.json': 'sh', 'exec87_output.json': 'ex', 'stress_output.json': 'st' };
 
 const antes = fs.readFileSync(NO, 'utf8');
-const codigo = { atual: antes };
-for (const m of MODELOS) codigo[m] = trocar(antes, 'Code in JavaScript1', blocoDoModelo(m));
+
+// Depois do deploy o export já traz a capa nova: não há o que trocar, e insistir só faria o
+// trocar() estourar no guard. Nesse estado o preview vira "o que está no ar".
+const APLICADO = antes.includes('function capaImg(');
+const codigo = APLICADO ? { noar: antes } : { atual: antes };
+if (!APLICADO) for (const m of MODELOS) codigo[m] = trocar(antes, 'Code in JavaScript1', blocoDoModelo(m));
+if (APLICADO) console.log('# export já tem a capa nova — renderizando o que está no ar');
 
 function rodar(code, output) {
   const $input = { first: () => ({ json: { output } }), all: () => [{ json: { output } }] };

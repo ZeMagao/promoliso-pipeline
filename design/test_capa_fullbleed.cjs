@@ -38,26 +38,58 @@ const amostras = ['exec87_output.json', 'silenthill_output.json', 'stress_output
 const original = {};
 for (const nomeNo of ALVOS) original[nomeNo] = fs.readFileSync(path.join(WFDIR, ARQUIVO[nomeNo]), 'utf8');
 
-// ---- 1. a troca acontece nos dois nós, em todo modelo, sobre o código real exportado ----
+// O export do repo muda de estado depois do deploy: antes ele traz o buildCapa antigo (e o teste
+// é "o patch aplica certo"), depois traz o novo (e o teste vira "o que está no ar é o que a gente
+// escolheu"). Sem esta bifurcação o harness passava a acusar 8 falhas assim que o deploy saía —
+// que é o guard funcionando, mas lido como regressão.
+const APLICADO = original['Code in JavaScript1'].includes('function capaImg(');
+const ESCOLHIDO = fs.readFileSync(path.join(__dirname, 'capa_modelo_escolhido.txt'), 'utf8').trim().toLowerCase();
+const MARCA = { a: 'capaTituloA', b: 'capaTituloB', c: 'capaTituloC' };
+console.log(APLICADO
+  ? `# export JÁ tem a capa nova — verificando o que está no ar (modelo escolhido: ${ESCOLHIDO})`
+  : '# export ainda tem a capa antiga — verificando a aplicação dos três modelos');
+
+// ---- 1. a troca aplica (antes do deploy) ou já está no ar (depois) ----
 const patchado = {}; // patchado[modelo][nó]
-for (const modelo of MODELOS) {
-  patchado[modelo] = {};
+if (APLICADO) {
+  patchado[ESCOLHIDO] = {};
   for (const nomeNo of ALVOS) {
-    let novo = null, erro = null;
-    try { novo = trocar(original[nomeNo], nomeNo, blocoDoModelo(modelo)); } catch (e) { erro = e.message; }
-    ok(`[${modelo}] troca aplica em "${nomeNo}"`, Boolean(novo), erro);
-    if (!novo) continue;
-    patchado[modelo][nomeNo] = novo;
+    const code = original[nomeNo];
+    patchado[ESCOLHIDO][nomeNo] = code;
 
-    ok(`[${modelo}] "${nomeNo}" perdeu o hero recortado da capa`,
-      !recortarBuildCapa(novo).texto.includes('heroBoxTitan'));
-    ok(`[${modelo}] "${nomeNo}" mantém o resto do arquivo intacto`,
-      novo.includes('function buildSlide(slide){') && novo.includes('function buildCta(slide){'));
+    ok(`[no ar] "${nomeNo}" traz o modelo escolhido (${ESCOLHIDO})`, code.includes(MARCA[ESCOLHIDO]));
+    ok(`[no ar] "${nomeNo}" não traz outro modelo junto`,
+      MODELOS.filter((m) => m !== ESCOLHIDO).every((m) => !code.includes(MARCA[m])));
+    ok(`[no ar] "${nomeNo}" perdeu o hero recortado da capa`,
+      !recortarBuildCapa(code).texto.includes('heroBoxTitan'));
+    ok(`[no ar] "${nomeNo}" mantém o resto do arquivo intacto`,
+      code.includes('function buildSlide(slide){') && code.includes('function buildCta(slide){'));
 
-    // reaplicar tem que ser recusado, não duplicar helper
+    // reaplicar por cima tem que ser recusado, não duplicar helper
     let reErro = null;
-    try { trocar(novo, nomeNo, blocoDoModelo(modelo)); } catch (e) { reErro = e.message; }
-    ok(`[${modelo}] "${nomeNo}" recusa reaplicação`, /já existe/.test(String(reErro)), reErro);
+    try { trocar(code, nomeNo, blocoDoModelo(ESCOLHIDO)); } catch (e) { reErro = e.message; }
+    ok(`[no ar] "${nomeNo}" recusa reaplicação`, /já existe/.test(String(reErro)), reErro);
+  }
+} else {
+  for (const modelo of MODELOS) {
+    patchado[modelo] = {};
+    for (const nomeNo of ALVOS) {
+      let novo = null, erro = null;
+      try { novo = trocar(original[nomeNo], nomeNo, blocoDoModelo(modelo)); } catch (e) { erro = e.message; }
+      ok(`[${modelo}] troca aplica em "${nomeNo}"`, Boolean(novo), erro);
+      if (!novo) continue;
+      patchado[modelo][nomeNo] = novo;
+
+      ok(`[${modelo}] "${nomeNo}" perdeu o hero recortado da capa`,
+        !recortarBuildCapa(novo).texto.includes('heroBoxTitan'));
+      ok(`[${modelo}] "${nomeNo}" mantém o resto do arquivo intacto`,
+        novo.includes('function buildSlide(slide){') && novo.includes('function buildCta(slide){'));
+
+      // reaplicar tem que ser recusado, não duplicar helper
+      let reErro = null;
+      try { trocar(novo, nomeNo, blocoDoModelo(modelo)); } catch (e) { reErro = e.message; }
+      ok(`[${modelo}] "${nomeNo}" recusa reaplicação`, /já existe/.test(String(reErro)), reErro);
+    }
   }
 }
 
@@ -72,7 +104,9 @@ for (const modelo of MODELOS) {
 }
 
 // ---- 2. o sha protege contra produção divergente ----
-{
+// Só faz sentido antes do deploy: depois, o bloco antigo não existe mais em lugar nenhum e o
+// próprio "recusa reaplicação" acima já é a proteção.
+if (!APLICADO) {
   const mexido = original['Code in JavaScript1'].replace(
     'const HX=72, HY=124, HW=936, HH=520, CW=936;',
     'const HX=72, HY=124, HW=936, HH=521, CW=936;');
@@ -80,12 +114,12 @@ for (const modelo of MODELOS) {
   let erro = null;
   try { trocar(mexido, 'Code in JavaScript1'); } catch (e) { erro = e.message; }
   ok('sha divergente aborta o patch', /não é o esperado/.test(String(erro)), erro);
-  ok('sha fixado tem 64 hex', /^[0-9a-f]{64}$/.test(SHA_ANTIGO));
 }
+ok('sha fixado tem 64 hex', /^[0-9a-f]{64}$/.test(SHA_ANTIGO));
 
 // ---- 3. cada modelo roda e produz uma capa full-bleed válida ----
 const urlPorCaso = new Map();
-for (const modelo of MODELOS) {
+for (const modelo of Object.keys(patchado)) {
   const code = patchado[modelo]['Code in JavaScript1'];
   if (!code) continue;
   for (const { nome, output } of amostras) {
@@ -129,17 +163,18 @@ for (const modelo of MODELOS) {
 }
 
 // mesma pauta, mesma URL: nada de transformação variando por sorte. O gate vem da base, então os
-// três modelos têm que gerar a MESMA URL pra mesma foto.
+// modelos avaliados têm que gerar a MESMA URL pra mesma foto.
 {
+  const avaliados = Object.keys(patchado);
   const porAmostra = ['exec87', 'silenthill', 'stress'].map((a) =>
-    new Set(MODELOS.map((m) => urlPorCaso.get(`${m}/${a}`))));
+    new Set(avaliados.map((m) => urlPorCaso.get(`${m}/${a}`))));
   ok('o gate independe do modelo (mesma foto, mesma URL)', porAmostra.every((s) => s.size === 1));
   ok('mesma foto de origem gera a mesma URL',
-    urlPorCaso.get('a/silenthill') === urlPorCaso.get('a/stress'));
+    urlPorCaso.get(`${avaliados[0]}/silenthill`) === urlPorCaso.get(`${avaliados[0]}/stress`));
 }
 
 // ---- 4. escape continua valendo em todo modelo (a capa recebe texto de feed de terceiros) ----
-for (const modelo of MODELOS) {
+for (const modelo of Object.keys(patchado)) {
   const code = patchado[modelo]['Code in JavaScript1'];
   if (!code) continue;
   const venenoso = JSON.parse(JSON.stringify(amostras[0].output));
@@ -155,7 +190,7 @@ for (const modelo of MODELOS) {
 }
 
 // ---- 5. imagem sem https cai na capa do output, não vira src vazio ----
-for (const modelo of MODELOS) {
+for (const modelo of Object.keys(patchado)) {
   const code = patchado[modelo]['Code in JavaScript1'];
   if (!code) continue;
   const semImagem = JSON.parse(JSON.stringify(amostras[1].output));
@@ -186,8 +221,8 @@ async function conferirRede() {
     'accept do chrome': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
     'accept genérico': '*/*',
   };
-  // a URL vem da base, igual nos três modelos — basta conferir uma
-  const url = urlPorCaso.get('a/silenthill');
+  // a URL vem da base, igual em todo modelo — basta conferir uma
+  const url = urlPorCaso.get(`${Object.keys(patchado)[0]}/silenthill`);
   for (const [rotulo, u] of [
     ['ramo cheio', url],
     ['ramo contido', url.replace('if_iw_gte_1000_and_ih_gte_800', 'if_iw_gte_99000')],
