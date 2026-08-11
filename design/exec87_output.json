@@ -1,0 +1,79 @@
+{
+  "aprovado_para_publicar": true,
+  "motivo_reprovacao": "",
+  "tema": "GMKtec Neo X1 Pro com RTX 5070",
+  "categoria": "NOTICIA",
+  "oferta": {
+    "produto": "",
+    "variante": "",
+    "loja": "",
+    "preco_atual": "",
+    "preco_referencia": "",
+    "condicao_pagamento": "",
+    "cupom": "",
+    "disponibilidade": "",
+    "url": ""
+  },
+  "fontes": [
+    {
+      "nome": "ADRENALINE.COM.BR",
+      "url": "https://adrenaline.com.br/hardware/gmktec-lanca-pc-compacto-com-ryzen-9-9955hx3d-e-rtx-5070-em-um-case-de-146l",
+      "data_publicacao": "2026-07-29"
+    },
+    {
+      "nome": "Notebookcheck",
+      "url": "https://www.notebookcheck.net/GMKtec-debuts-powerful-AMD-PC-lineup-with-up-to-RTX-5070-and-liquid-cooling.1353657.0.html",
+      "data_publicacao": "2026-07-29"
+    }
+  ],
+  "capa": "https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg",
+  "slides": [
+    {
+      "tipo": "capa",
+      "selo": "BREAK NEWS",
+      "titulo": "GMKtec entra forte no SFF.",
+      "destaque": "RTX 5070 em 14,6L.",
+      "texto": "A GMKtec mostrou um PC compacto voltado a jogos e tarefas pesadas, com Ryzen 9 9955HX3D e placa RTX 5070.",
+      "imagem": "https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg",
+      "fonte_imagem": "ADRENALINE"
+    },
+    {
+      "tipo": "contexto",
+      "selo": "O LANÇAMENTO",
+      "titulo": "É a linha Neo X1 Pro.",
+      "destaque": "Foco em alto desempenho.",
+      "texto": "O modelo apareceu como parte da nova família Neo-X1 da GMKtec, mirando quem quer potência de desktop.",
+      "imagem": "https://www.adrenaline.com.br/wp-content/uploads/2025/02/cpu-z-fire-range-ryzen-9950hx3d.jpg",
+      "fonte_imagem": "ADRENALINE"
+    },
+    {
+      "tipo": "evidencia",
+      "selo": "CONFIRMADO",
+      "titulo": "Ryzen 9 9955HX3D + RTX 5070.",
+      "destaque": "64 MB de 3D V-Cache.",
+      "texto": "As especificações citadas incluem Ryzen 9 9955HX3D com 64 MB extras de cache e GeForce RTX 5070 de 12 GB.",
+      "imagem": "https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-1029x642.jpg",
+      "fonte_imagem": "ADRENALINE"
+    },
+    {
+      "tipo": "impacto",
+      "selo": "POR QUE IMPORTA",
+      "titulo": "Mais PC, menos volume.",
+      "destaque": "Potência para jogos.",
+      "texto": "Para quem quer desempenho alto sem montar uma torre grande, esse tipo de PC compacto é uma opção direta.",
+      "imagem": "https://www.adrenaline.com.br/wp-content/uploads/2026/07/gmktec-neo-x1-pro-pc-compacto-01.jpg",
+      "fonte_imagem": "ADRENALINE"
+    },
+    {
+      "tipo": "acao",
+      "selo": "O QUE FAZER",
+      "titulo": "Vale monitorar a linha.",
+      "destaque": "Espere preço oficial.",
+      "texto": "Se a GMKtec vender esse modelo no Brasil, vale comparar preço, garantia e concorrentes antes de comprar.",
+      "imagem": "https://www.adrenaline.com.br/wp-content/uploads/2025/02/cpu-z-fire-range-ryzen-9950hx3d.jpg",
+      "fonte_imagem": "ADRENALINE"
+    }
+  ],
+  "legenda": "A GMKtec apareceu com uma proposta forte no mercado de PCs compactos: Ryzen 9 9955HX3D e RTX 5070 em um gabinete de 14,6 litros. É uma combinação chamativa para quem quer desempenho alto sem ocupar espaço de torre tradicional. A confirmação editorial veio da Adrenaline, enquanto o Notebookcheck trouxe a leitura técnica do conjunto e das especificações citadas. Por enquanto, o mais importante é acompanhar preço, disponibilidade e possível chegada oficial ao Brasil antes de considerar compra. #GMKtec #RTX5070 #Ryzen9955HX3D #PCGamer #Hardware #Tech #Games #PromoLiso Acompanhe a PromoLiso para mais novidades e oportunidades reais.",
+  "recuperacao_midias_oficiais": true
+}

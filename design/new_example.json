@@ -1,0 +1,83 @@
+{
+  "aprovado_para_publicar": true,
+  "motivo_reprovacao": "",
+  "tema": "Nome objetivo do assunto",
+  "categoria": "NOTICIA",
+  "oferta": {
+    "produto": "",
+    "variante": "",
+    "loja": "",
+    "preco_atual": "",
+    "preco_referencia": "",
+    "condicao_pagamento": "",
+    "cupom": "",
+    "disponibilidade": "",
+    "url": ""
+  },
+  "fontes": [
+    {
+      "nome": "Fonte primária",
+      "url": "https://exemplo.com/noticia",
+      "data_publicacao": "2026-07-24"
+    },
+    {
+      "nome": "Segunda fonte",
+      "url": "https://exemplo.com/confirmacao",
+      "data_publicacao": "2026-07-24"
+    }
+  ],
+  "capa": "https://exemplo.com/imagem-oficial.jpg",
+  "slides": [
+    {
+      "tipo": "capa",
+      "selo": "BREAK NEWS",
+      "titulo": "TÍTULO PRINCIPAL.",
+      "destaque": "FATO EM DESTAQUE.",
+      "texto": "Resumo curto da pauta.",
+      "subtitulo": "Resumo do gancho em uma frase, sem cortar.",
+      "imagem": "https://exemplo.com/imagem-1.jpg",
+      "fonte_imagem": "FONTE OFICIAL"
+    },
+    {
+      "tipo": "contexto",
+      "selo": "O RETORNO",
+      "titulo": "O QUE ACONTECEU.",
+      "destaque": "CONTEXTO ESSENCIAL.",
+      "texto": "Explicação objetiva do acontecimento.",
+      "subtitulo": "O pano de fundo em uma linha.",
+      "imagem": "https://exemplo.com/imagem-2.jpg",
+      "fonte_imagem": "FONTE OFICIAL"
+    },
+    {
+      "tipo": "evidencia",
+      "selo": "CONFIRMADO",
+      "titulo": "O DADO PRINCIPAL.",
+      "destaque": "SEM ENROLAÇÃO.",
+      "texto": "Evidência acompanhada de contexto.",
+      "subtitulo": "O dado que sustenta a noticia.",
+      "imagem": "https://exemplo.com/imagem-3.jpg",
+      "fonte_imagem": "FONTE OFICIAL"
+    },
+    {
+      "tipo": "impacto",
+      "selo": "POR QUE IMPORTA",
+      "titulo": "O IMPACTO REAL.",
+      "destaque": "NA SUA DECISÃO.",
+      "texto": "Consequência prática para o seguidor.",
+      "subtitulo": "O efeito pratico pra quem acompanha.",
+      "imagem": "https://exemplo.com/imagem-4.jpg",
+      "fonte_imagem": "FONTE OFICIAL"
+    },
+    {
+      "tipo": "acao",
+      "selo": "O QUE FAZER",
+      "titulo": "PRÓXIMO PASSO.",
+      "destaque": "ANOTE OU APROVEITE.",
+      "texto": "Recomendação clara e verificável.",
+      "subtitulo": "O proximo passo, direto.",
+      "imagem": "https://exemplo.com/imagem-5.jpg",
+      "fonte_imagem": "FONTE OFICIAL"
+    }
+  ],
+  "legenda": "Legenda completa, sem Markdown, finalizada com hashtags."
+}

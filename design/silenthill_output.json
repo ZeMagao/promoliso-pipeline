@@ -1,0 +1,81 @@
+{
+ "aprovado_para_publicar": true,
+ "motivo_reprovacao": "",
+ "tema": "Silent Hill: Townfall",
+ "categoria": "NOTICIA",
+ "oferta": {
+  "produto": "",
+  "variante": "",
+  "loja": "",
+  "preco_atual": "",
+  "preco_referencia": "",
+  "condicao_pagamento": "",
+  "cupom": "",
+  "disponibilidade": "",
+  "url": ""
+ },
+ "fontes": [
+  {
+   "nome": "BLOG.PLAYSTATION.COM",
+   "url": "https://blog.playstation.com/2026/07/30/silent-hill-townfall-developers-discuss-the-scottish-setting-retro-technology-first-person-combat",
+   "data_publicacao": "2026-07-30"
+  }
+ ],
+ "capa": "https://live.staticflickr.com/65535/55426789530_e1f92a0f12_k.jpg",
+ "slides": [
+  {
+   "tipo": "capa",
+   "selo": "BREAK NEWS",
+   "titulo": "Silent Hill: Townfall.",
+   "destaque": "Sai em 24 de setembro.",
+   "texto": "Novo capítulo da série chega ao PS5 com foco em terror psicológico e proposta inédita para a franquia.",
+   "subtitulo": "A série ganha um novo capítulo com lançamento marcado para 24/09.",
+   "imagem": "https://live.staticflickr.com/65535/55426789530_e1f92a0f12_k.jpg",
+   "fonte_imagem": "PLAYSTATION BLOG"
+  },
+  {
+   "tipo": "contexto",
+   "selo": "O RETORNO",
+   "titulo": "O que foi revelado.",
+   "destaque": "Setting escocês e clima tenso.",
+   "texto": "A Konami e a Screen Burn Interactive detalharam a ambientação na Escócia, além de ideias ligadas a tecnologia.",
+   "subtitulo": "A proposta mistura horror clássico com novas escolhas de direção.",
+   "imagem": "https://live.staticflickr.com/65535/55425420942_268a7db5be_k.jpg",
+   "fonte_imagem": "PLAYSTATION BLOG"
+  },
+  {
+   "tipo": "evidencia",
+   "selo": "CONFIRMADO",
+   "titulo": "Lançamento em 24/09.",
+   "destaque": "Exclusivo no PS5.",
+   "texto": "O PlayStation Blog cravou a data de 24 de setembro para Silent Hill: Townfall, com apresentação da equipe.",
+   "subtitulo": "A data e a plataforma vieram no anúncio oficial.",
+   "imagem": "https://live.staticflickr.com/65535/55426789525_da9cf54805_k.jpg",
+   "fonte_imagem": "PLAYSTATION BLOG"
+  },
+  {
+   "tipo": "impacto",
+   "selo": "POR QUE IMPORTA",
+   "titulo": "É um novo rumo.",
+   "destaque": "Mais foco em tensão.",
+   "texto": "Para quem acompanha a franquia, o jogo chama atenção por ampliar a fórmula de Silent Hill com uma abordagem.",
+   "subtitulo": "Mudança importante para fãs e curiosos por terror.",
+   "imagem": "https://live.staticflickr.com/65535/55425420952_1dc270924d_k.jpg",
+   "fonte_imagem": "PLAYSTATION BLOG"
+  },
+  {
+   "tipo": "acao",
+   "selo": "O QUE FAZER",
+   "titulo": "Anote a data.",
+   "destaque": "Vale ficar de olho.",
+   "texto": "Se você curte survival horror, já deixe o lançamento no radar e acompanhe os próximos detalhes oficiais.",
+   "subtitulo": "O próximo passo é seguir os canais oficiais do jogo.",
+   "imagem": "https://live.staticflickr.com/65535/55426519633_589c30be47_k.jpg",
+   "fonte_imagem": "PLAYSTATION BLOG"
+  }
+ ],
+ "legenda": "Silent Hill: Townfall ganhou data e direção clara no PlayStation Blog: o jogo chega em 24 de setembro ao PS5, com ambientação na Escócia e proposta centrada em terror psicológico. É uma atualização importante para fãs da franquia e para quem gosta de survival horror com ideias novas. Fonte principal: PlayStation Blog. #SilentHill #PS5 #PlayStation #Konami #Terror #Games #PromoLiso Acompanhe a PromoLiso para mais notícias e oportunidades reais do mundo gamer.",
+ "candidates_curation_key": "https://blog.playstation.com/2026/07/30/silent-hill-townfall-developers-discuss-the-scottish-setting-retro-technology-first-person-combat",
+ "curadoria_id": 154,
+ "recuperacao_midias_oficiais": true
+}

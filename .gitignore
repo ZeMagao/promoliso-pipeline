@@ -40,6 +40,13 @@ design/capa_*.html
 design/ver_capas.html
 design/*.json
 design/newversion.txt
+# ...menos as amostras que os harnesses e previews CONSOMEM. Sem elas versionadas, nada em
+# design/ roda fora desta maquina — foi preciso copiar as tres na mao pro VPS em 11/08 so pra
+# rodar o harness la. Sao ~3,7 KB cada, saida editorial de execucao real, sem credencial.
+!design/exec87_output.json
+!design/silenthill_output.json
+!design/stress_output.json
+!design/new_example.json
 
 # Arquivo local (one-shots já aplicados, guardados como histórico; não versionar)
 _arquivo/
