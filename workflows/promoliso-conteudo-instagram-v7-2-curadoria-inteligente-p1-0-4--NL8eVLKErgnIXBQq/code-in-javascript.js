@@ -230,7 +230,7 @@ function buildSlide(slide){
 }
 
 // ---------- CAPA ----------
-const CAPA_MIN_W = 1000, CAPA_MIN_H = 800;
+const CAPA_MIN_W = 1000, CAPA_MIN_H = 675;
 
 function capaImg(source){
   // e_trim tira a tarja preta do screenshot cinematográfico ANTES do corte. Sem ele o recorte

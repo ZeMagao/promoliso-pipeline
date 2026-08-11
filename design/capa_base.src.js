@@ -19,11 +19,26 @@
 // são avaliados no servidor dele, então o gate sai de graça: nenhum nó novo, nenhuma requisição a
 // mais, nenhuma dimensão pra adivinhar aqui dentro.
 //
-// O corte: com 1000x800 o recorte 4:5 aproveita 640x800 e sobe pra 1080x1350 — 1,69x de ampliação,
-// que o e_sharpen ainda segura. Abaixo disso a foto NÃO é recusada (recusar custaria a pauta) —
-// ela cai pro ramo c_pad: aparece contida, no tamanho real, ancorada no topo, com o resto da tela
-// preenchido pela cor de fundo da marca. Fica menor, mas nunca esticada.
-const CAPA_MIN_W = 1000, CAPA_MIN_H = 800;
+// O corte foi MEDIDO, não chutado (a primeira versão usava ih>=800 por estimativa e a primeira
+// capa real reprovou). 60 URLs candidatas dos últimos 40 registros de curadoria, dimensões
+// consultadas no próprio Cloudinary:
+//
+//     ih>=900 -> 10%      ih>=720 -> 18%      ih>=600 -> 33%
+//     ih>=800 -> 17%      ih>=675 -> 30%
+//
+// O degrau está em 675 porque é onde 1200x675 entra — o formato mais comum de imagem de matéria.
+// Custo: o recorte 4:5 aproveita 540x675 e sobe 2,00x até 1080x1350, que o e_sharpen segura.
+//
+// Abaixo do piso a foto NÃO é recusada (recusar custaria a pauta) — ela cai pro ramo c_pad:
+// aparece contida, no tamanho real, ancorada no topo, com o resto preenchido pela cor da marca.
+// Fica menor, mas nunca esticada.
+//
+// A gravidade é g_auto e continua assim por medição: g_auto e g_auto:faces devolvem bytes
+// IDÊNTICOS nas fotos de teste e g_auto:subject só difere em retrato — nesta conta os modos
+// extras não fazem nada. O controle g_center corta o assunto pela metade, o que confirma que o
+// g_auto de fato busca o assunto. Limite conhecido: imagem que é GRÁFICO não sobrevive a recorte
+// 4:5 com gravidade nenhuma; o caminho seria fundo borrado (prototipado, não adotado).
+const CAPA_MIN_W = 1000, CAPA_MIN_H = 675;
 
 function capaImg(source){
   // e_trim tira a tarja preta do screenshot cinematográfico ANTES do corte. Sem ele o recorte
