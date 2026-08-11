@@ -37,7 +37,8 @@ design/*.jpg
 design/*.png
 design/preview.html
 design/capa_*.html
-design/ver_capas.html
+# paginas de comparacao geradas: MB de imagem embutida em base64, regeneraveis pelo .cjs ao lado
+design/ver_*.html
 design/*.json
 design/newversion.txt
 # ...menos as amostras que os harnesses e previews CONSOMEM. Sem elas versionadas, nada em
@@ -47,6 +48,8 @@ design/newversion.txt
 !design/silenthill_output.json
 !design/stress_output.json
 !design/new_example.json
+# saida editorial real da row 36 (exec 261): e a amostra do harness do piso 675 e dos mocks
+!design/row36_output.json
 
 # Arquivo local (one-shots já aplicados, guardados como histórico; não versionar)
 _arquivo/
