@@ -230,6 +230,15 @@ então não existe senha duplicada em nenhum arquivo. Usa o `nodemailer` que já
 
 ## Gotchas
 
+- **`--dry` no Windows não vale nada** (11/08/2026). O n8n local foi aposentado em 05/08 e o banco
+  que ficou lá parou em `updatedAt = 2026-08-04 22:33` — uma semana e seis deploys atrás. Um
+  dry-run contra ele responde com confiança sobre código que não existe mais, **nos dois sentidos**:
+  em 11/08 três dry-runs locais passaram só porque os nós que tocavam por acaso não tinham mudado,
+  e o patch do fallback abortou com "esperava 1 RE_FETCH e achei 0" quando produção tinha a linha.
+  O banco foi renomeado pra `OBSOLETO-2026-08-04.database.sqlite` justamente pra que os 36 scripts
+  que o abrem falhem alto em vez de mentir; ver `data/.n8n/LEIA-ANTES-DE-RODAR-PATCH.md`. Dry-run
+  confiável é `sudo -u promo node design/patch_*.cjs --dry` no VPS — que é o passo 2 do
+  `deploy-vps.sh`, então na prática basta usar ele e ler a saída.
 - **Dois fusos no mesmo banco.** O n8n grava `execution_entity.startedAt/stoppedAt` e
   `data_table_*.published_at` em **UTC**; nossos `patch_*.cjs` gravam `workflow_entity.updatedAt` e
   `workflow_history.createdAt` em **hora local** (o `now()` deles usa `getHours()`). Comparar os

@@ -105,6 +105,15 @@ if (require.main !== module) return;
 
 const sqlite3 = require('sqlite3');
 const DB = path.join(__dirname, '..', 'data', '.n8n', 'database.sqlite');
+// Sem isto o erro é um SQLITE_CANTOPEN cru, que não diz o principal: rodar patch fora do VPS
+// valida contra um snapshot de 04/08 e responde com confiança sobre código que não existe mais.
+if (!fs.existsSync(DB)) {
+  console.error('FAIL  banco do n8n não existe aqui: ' + DB
+    + '\n      Esta máquina não é mais fonte de verdade (n8n do Windows aposentado em 05/08).'
+    + '\n      Ver data/.n8n/LEIA-ANTES-DE-RODAR-PATCH.md.'
+    + '\n      Rode no VPS:  cd /opt/promoliso && sudo -u promo node ' + path.posix.join('design', path.basename(__filename)) + ' --dry');
+  process.exit(1);
+}
 const DRY = process.argv.includes('--dry');
 const db = new sqlite3.Database(DB, DRY ? sqlite3.OPEN_READONLY : sqlite3.OPEN_READWRITE);
 const get = (q, p) => new Promise((r, j) => db.get(q, p || [], (e, x) => (e ? j(e) : r(x))));
