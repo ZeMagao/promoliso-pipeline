@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "8193cedf-9680-4810-90ff-9e9e0af6f5e9",
-  "activeVersionId": "8193cedf-9680-4810-90ff-9e9e0af6f5e9",
+  "versionId": "303ad559-137a-4e15-a683-9fe056b5bda0",
+  "activeVersionId": "303ad559-137a-4e15-a683-9fe056b5bda0",
   "draft_igual_publicado": true,
   "total_nos": 117,
   "nos": [
@@ -673,7 +673,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "usar-capa-como-fallback.js",
-      "linhas": 85
+      "linhas": 91
     },
     {
       "nome": "Validar antes de publicar",
