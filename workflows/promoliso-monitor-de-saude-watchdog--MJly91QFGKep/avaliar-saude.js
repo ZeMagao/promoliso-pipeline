@@ -14,10 +14,23 @@ const recent = cur.filter((r) => { const t = tsOf(r); return t && (now - t) <= W
 const RUN_SPAN = 20 * 60 * 1000;
 const maxT = recent.reduce((m, r) => Math.max(m, tsOf(r) || 0), 0);
 const lastRun = maxT ? recent.filter((r) => (tsOf(r) || 0) >= maxT - RUN_SPAN) : [];
-const blob = (r) => [r.erro_processamento, r.resposta_bruta_ia, r.resultados_dos_agentes, r.status_processamento, r.motivo, r.alertas]
+// Campos que de fato carregam erro. As colunas resposta_bruta_ia e resultados_dos_agentes ficam
+// de FORA daqui: elas guardam a pagina raspada inteira (56 KB de HTML no caso que quebrou), e
+// procurar "429" ali casa com coordenada de SVG, preco, dimensao, ID.
+const campoErro = (r) => [r.erro_processamento, r.alertas, r.status_processamento, r.motivo]
   .map((x) => String(x || '')).join(' ');
-const rateRe = /rate.?limit|insufficient_quota|\bquota\b|exceeded your current quota|\b429\b|too many requests/i;
-const comRate = lastRun.filter((r) => rateRe.test(blob(r)));
+const payloadCru = (r) => [r.resposta_bruta_ia, r.resultados_dos_agentes]
+  .map((x) => String(x || '')).join(' ');
+// So descemos no payload cru quando o registro esta REALMENTE em erro: ai o ruido de HTML nao
+// importa, porque o registro ja e um problema por outro motivo.
+const emErro = (r) => /erro|falha|fail/i.test(String(r.status_processamento || ''))
+  || String(r.erro_processamento || '').trim() !== '';
+const blob = (r) => emErro(r) ? campoErro(r) + ' ' + payloadCru(r) : campoErro(r);
+// Expressoes que so aparecem em mensagem de API valem em qualquer lugar. O 429 solto e ambiguo
+// demais (em 11/08 casou com um path de SVG: "-.429.197") e passa a valer so nos campos de erro.
+const rateRe = /rate.?limit|insufficient_quota|exceeded your current quota|too many requests/i;
+const re429 = /\b429\b/;
+const comRate = lastRun.filter((r) => rateRe.test(blob(r)) || (emErro(r) && re429.test(campoErro(r))));
 
 const fila = $('Ler fila').all().map((i) => i.json);
 const pubs = fila.filter((r) => String(r.status || '').toUpperCase() === 'PUBLISHED');
