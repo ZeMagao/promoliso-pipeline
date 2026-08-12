@@ -1,0 +1,14 @@
+# Amostra REAL de URLs de imagem colhidas da tabela de curadoria em 12/08/2026.
+# Uma por combinacao (host, conjunto de parametros) -- e o formato que importa, nao o volume.
+# Usada por design/test_upgrade_imagem.cjs e design/medir_upgrade_imagem.cjs.
+https://blog.playstation.com/tachyon/2026/08/0c2cfaca934e2c0fd508a60249d6f6d706c09b9c-scaled.jpg?resize=2560%2C1440&zoom=0.19
+https://blog.playstation.com/tachyon/2026/08/0e6a0998485e155610938ae55517244aa6e5ae9d.jpg?fit=1024%2C1024
+https://blog.playstation.com/tachyon/2026/08/0e6a0998485e155610938ae55517244aa6e5ae9d.jpg?fit=1024%2C576&zoom=0.25
+https://cdn11.bigcommerce.com/s-3b5vpig99v/images/stencil/1280x1280/products/669691/1532555/cinderella-resourceful-traveler-155__90403.1777322487.jpg?c=2
+https://i.ytimg.com/vi/2bQrrWCRkMY/default.jpg
+https://i0.wp.com/mundopauta.com.br/wp-content/uploads/2020/06/card-5.jpg?resize=265%2C370&ssl=1
+https://preview.redd.it/multiverso-de-mickey-mouse-v0-ltj9frlb1wh81.jpg?width=640&crop=smart&auto=webp&s=0f03f6d73fb4263ba87d8e4819fe82e4c6a5e99c
+https://www.adrenaline.com.br/wp-content/uploads/2023/04/cult-of-the-lamb-espada-chamada-1029x642.jpg
+https://www.gamevicio.com/wp-content/uploads/2025/08/James-Bond-1024x554.jpg
+https://www.gizmochina.com/wp-content/uploads/2026/08/BenQ-MOBIUZ-EX271QMZ-1-1024x576.jpeg?x23692
+https://xboxwire.thesourcemediaassets.com/sites/2/2026/08/20260728-GoW-Charging-dock-with-BG-4-229733a95513f8e8b4fe-1024x683.jpg

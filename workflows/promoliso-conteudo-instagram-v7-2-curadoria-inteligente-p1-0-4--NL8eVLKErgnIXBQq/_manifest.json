@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "09b70099-cf0c-4fbc-b247-2d2e317d6b5f",
-  "activeVersionId": "09b70099-cf0c-4fbc-b247-2d2e317d6b5f",
+  "versionId": "3a39b208-c5f2-4e8d-a2fc-7da8964b7a65",
+  "activeVersionId": "3a39b208-c5f2-4e8d-a2fc-7da8964b7a65",
   "draft_igual_publicado": true,
   "total_nos": 117,
   "nos": [
@@ -396,7 +396,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "normalizar-noticias-promoliso-ai.js",
-      "linhas": 288
+      "linhas": 306
     },
     {
       "nome": "Obter noticias",

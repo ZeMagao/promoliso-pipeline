@@ -92,6 +92,24 @@ function directImageUrl(value) {
   return raw.slice(0, 2048);
 }
 
+const PARAMS_DE_TAMANHO = new Set([
+  'fit', 'resize', 'w', 'width', 'h', 'height', 'size', 'quality', 'q', 'crop',
+  'strip', 'zoom', 'ssl', 'auto', 'format', 'fm', 'dpr', 'cs', 'compress', 'fill',
+]);
+
+function semRedimensionar(url) {
+  const u = String(url || '');
+  if (!u) return u;
+  const corte = u.indexOf('?');
+  if (corte < 0) return u;
+  const consulta = u.slice(corte + 1).split('#')[0];
+  if (!consulta) return u;
+  const chaves = consulta.split('&').filter(Boolean).map((par) => par.split('=')[0].toLowerCase());
+  if (!chaves.length) return u;
+  if (chaves.some((k) => !PARAMS_DE_TAMANHO.has(k))) return u;   // pode ser assinatura: não mexe
+  return u.slice(0, corte);
+}
+
 function collectOfficialImages(item, sourceDomain) {
   const officialCdnDomains = {
     'news.xbox.com': ['xboxwire.thesourcemediaassets.com'],
@@ -131,7 +149,7 @@ function collectOfficialImages(item, sourceDomain) {
   const unique = [];
   const seen = new Set();
   for (const value of values) {
-    const direct = directImageUrl(value);
+    const direct = semRedimensionar(directImageUrl(value));
     if (!direct) continue;
     const hostMatch = direct.match(/^https:\/\/([^/?#]+)/i);
     const host = String(hostMatch?.[1] || '')
