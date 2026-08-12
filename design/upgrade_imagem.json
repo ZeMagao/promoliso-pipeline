@@ -1,0 +1,191 @@
+{
+  "medido_em": "2026-08-12",
+  "amostra": 142,
+  "hosts": 9,
+  "contas": {
+    "sem_query": 105,
+    "intocavel": 6,
+    "maior": 29,
+    "igual": 2,
+    "menor": 0,
+    "quebrou": 0,
+    "ilegivel": 0
+  },
+  "ganhos": [
+    {
+      "host": "blog.playstation.com",
+      "de": "486x274",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "614x346",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "794x446",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "947x533",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1178x662",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1459x821",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1920x1080",
+      "para": "2560x1440",
+      "tirou": "resize,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1024x576",
+      "para": "1920x1080",
+      "tirou": "fit"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "256x144",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "327x184",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "420x236",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "501x282",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "624x351",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "768x432",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1013x570",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1024x576",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1024x576",
+      "para": "1920x1080",
+      "tirou": "fit"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "256x144",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "327x184",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "420x236",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "501x282",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "624x351",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "768x432",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1013x570",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1024x576",
+      "para": "1920x1080",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "1024x576",
+      "para": "2560x1440",
+      "tirou": "fit"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "194x109",
+      "para": "2560x1440",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "245x138",
+      "para": "2560x1440",
+      "tirou": "fit,zoom"
+    },
+    {
+      "host": "blog.playstation.com",
+      "de": "317x178",
+      "para": "2560x1440",
+      "tirou": "fit,zoom"
+    }
+  ],
+  "quebras": []
+}

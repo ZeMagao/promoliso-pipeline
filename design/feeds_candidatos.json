@@ -1,0 +1,203 @@
+{
+  "testado_em": "2026-08-12",
+  "resultados": [
+    {
+      "nome": "Promobit",
+      "url": "https://www.promobit.com.br/blog/feed/",
+      "itens": 10,
+      "idadeH": 892,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Pelando",
+      "url": "https://www.pelando.com.br/rss",
+      "erro": "http 404"
+    },
+    {
+      "nome": "Hardmob promoções",
+      "url": "https://www.hardmob.com.br/external.php?type=RSS2&forumids=248",
+      "erro": "http 403"
+    },
+    {
+      "nome": "Steam News",
+      "url": "https://store.steampowered.com/feeds/news.xml",
+      "itens": 20,
+      "idadeH": 650,
+      "pctImagem": 5,
+      "pctHtml": 100
+    },
+    {
+      "nome": "GG.deals",
+      "url": "https://gg.deals/news/feed/",
+      "itens": 24,
+      "idadeH": 2,
+      "pctImagem": 100,
+      "pctHtml": 0
+    },
+    {
+      "nome": "Promobit (raiz)",
+      "url": "https://www.promobit.com.br/feed/",
+      "erro": "http 404"
+    },
+    {
+      "nome": "Nuuvem",
+      "url": "https://www.nuuvem.com/br-pt/feed",
+      "erro": "http 404"
+    },
+    {
+      "nome": "The Enemy",
+      "url": "https://www.theenemy.com.br/feed",
+      "erro": "fetch failed"
+    },
+    {
+      "nome": "Voxel (TecMundo games)",
+      "url": "https://www.voxel.com.br/rss",
+      "erro": "http 404"
+    },
+    {
+      "nome": "TecMundo",
+      "url": "https://www.tecmundo.com.br/rss",
+      "erro": "não é RSS (veio HTML?)"
+    },
+    {
+      "nome": "Canaltech",
+      "url": "https://canaltech.com.br/rss/",
+      "itens": 50,
+      "idadeH": 0,
+      "pctImagem": 76,
+      "pctHtml": 0
+    },
+    {
+      "nome": "Olhar Digital",
+      "url": "https://olhardigital.com.br/feed/",
+      "itens": 10,
+      "idadeH": 1,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "MeUPS",
+      "url": "https://meups.com.br/feed/",
+      "itens": 20,
+      "idadeH": 1,
+      "pctImagem": 20,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Arkade",
+      "url": "https://arkade.com.br/feed/",
+      "itens": 10,
+      "idadeH": 293,
+      "pctImagem": 100,
+      "pctHtml": 0
+    },
+    {
+      "nome": "Combo Infinito",
+      "url": "https://comboinfinito.com.br/feed/",
+      "erro": "http 404"
+    },
+    {
+      "nome": "GameHall",
+      "url": "https://gamehall.com.br/feed/",
+      "itens": 10,
+      "idadeH": 4,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "ND Games",
+      "url": "https://www.ndgames.com.br/feed/",
+      "itens": 10,
+      "idadeH": 7,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Drops de Jogos",
+      "url": "https://dropsdejogos.uai.com.br/feed/",
+      "itens": 12,
+      "idadeH": 5,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "IGN Brasil",
+      "url": "https://br.ign.com/feed.xml",
+      "itens": 40,
+      "idadeH": 4,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Nintendo Blast",
+      "url": "https://www.nintendoblast.com.br/feeds/posts/default?alt=rss",
+      "itens": 25,
+      "idadeH": 1,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "GameBlast",
+      "url": "https://www.gameblast.com.br/feeds/posts/default?alt=rss",
+      "itens": 25,
+      "idadeH": 0,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Tecnoblog",
+      "url": "https://tecnoblog.net/feed/",
+      "itens": 50,
+      "idadeH": 1,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Mundo Conectado",
+      "url": "https://mundoconectado.com.br/feed",
+      "itens": 10,
+      "idadeH": 0,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Game Rant (EN)",
+      "url": "https://gamerant.com/feed/",
+      "itens": 10,
+      "idadeH": 0,
+      "pctImagem": 100,
+      "pctHtml": 100
+    },
+    {
+      "nome": "Terra Games",
+      "url": "https://www.terra.com.br/rss/games.xml",
+      "erro": "http 404"
+    },
+    {
+      "nome": "TudoCelular",
+      "url": "https://www.tudocelular.com/rss.xml",
+      "erro": "http 404"
+    },
+    {
+      "nome": "IGN BR (alt)",
+      "url": "https://br.ign.com/rss/feed.xml",
+      "erro": "http 404"
+    },
+    {
+      "nome": "AMD Gaming",
+      "url": "https://www.amd.com/en/newsroom/press-releases.rss",
+      "erro": "fetch failed"
+    },
+    {
+      "nome": "Epic Games",
+      "url": "https://store.epicgames.com/pt-BR/news",
+      "erro": "http 403"
+    },
+    {
+      "nome": "Nintendo BR",
+      "url": "https://www.nintendo.com/pt-br/whatsnew/rss/",
+      "erro": "http 404"
+    }
+  ]
+}
