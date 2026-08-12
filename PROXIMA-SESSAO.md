@@ -1,5 +1,10 @@
 # Próxima sessão — checklist
 
+> **12/08/2026 — o trabalho corrente é a evolução editorial dos carrosséis (PRD + SDD).**
+> A auditoria (Fase 1) está feita; o plano passo a passo, as armadilhas medidas e as decisões em
+> aberto estão em **`docs/PLANO-CARROSSEL-EDITORIAL.md`**. Comece por lá, não por este arquivo —
+> o conteúdo abaixo é da migração pro VPS, já concluída.
+
 Migração pro VPS **concluída e validada** em 2026-08-05, e as 4 pendências de infra **fechadas**.
 Operação: **`OPERACAO-VPS.md`**. Repo: https://github.com/ZeMagao/promoliso-n8n (privado).
 
