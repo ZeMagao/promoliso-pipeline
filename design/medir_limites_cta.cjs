@@ -268,18 +268,63 @@ const cabe = (m) => Boolean(m && !m.erro && m.R1 && m.R2 && m.R3);
       mascote_tinta: mDefault.mascote,
       candidato_do_validador: LIMITES_VALIDADOR,
       maximo_isolado: achados,
-      limite_adotado: combinado,
+      limite_adotado: LIM_REAL,
+      combinacao_encontrada_pela_busca: combinado,
       observacao: 'candidato_do_validador sao os LIMITES que os outros slides ja usam (fonte unica, '
         + 'lida de validar-antes-de-publicar.js). maximo_isolado e o teto de cada campo com os outros '
-        + 'no default. limite_adotado = min(candidato, isolado), ainda encolhido ate o PIOR CASO caber '
-        + '(todos no teto ao mesmo tempo). O render usa limite_adotado.',
+        + 'no default. NAO EXISTE combinacao unica: os campos dividem a altura, entao destaque 38 + '
+        + 'texto 250 e destaque 19 + texto 300 sao as duas validas. combinacao_encontrada_pela_busca '
+        + 'e a que a busca acha partindo do candidato; limite_adotado e a que o CTA_LIM do render usa '
+        + '(destaque de 1 linha: a strip e um botao, 2 linhas ficam feias) e e provada a parte pelo '
+        + 'teste de corte no fim do script.',
     };
     fs.writeFileSync(path.join(__dirname, 'limites_cta.json'), JSON.stringify(saida, null, 2) + '\n');
     console.log('\ngravado design/limites_cta.json');
-    console.log('CTA_LIM no src.js  = ' + JSON.stringify(LIM_REAL));
-    console.log('CTA_LIM medido     = ' + JSON.stringify(combinado));
-    if (JSON.stringify(LIM_REAL) !== JSON.stringify(combinado)) {
-      console.log('\nATENCAO: divergem. Ajuste o CTA_LIM em design/cta_contextual.src.js.');
+    console.log('CTA_LIM adotado no src.js = ' + JSON.stringify(LIM_REAL));
+    console.log('combinacao da busca       = ' + JSON.stringify(combinado));
+    // Divergir aqui NÃO é erro: os campos dividem a altura, então há mais de uma combinação válida.
+    // Erro é o adotado passar do teto ISOLADO de um campo — aí nem sozinho ele cabe.
+    for (const c of CAMPOS) {
+      if (LIM_REAL[c] > achados[c]) {
+        console.error(`FAIL  CTA_LIM.${c}=${LIM_REAL[c]} passa do teto isolado medido (${achados[c]})`);
+        await b.close(); process.exit(1);
+      }
+    }
+    console.log('(o adotado cabe em todos os tetos isolados; o pior caso dele é provado no teste de corte abaixo)');
+  }
+
+  // ---- O RENDER NÃO PODE MUDAR HOJE, e "byte a byte" não prova isso: o buildCta novo tem duas
+  // travas de CSS (overflow-wrap e max-width na strip) que o de hoje não tem. Elas não mexem no
+  // texto institucional — mas quem garante é o PIXEL, não a string. Aqui compara-se a foto.
+  {
+    const cru = fs.readFileSync(path.join(WFDIR, 'code-in-javascript.js'), 'utf8');
+    const foto = async (code) => {
+      await page.setContent(htmlDo(code, { tipo: 'cta', pagina: 6, total: 6 }), { waitUntil: 'load' });
+      await page.addStyleTag({ content: 'html,body{margin:0;padding:0;}' });
+      await page.evaluate(() => document.fonts.ready);
+      return page.screenshot();
+    };
+    const a = await foto(cru), b2 = await foto(comCta);
+    const iguais = a.equals(b2);
+    console.log(`render do CTA padrão: ${iguais ? 'PIXEL A PIXEL IGUAL ao de hoje' : 'MUDOU — investigar antes de deployar'}`);
+    if (!iguais) { await b.close(); process.exit(1); }
+  }
+
+  // ---- Adversário: contagem de caractere é proxy ruim de pixel. Estes casos existem porque a
+  // primeira versão do corte deixava passar 753 px de strip (19 letras "W") e 8567 px de corpo
+  // (token sem espaço, tipo uma URL). As travas de CSS fecharam os dois.
+  {
+    const CASOS = {
+      'destaque de hoje (13)': { destaque: 'LINK NA BIO ↗' },
+      'destaque largo (19 W/M)': { destaque: 'WHATSAPP MMM WWW W' },
+      'destaque patológico (19 W)': { destaque: 'WWWWWWWWWWWWWWWWWWW' },
+      'corpo com URL sem espaço': { texto: 'Acesse https://promoliso.com.br/ofertas-de-agosto-de-2026-com-cupom-exclusivo agora' },
+      'título de token único': { titulo: 'PROMOÇÃOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO' },
+    };
+    for (const [nome, campos] of Object.entries(CASOS)) {
+      const m = await medir(page, comCta, { tipo: 'cta', pagina: 6, total: 6, ...campos });
+      console.log(`${cabe(m) ? 'ok     ' : 'ESTOURA'} ${nome.padEnd(28)} bottom=${m.bottom} maiorX=${m.maiorX}`);
+      if (!cabe(m)) { await b.close(); process.exit(1); }
     }
   }
 

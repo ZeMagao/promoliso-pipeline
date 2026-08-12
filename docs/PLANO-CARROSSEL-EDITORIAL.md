@@ -156,7 +156,27 @@ Três coisas que a medição ensinou e que valem para os tipos novos (passo 3):
    destaque mediu 575 px onde a string crua de 20 mediu 563 — e 575 encosta no mascote. O limite só
    vale depois de provado **contra a saída do próprio corte**.
 
+4. **Contagem de caractere é proxy ruim de pixel — e por isso limite sozinho não basta.** Auditando
+   a própria régua: 19 letras "W" no destaque mediam **753 px** (contra 556 de um destaque largo
+   realista) e um token sem espaço no corpo — uma URL — media **8567 px**, porque nada quebrava a
+   linha. Foram duas travas de CSS no `buildCta`, que viram **garantia de estrutura**:
+   `overflow-wrap:anywhere` no bloco e `max-width:496px` na linha da strip (72+496 = 568, a folga
+   dos 12 px do mascote). Com elas a strip não alcança o mascote com conteúdo nenhum. O que
+   continua sendo aposta é a ALTURA: 300 caracteres de prosa dão 1287 px de bloco, 300 letras "W"
+   dão 1959 — quem tem que recusar isso é o validador (passo 5).
+5. **Não existe combinação única.** Os campos dividem a altura: `destaque 38 + texto 250` e
+   `destaque 19 + texto 300` são as duas válidas. O código adota a segunda (a strip é um botão; com
+   38 ela vira duas linhas). Por isso `limites_cta.json` grava as duas, e a régua só reprova se o
+   adotado passar do teto **isolado** de algum campo.
+
 Falta: os limites dos tipos novos (timeline, dado, lista), que só existem depois do passo 3.
+
+**Fidelidade da régua local, verificada (não assumida):** comparando o slide 06 renderizado em
+produção (`design/audit_slide6.jpg`, Chrome do VPS) com o render local, as faixas de tinta batem
+dentro de **1 px** em tudo que usa a fonte embutida. Diverge só onde o texto usa a fonte do
+sistema: o `@promoliso0` sai 7 px mais baixo e 14 px mais largo aqui (Arial no Windows vs Liberation
+Sans no Linux). A folga de R3 é 15 px e a strip — o elemento que importa — divergiu 5 px. A régua
+transfere, com essa ressalva escrita.
 
 ---
 
@@ -182,10 +202,16 @@ quando vierem vazios, **escapa o corpo com `esc()`** (era interpolado cru, ou se
 entraria no slide) e corta cada campo no limite medido. O `Edit Fields` para de mandar os quatro
 campos mortos e passa a espalhar `output.cta`.
 
-**Hoje não muda nada, e isso é provado:** enquanto o agente não gerar `output.cta`, o spread é
-`{}`, os defaults valem e o HTML do slide 06 sai **byte a byte** igual ao de agora — o harness
-compara o código velho com o slide velho contra o código novo com o slide novo. Quem liga a
-capacidade é o passo 4 (prompt), não este patch.
+**Hoje não muda nada, e isso é provado duas vezes:** enquanto o agente não gerar `output.cta`, o
+spread é `{}` e os defaults valem. O harness compara o código velho + slide velho contra o código
+novo + slide novo e o HTML é igual **fora as duas travas de CSS**; e `medir_limites_cta.cjs` tira
+foto dos dois e compara **pixel a pixel**. Quem liga a capacidade é o passo 4 (prompt), não este
+patch.
+
+Verificado também, porque era o risco herdado de 05/08: o **spread `...(output.cta || {})` roda no
+motor de expressão do n8n** (testado contra o `@n8n/tournament` 1.6.0 instalado, não presumido). E
+nenhum outro nó lê os 4 campos que saem do `Edit Fields` — o único consumidor de `$('Edit Fields')`
+é o `Fila: montar row`, e só pela `legenda`.
 
 Fica cravado de propósito: `@promoliso0` (identidade da conta) e o mascote. De carona, o
 `tabPage('06', total)` cravado virou `slide.pagina` — hoje dá exatamente `'06'` e deixa de mentir

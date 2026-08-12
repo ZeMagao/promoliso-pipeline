@@ -96,10 +96,19 @@ if (efDepois) {
     && ctaDepois.capaFallback === output.capa);
 
   // ---- 3. O TESTE QUE IMPORTA: hoje não muda ----
+  // O HTML novo tem duas travas de CSS a mais (overflow-wrap e max-width na strip), então "byte a
+  // byte" não é o teste certo — o certo é: fora essas duas, o HTML é o mesmo, e o PIXEL é o mesmo.
+  // A prova de pixel mora em design/medir_limites_cta.cjs, que precisa de browser.
   const htmlHoje = htmlDo(antigo, ctaAntes);      // código de hoje, slide de hoje
   const htmlNovo = htmlDo(novo, ctaDepois);       // código novo, slide novo
-  ok('slide 06 sai IDÊNTICO ao de hoje', htmlHoje === htmlNovo,
-    htmlHoje === htmlNovo ? '' : 'primeiro diff em ' + [...htmlHoje].findIndex((c, i) => c !== htmlNovo[i]));
+  const TRAVAS = ['overflow-wrap:anywhere;', 'max-width:496px;'];
+  let semTravas = htmlNovo;
+  for (const t of TRAVAS) {
+    ok(`trava de CSS presente: ${t}`, semTravas.includes(t));
+    semTravas = semTravas.replace(t, '');
+  }
+  ok('fora as travas, o slide 06 é IDÊNTICO ao de hoje', htmlHoje === semTravas,
+    htmlHoje === semTravas ? '' : 'primeiro diff em ' + [...htmlHoje].findIndex((c, i) => c !== semTravas[i]));
 
   // ---- 4. a capacidade existe: com output.cta, o texto do agente aparece ----
   const comCta = avaliarEditFields(efDepois, {
@@ -142,7 +151,10 @@ if (efDepois) {
   // titleMetal/stripDestaque/kickerChip sobem tudo pra caixa alta antes de escrever no HTML
   ok('campo vazio cai no texto institucional',
     vazio.includes('ENTRE NO GRUPO') && vazio.includes('LINK NA BIO') && vazio.includes('SÓ QUEM SEGUE'));
-  ok('vazio rende exatamente o HTML de hoje', vazio === htmlDo(antigo, { tipo: 'cta', pagina: 6, total: 6 }));
+  let vazioSemTravas = vazio;
+  for (const t of ['overflow-wrap:anywhere;', 'max-width:496px;']) vazioSemTravas = vazioSemTravas.replace(t, '');
+  ok('vazio rende exatamente o HTML de hoje (fora as travas)',
+    vazioSemTravas === htmlDo(antigo, { tipo: 'cta', pagina: 6, total: 6 }));
 
   const injecao = htmlDo(novo, { tipo: 'cta', pagina: 6, total: 6, texto: '<img src=x onerror=alert(1)>bom preço' });
   ok('corpo do agente é escapado', !injecao.includes('<img src=x') && injecao.includes('&lt;img'));

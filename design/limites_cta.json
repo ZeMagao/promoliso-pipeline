@@ -21,7 +21,7 @@
   "maximo_isolado": {
     "selo": 32,
     "titulo": 62,
-    "destaque": 22,
+    "destaque": 56,
     "texto": 450
   },
   "limite_adotado": {
@@ -30,5 +30,11 @@
     "destaque": 19,
     "texto": 300
   },
-  "observacao": "candidato_do_validador sao os LIMITES que os outros slides ja usam (fonte unica, lida de validar-antes-de-publicar.js). maximo_isolado e o teto de cada campo com os outros no default. limite_adotado = min(candidato, isolado), ainda encolhido ate o PIOR CASO caber (todos no teto ao mesmo tempo). O render usa limite_adotado."
+  "combinacao_encontrada_pela_busca": {
+    "selo": 22,
+    "titulo": 42,
+    "destaque": 38,
+    "texto": 250
+  },
+  "observacao": "candidato_do_validador sao os LIMITES que os outros slides ja usam (fonte unica, lida de validar-antes-de-publicar.js). maximo_isolado e o teto de cada campo com os outros no default. NAO EXISTE combinacao unica: os campos dividem a altura, entao destaque 38 + texto 250 e destaque 19 + texto 300 sao as duas validas. combinacao_encontrada_pela_busca e a que a busca acha partindo do candidato; limite_adotado e a que o CTA_LIM do render usa (destaque de 1 linha: a strip e um botao, 2 linhas ficam feias) e e provada a parte pelo teste de corte no fim do script."
 }
