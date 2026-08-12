@@ -42,23 +42,49 @@ function avaliarEditFields(expr, output) {
   return new Function('$', 'return (' + corpo + ');')($);
 }
 
-const antigo = fs.readFileSync(path.join(WFDIR, ARQUIVO['Code in JavaScript']), 'utf8');
-const novo = trocarRender(antigo, 'Code in JavaScript');
+// O export vira produção depois do deploy, então este harness precisa valer nos DOIS estados: antes
+// (prova que a troca aplica) e depois (prova que o que está no ar é o bloco versionado). Sem isso o
+// harness morre no primeiro deploy — foi assim que o do piso 675 teve que ser escrito.
+const ler = (f) => fs.readFileSync(path.join(WFDIR, f), 'utf8').split('\r\n').join('\n');
+const lf = (s) => String(s).split('\r\n').join('\n');
+const exportado = ler(ARQUIVO['Code in JavaScript']);
+const APLICADO = exportado.includes('function ctaCampo(');
+console.log(APLICADO ? '# export JÁ tem o CTA contextual — verificando o que está no ar'
+                     : '# export ainda tem o CTA antigo — verificando a troca');
 
-// ---- 1. o patch aplica nos dois nós, e só uma vez ----
-for (const nomeNo of ALVOS) {
-  const code = fs.readFileSync(path.join(WFDIR, ARQUIVO[nomeNo]), 'utf8');
-  let erro = null, saida = null;
-  try { saida = trocarRender(code, nomeNo); } catch (e) { erro = e.message; }
-  ok(`[${nomeNo}] o patch aplica (sha do buildCta bate)`, Boolean(saida), erro);
-  if (saida) {
-    ok(`[${nomeNo}] ctaCampo entrou`, saida.includes('function ctaCampo('));
+const BLOCO_ANTES = fs.readFileSync(path.join(__dirname, 'cta_antes.src.js'), 'utf8')
+  .split('\r\n').join('\n').replace(/^\/\/[^\n]*\n(?:\/\/[^\n]*\n|\n)*/, '').trim();
+ok('a cópia do buildCta antigo bate com o sha fixado no patch',
+  require('crypto').createHash('sha256').update(BLOCO_ANTES).digest('hex') === SHA_ANTIGO);
+
+let antigo, novo;
+if (APLICADO) {
+  for (const nomeNo of ALVOS) {
+    const code = ler(ARQUIVO[nomeNo]);
+    ok(`[${nomeNo}] no ar está exatamente o bloco versionado`, lf(code).includes(lf(NOVO)));
     let reErro = null;
-    try { trocarRender(saida, nomeNo); } catch (e) { reErro = e.message; }
+    try { trocarRender(code, nomeNo); } catch (e) { reErro = e.message; }
     ok(`[${nomeNo}] recusa reaplicação`, /já aplicado/.test(String(reErro)), reErro);
   }
+  novo = exportado;
+  antigo = exportado.split(lf(NOVO)).join(BLOCO_ANTES);
+  ok('consigo reconstruir o código de antes', antigo !== novo && antigo.includes('function buildCta('));
+} else {
+  antigo = exportado;
+  for (const nomeNo of ALVOS) {
+    const code = ler(ARQUIVO[nomeNo]);
+    let erro = null, saida = null;
+    try { saida = trocarRender(code, nomeNo); } catch (e) { erro = e.message; }
+    ok(`[${nomeNo}] o patch aplica (sha do buildCta bate)`, Boolean(saida), erro);
+    if (saida) {
+      ok(`[${nomeNo}] ctaCampo entrou`, saida.includes('function ctaCampo('));
+      let reErro = null;
+      try { trocarRender(saida, nomeNo); } catch (e) { reErro = e.message; }
+      ok(`[${nomeNo}] recusa reaplicação`, /já aplicado/.test(String(reErro)), reErro);
+    }
+  }
+  novo = trocarRender(antigo, 'Code in JavaScript');
 }
-ok('sha do buildCta em produção é o fixado no patch', /^[0-9a-f]{64}$/.test(SHA_ANTIGO));
 
 // ---- 2. o Edit Fields troca sem mexer no resto ----
 // O `Edit Fields` é um nó Set: o exportador não grava parâmetro de Set, então o valor não está em

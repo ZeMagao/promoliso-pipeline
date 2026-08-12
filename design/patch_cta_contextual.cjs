@@ -52,7 +52,11 @@ const SHA_ANTIGO = '065ce8406a3d78ee2d406547d5ecf5d44540bb523f09cafb490eb9318a88
 
 // o cabeçalho de comentário do .src.js explica a escolha pra quem lê o repo; dentro do nó só
 // atrapalha, então sai na hora de montar (mesma regra do patch_capa_fullbleed)
+// normaliza CRLF: o .src.js é editado no Windows e o jsCode do nó (gerado no Linux) é LF. Sem isto
+// o bloco entra no banco com a quebra de linha do editor de quem deployou — inofensivo pro
+// JavaScript, mas faz o mesmo patch gerar bytes diferentes em máquinas diferentes.
 const semCabecalho = (f) => fs.readFileSync(path.join(__dirname, f), 'utf8')
+  .split('\r\n').join('\n')
   .replace(/^\/\/[^\n]*\n(?:\/\/[^\n]*\n|\n)*/, '')
   .trim();
 
