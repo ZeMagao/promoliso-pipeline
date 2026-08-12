@@ -50,6 +50,9 @@ design/newversion.txt
 !design/new_example.json
 # saida editorial real da row 36 (exec 261): e a amostra do harness do piso 675 e dos mocks
 !design/row36_output.json
+# limites MEDIDOS do CTA: nao e amostra, e resultado. O harness compara o CTA_LIM do codigo com
+# ele, e o passo 5 vai cita-lo no validador — sem versionar, o numero volta a ser chute.
+!design/limites_cta.json
 
 # Arquivo local (one-shots já aplicados, guardados como histórico; não versionar)
 _arquivo/

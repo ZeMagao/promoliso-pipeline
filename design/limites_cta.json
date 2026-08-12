@@ -1,0 +1,34 @@
+{
+  "medido_em": "2026-08-12",
+  "como": "design/medir_limites_cta.cjs — Edge headless, viewport 1080x1350, fontes carregadas",
+  "regras": {
+    "R1": "bloco termina até y=1290",
+    "R2": "nenhum conteúdo passa de x=610",
+    "R3": "nada chega a 12px da tinta do mascote (bbox de alfa, medida no canvas)"
+  },
+  "mascote_tinta": {
+    "left": 580,
+    "top": 819,
+    "right": 1094,
+    "bottom": 1350
+  },
+  "candidato_do_validador": {
+    "selo": 22,
+    "titulo": 42,
+    "destaque": 38,
+    "texto": 300
+  },
+  "maximo_isolado": {
+    "selo": 32,
+    "titulo": 62,
+    "destaque": 22,
+    "texto": 450
+  },
+  "limite_adotado": {
+    "selo": 22,
+    "titulo": 42,
+    "destaque": 19,
+    "texto": 300
+  },
+  "observacao": "candidato_do_validador sao os LIMITES que os outros slides ja usam (fonte unica, lida de validar-antes-de-publicar.js). maximo_isolado e o teto de cada campo com os outros no default. limite_adotado = min(candidato, isolado), ainda encolhido ate o PIOR CASO caber (todos no teto ao mesmo tempo). O render usa limite_adotado."
+}

@@ -3,8 +3,9 @@
 **Base:** PRD (11/08/2026) + SDD (12/08/2026) de melhoria dos carrosséis.
 **Auditoria (Fase 1):** feita em 12/08/2026. Este documento é o resultado dela — não refaça a
 descoberta, comece do passo 1.
-**Estado:** nada da camada editorial foi implementado. Um patch está pronto e **não deployado**
-(passo 0).
+**Estado (12/08, fim do dia):** nada foi deployado. Prontos e **não deployados**: passo 0
+(expressão de coleção) e passo 2 (CTA contextual). Passo 1 feito **para o CTA** — os outros tipos
+só têm limite depois que existirem (passo 3).
 
 ---
 
@@ -128,29 +129,76 @@ coleção estática de tamanhos diferentes. Mais nós, zero incógnita.
 
 **Vem primeiro porque trava o prompt e o validador.** O SDD proíbe copiar limite arbitrário.
 
-Hoje existem limites só para `selo` (22), `destaque` (38) e `subtitulo` (130). Não há teto para o
-corpo, nem nada para os tipos novos.
+**FEITO PARA O CTA (12/08).** `design/medir_limites_cta.cjs` mede na página (Edge headless, sem
+VPS) e grava `design/limites_cta.json`. Régua: R1 o bloco termina até y=1290; R2 nada passa de
+x=610 (fim da coluna); R3 nada chega a 12 px da **tinta** do mascote — bbox de alfa no canvas, não
+a caixa de 540×560.
 
-Como: `design/shot.cjs` renderiza local com Edge/Chrome, sem VPS. Montar cada tipo novo em três
-densidades (curto, médio, limite) e anotar onde estoura. Registrar os números num arquivo que o
-prompt e o validador vão citar.
+| campo | LIMITES do validador | teto isolado do CTA | adotado |
+|---|---|---|---|
+| selo | 22 | 32 | **22** |
+| titulo | 42 | 62 | **42** |
+| destaque | 38 | 22 | **19** |
+| texto | 300 | 450 | **300** |
 
-Entregável: tabela de limites por tipo, versionada.
+Ou seja: o CTA aguenta os mesmos limites dos outros slides, **menos o destaque**. A strip do
+destaque tem fonte 46 px e a tinta do mascote começa em x=580 — 22 caracteres já chegam a x=595 e
+encostam nele assim que o corpo empurra a strip para baixo de y=807.
+
+Três coisas que a medição ensinou e que valem para os tipos novos (passo 3):
+
+1. **Caixa não é tinta.** A primeira régua usou a caixa do mascote e devolveu limite de corpo (60)
+   **menor que o texto que já está no ar** (101). Limite abaixo do que já roda é assinatura de
+   régua errada, não de layout apertado.
+2. **Encolher o campo errado.** Com todos os campos no teto, quem viola é a strip; a primeira
+   versão do algoritmo cortava o corpo, que era inocente. A régua encolhe **quem viola**.
+3. **Caractere não é pixel.** O corte devolve `…` e para em fronteira de palavra: cortado em 20 o
+   destaque mediu 575 px onde a string crua de 20 mediu 563 — e 575 encosta no mascote. O limite só
+   vale depois de provado **contra a saída do próprio corte**.
+
+Falta: os limites dos tipos novos (timeline, dado, lista), que só existem depois do passo 3.
 
 ---
 
-### Passo 2 — CTA contextual (isolado, pode ir a qualquer momento)
+### Passo 2 — CTA contextual — **PRONTO, NÃO DEPLOYADO (12/08)**
 
 **A entrega com mais valor por menos risco.**
 
 O `Edit Fields` já injeta um slide `tipo:'cta'` com `titulo`, `destaque` e `texto` — e o
-`buildCta()` **ignora tudo isso**, renderizando texto literal próprio ("Entre no grupo de
-OFERTAS / LINK NA BIO"). Metade do RF-07 é só reconectar código que já está sendo passado.
+`buildCta()` **ignorava tudo isso**, renderizando texto literal próprio ("Entre no grupo de
+OFERTAS / LINK NA BIO"). Metade do RF-07 era só reconectar código que já estava sendo passado.
 
-Mudança: `buildCta()` lê `slide.titulo/destaque/texto`, caindo no texto atual quando vierem
-vazios. Depois, o agente passa a gerar esses campos.
+Arquivos:
 
-Arquivo: `Code in JavaScript` (nó), função `buildCta`.
+- `design/cta_contextual.src.js` — o `buildCta` novo (bloco versionado, igual ao da capa)
+- `design/patch_cta_contextual.cjs` — costura: acha o `buildCta` por marcador, confere o **sha256**
+  do que está em produção e troca nos dois nós; e tira os quatro campos mortos do `Edit Fields`
+- `design/test_cta_contextual.cjs` — 30 asserções, **todas verdes**
+- `design/medir_limites_cta.cjs`, `design/limites_cta.json` — a régua do passo 1
+- `design/shot_cta_{hoje,agente,limite}.png` — as três situações no olho
+
+O que muda: `buildCta()` lê `selo/titulo/destaque/texto` do slide, cai no texto institucional
+quando vierem vazios, **escapa o corpo com `esc()`** (era interpolado cru, ou seja, HTML do agente
+entraria no slide) e corta cada campo no limite medido. O `Edit Fields` para de mandar os quatro
+campos mortos e passa a espalhar `output.cta`.
+
+**Hoje não muda nada, e isso é provado:** enquanto o agente não gerar `output.cta`, o spread é
+`{}`, os defaults valem e o HTML do slide 06 sai **byte a byte** igual ao de agora — o harness
+compara o código velho com o slide velho contra o código novo com o slide novo. Quem liga a
+capacidade é o passo 4 (prompt), não este patch.
+
+Fica cravado de propósito: `@promoliso0` (identidade da conta) e o mascote. De carona, o
+`tabPage('06', total)` cravado virou `slide.pagina` — hoje dá exatamente `'06'` e deixa de mentir
+quando a quantidade variar (passo 6).
+
+```bash
+node design/test_cta_contextual.cjs                       # Windows, sem VPS
+node design/medir_limites_cta.cjs --fotos                 # refaz a régua e as fotos
+./deploy-vps.sh design/patch_cta_contextual.cjs           # no VPS
+```
+
+⚠️ Como todo deploy de render, **não muda o próximo post**: a fila guarda `carousel_urls` já
+renderizadas (~2 dias de atraso).
 
 ---
 
@@ -182,7 +230,12 @@ proibição explícita de inventar timeline ou número que não esteja na fonte.
 - `timeline` exige 2+ eventos com data presente na matéria;
 - `highlight_stat` exige número presente no texto de entrada;
 - tipo desconhecido → rebaixa para slide com foto, **não** derruba a execução;
-- os `=== 5` viram faixa.
+- os `=== 5` viram faixa;
+- **os limites do CTA entram no `LIMITES` do validador.** Hoje eles moram no `CTA_LIM` do nó de
+  render (necessário: o corte é guarda de layout). Isso é uma terceira cópia dos números — o que
+  custou semanas em 05/08. Por ora quem guarda é `test_cta_contextual.cjs`, que compara `CTA_LIM`
+  com o `limites_cta.json`; quando o validador passar a cobrar o CTA, estender
+  `design/verifica_limites.cjs` para cobrir os dois.
 
 ---
 
@@ -210,6 +263,12 @@ quantas imagens únicas havia, tipos usados, se houve fallback e por quê, vers�
 3. **Mover a montagem do `Edit Fields` para um nó Code?** Recomendado: hoje é a peça mais crítica
    do fluxo e a única que não é código versionado nem testável.
 4. **Passo 0 antes ou depois** de fechar as decisões acima (é independente).
+5. **O agente pode reescrever o `destaque` do CTA?** O patch do passo 2 deixa ele reescrever os
+   quatro campos. O `destaque` é onde mora o pedido de conversão ("LINK NA BIO ↗"); liberado, o
+   modelo pode trocá-lo por uma frase bonita e sem pedido. As opções: (a) liberar e cobrar no
+   validador (passo 5) que o destaque contenha um pedido de ação; (b) travar o `destaque` no
+   literal e deixar o agente escrever só selo/titulo/texto — uma linha a menos no prompt. Só entra
+   em jogo no passo 4; até lá o campo vem vazio e cai no literal.
 
 ---
 
@@ -230,6 +289,8 @@ quantas imagens únicas havia, tipos usados, se houve fallback e por quê, vers�
 # harnesses (rodam no Windows, sem VPS)
 node design/test_capa_fullbleed.cjs --rede
 node design/test_carousel_expr_passoA.cjs
+node design/test_cta_contextual.cjs
+node design/medir_limites_cta.cjs --fotos
 
 # dry-run e deploy (SÓ no VPS)
 ssh root@<vps> 'cd /opt/promoliso && sudo -u promo node design/patch_X.cjs --dry'
