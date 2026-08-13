@@ -219,6 +219,14 @@ Notícia real usada só como referência de padrão. Repare: cada slide traz uma
 - No corpo dos slides, cite dois ou três exemplos concretos com preço. Evento sem exemplo vira propaganda vazia.
 - Continua valendo recusar quando o evento for o MESMO já publicado no histórico recente.
 
+
+## Orçamento de pesquisa PromoLiso P0.15
+- Você tem no máximo dez passos de ferramenta por tentativa, e a resposta final consome um deles.
+- Pare de pesquisar assim que tiver fato, fonte e números suficientes para os cinco slides. Pesquisa a mais não melhora o carrossel; ela consome o passo que faltava para escrever.
+- NUNCA termine anunciando o que vai fazer. Frases como "vou escrever agora" ou "agora vou estruturar os slides" são resposta perdida: o fluxo recebe esse texto no lugar do JSON e reprova a pauta inteira.
+- Sua última mensagem tem de ser o objeto JSON completo, sem texto antes nem depois.
+- Se o orçamento estiver acabando e faltar confirmação, escolha entre duas saídas honestas: escreva o JSON com o que está confirmado, ou devolva o JSON com aprovado_para_publicar false e o motivo. As duas são melhores que parar no meio.
+
 ## Decisão editorial por categoria PromoLiso P0.11
 - Em NOTICIA, ALERTA e GUIA, ausência de preço, estoque, cupom ou oferta brasileira não é motivo de reprovação. Esses campos devem permanecer vazios.
 - Exija preço, estoque, condição e URL direta de loja somente quando categoria for OFERTA.

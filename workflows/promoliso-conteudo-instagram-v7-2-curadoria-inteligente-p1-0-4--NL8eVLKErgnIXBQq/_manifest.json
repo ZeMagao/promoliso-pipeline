@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "88976c4e-d4e2-4af4-9b3c-da7e3ddf6b7e",
-  "activeVersionId": "88976c4e-d4e2-4af4-9b3c-da7e3ddf6b7e",
+  "versionId": "0fe02adf-ee24-40ad-bb9c-8cb4cc74bf44",
+  "activeVersionId": "0fe02adf-ee24-40ad-bb9c-8cb4cc74bf44",
   "draft_igual_publicado": true,
   "total_nos": 121,
   "nos": [
@@ -35,7 +35,7 @@
       "typeVersion": 3,
       "onError": "continueRegularOutput",
       "prompt": "ai-agent.prompt.md",
-      "prompt_chars": 17381
+      "prompt_chars": 18229
     },
     {
       "nome": "Aprovar pauta curada",
