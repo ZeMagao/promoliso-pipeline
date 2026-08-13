@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "0fe02adf-ee24-40ad-bb9c-8cb4cc74bf44",
-  "activeVersionId": "0fe02adf-ee24-40ad-bb9c-8cb4cc74bf44",
+  "versionId": "2e60ef50-7925-43cf-8ce9-ced997503733",
+  "activeVersionId": "2e60ef50-7925-43cf-8ce9-ced997503733",
   "draft_igual_publicado": true,
   "total_nos": 121,
   "nos": [
@@ -905,6 +905,7 @@
         "Enriquecer: buscar og"
       ]
     ],
+    "Estruturar Saída": [],
     "Existe pauta para aprovação?": [
       [
         "Aprovar pauta curada"
