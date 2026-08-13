@@ -1,0 +1,7 @@
+[Unit]
+Description=Backup diario do banco PromoLiso (03:30 BRT)
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=PromoLiso - registro de versoes (diario)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Timer]
+# Diario. E aqui que um deploy nao declarado (drift de prompt/template) vira alerta.
+OnCalendar=*-*-* 07:40:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

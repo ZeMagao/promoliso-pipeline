@@ -1,0 +1,6 @@
+[Unit]
+Description=Avisa por email que o backup do PromoLiso falhou
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '{ echo "O backup do PromoLiso FALHOU em $(date -Is) no VPS $(hostname)."; echo ""; echo "Ultimas linhas do log:"; journalctl -u promo-backup -n 30 --no-pager; } | /usr/local/bin/promo-alerta.sh "[PromoLiso] BACKUP FALHOU"'

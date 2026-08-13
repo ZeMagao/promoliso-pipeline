@@ -1,0 +1,15 @@
+{
+  "name": "promoliso-local-renderer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Renderizador local e seguro das artes PromoLiso",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node test-renderer.cjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "24.16.0",
+    "sharp": "^0.35.3"
+  }
+}

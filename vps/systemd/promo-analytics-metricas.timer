@@ -1,0 +1,15 @@
+[Unit]
+Description=PromoLiso - coleta de metricas (3x ao dia)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Timer]
+# 3 tentativas por dia dao folga para o retry cair dentro da tolerancia de 48h sem
+# martelar a API. Horarios escolhidos fora dos slots de publicacao.
+OnCalendar=*-*-* 09:10:00
+OnCalendar=*-*-* 15:10:00
+OnCalendar=*-*-* 22:10:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,21 @@
+[Unit]
+Description=PromoLiso - coleta de metricas D+1/D+3/D+7 no Instagram (RF-02)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+Environment=TZ=America/Sao_Paulo
+Environment=PROMO_RAIZ=/opt/promoliso
+Environment=PROMO_IG_TOKEN_FILE=/home/promo/ig-token.json
+Environment=PROMO_ANALYTICS_LOG_DIR=/opt/promoliso/analytics/logs
+# PROMO_IG_USER_ID e opcional: sem ele, metricas de MIDIA continuam sendo coletadas e apenas
+# as de PERFIL (visitas/seguidores) ficam vazias. Definir com `systemctl edit` se/quando existir.
+ExecStart=/usr/bin/node /opt/promoliso/analytics/coletor-metricas.cjs
+TimeoutStartSec=900
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full

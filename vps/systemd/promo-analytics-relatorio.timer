@@ -1,0 +1,12 @@
+[Unit]
+Description=PromoLiso - relatorio semanal (segunda de manha)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Timer]
+# Segunda 08:05 BRT: a semana ISO anterior ja fechou e o D+1 do ultimo post de domingo
+# ainda nao venceu (o relatorio usa a metrica mais madura que existir).
+OnCalendar=Mon *-*-* 08:05:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

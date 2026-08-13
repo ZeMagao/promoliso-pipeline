@@ -1,0 +1,14 @@
+[Unit]
+Description=PromoLiso - coletor de metadados (de hora em hora)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Timer]
+# De hora em hora, no minuto 20: fora dos slots do publicador (12:30/16:30/20:30) e do
+# produtor (minuto 0 das horas pares). Precisa ser frequente porque o execution_data
+# e podado em 168h e e de la que sai boa parte do metadado.
+OnCalendar=*-*-* *:20:00
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target

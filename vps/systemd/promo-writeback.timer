@@ -1,0 +1,11 @@
+[Unit]
+Description=PromoLiso - write-back de publicacoes (de hora em hora)
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=120
+Persistent=true
+Unit=promo-writeback.service
+
+[Install]
+WantedBy=timers.target

@@ -72,3 +72,6 @@ design/auditoria_*.html
 # resultado MEDIDO dos candidatos a feed e do upgrade de imagem: e evidencia, nao cache
 !design/feeds_candidatos.json
 !design/upgrade_imagem.json
+
+# logs operacionais do analytics: saida diaria, regenerada sozinha
+analytics/logs/

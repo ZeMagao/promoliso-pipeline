@@ -1,0 +1,23 @@
+[Unit]
+Description=PromoLiso - coletor de metadados de publicacao (RF-01)
+Documentation=file:/opt/promoliso/analytics/README.md
+After=promo-n8n.service
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+Environment=TZ=America/Sao_Paulo
+Environment=PROMO_RAIZ=/opt/promoliso
+Environment=PROMO_IG_TOKEN_FILE=/home/promo/ig-token.json
+Environment=PROMO_ANALYTICS_LOG_DIR=/opt/promoliso/analytics/logs
+ExecStart=/usr/bin/node /opt/promoliso/analytics/coletor-publicacoes.cjs
+# Falha aqui NAO pode virar problema de publicacao: sem Restart, sem OnFailure que mexa no n8n.
+# O unico efeito de uma falha e o timer marcar 'failed' e o log do journal registrar.
+TimeoutStartSec=600
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full

@@ -1,0 +1,41 @@
+[Unit]
+Description=PromoLiso n8n
+After=network.target promo-renderer.service
+Wants=promo-renderer.service
+
+[Service]
+Type=simple
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+Environment=NODE_ENV=production
+Environment=N8N_USER_FOLDER=/opt/promoliso/data
+Environment=GENERIC_TIMEZONE=America/Sao_Paulo
+Environment=TZ=America/Sao_Paulo
+Environment=N8N_LISTEN_ADDRESS=127.0.0.1
+Environment=N8N_PORT=5678
+Environment=N8N_EDITOR_BASE_URL=https://n8n.promoliso.com.br
+Environment=N8N_WEBHOOK_URL=https://n8n.promoliso.com.br
+Environment=N8N_SECURE_COOKIE=true
+Environment=N8N_PROXY_HOPS=1
+Environment=N8N_PUBLIC_API_DISABLED=true
+Environment=N8N_DIAGNOSTICS_ENABLED=false
+Environment=N8N_PERSONALIZATION_ENABLED=false
+Environment=N8N_CONCURRENCY_PRODUCTION_LIMIT=1
+Environment=EXECUTIONS_DATA_PRUNE=true
+Environment=EXECUTIONS_DATA_MAX_AGE=168
+Environment=EXECUTIONS_DATA_PRUNE_MAX_COUNT=150
+ExecStart=/usr/bin/node /opt/promoliso/node_modules/n8n/bin/n8n start
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=300
+# 4GB de RAM + 2GB swap: throttle suave em vez de OOM-kill duro
+MemoryHigh=2800M
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/promoliso /home/promo
+
+[Install]
+WantedBy=multi-user.target

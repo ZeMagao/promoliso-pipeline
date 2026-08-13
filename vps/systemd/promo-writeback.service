@@ -1,0 +1,12 @@
+[Unit]
+Description=PromoLiso - escreve de volta em promoliso_publicacoes o que a fila publicou
+Documentation=file:/opt/promoliso/promo-fila-writeback.cjs
+After=promo-n8n.service
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+ExecStart=/usr/bin/node /opt/promoliso/promo-fila-writeback.cjs
+Nice=10

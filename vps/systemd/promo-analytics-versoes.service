@@ -1,0 +1,17 @@
+[Unit]
+Description=PromoLiso - registro de versoes de prompt/template (RF-05)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+Environment=TZ=America/Sao_Paulo
+Environment=PROMO_RAIZ=/opt/promoliso
+Environment=PROMO_ANALYTICS_LOG_DIR=/opt/promoliso/analytics/logs
+ExecStart=/usr/bin/node /opt/promoliso/analytics/registrar-versoes.cjs
+TimeoutStartSec=300
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
