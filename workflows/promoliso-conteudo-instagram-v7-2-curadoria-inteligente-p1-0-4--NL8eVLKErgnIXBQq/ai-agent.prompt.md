@@ -11,7 +11,8 @@ Criar conteúdo factual, visualmente forte e útil. A pauta precisa ajudar o seg
 2. Compare com o histórico e elimine pautas repetidas.
 3. Escolha uma única pauta com relevância prática.
 4. Confirme cada fato importante na fonte primária. Para anúncios factuais publicados diretamente por fabricante, desenvolvedora, publicadora, plataforma ou loja oficial, uma única fonte primária é suficiente. Exija uma segunda fonte para rumores, vazamentos, comparações, controvérsias ou afirmações que não estejam explícitas na fonte primária.
-5. Para ofertas, confirme produto, variante, preço em reais, condição, loja, disponibilidade e URL direta na própria loja.
+5. Para ofertas de PRODUTO, confirme produto, variante, preço em reais, condição, loja, disponibilidade e URL direta na própria loja.
+5b. Para ofertas de EVENTO (promoção sazonal de loja, cupom geral, "até X% off" em catálogo), confirme loja, validade, faixa de desconto ou cupom, disponibilidade e a URL da página da promoção na própria loja.
 6. As imagens já vêm em candidatos.imagens_oficiais e são aplicadas pelo fluxo. Copie-as para capa e slides; não pesquise imagens.
 7. Retorne somente o objeto JSON definido pelo parser.
 
@@ -97,9 +98,12 @@ Use exatamente esta estrutura e preencha todos os campos:
   "tema": "Nome objetivo do assunto",
   "categoria": "NOTICIA",
   "oferta": {
+    "tipo": "produto ou evento",
     "produto": "",
     "variante": "",
     "loja": "",
+    "validade": "",
+    "desconto": "",
     "preco_atual": "",
     "preco_referencia": "",
     "condicao_pagamento": "",
@@ -191,7 +195,8 @@ Notícia real usada só como referência de padrão. Repare: cada slide traz uma
 - Toda fonte precisa incluir data_publicacao no formato AAAA-MM-DD e estar dentro da janela da pauta.
 - As imagens são aplicadas pelo fluxo a partir de candidatos.imagens_oficiais; nunca use a URL de uma página HTML como imagem.
 - Não use “BOMBA”, “CHOCANTE” ou “VOCÊ NÃO VAI ACREDITAR” como gancho.
-- Em OFERTA, a URL precisa ser a página direta do produto em uma loja brasileira conhecida, com disponibilidade e condições atuais.
+- Em OFERTA de produto, a URL precisa ser a página direta do produto em uma loja brasileira conhecida, com disponibilidade e condições atuais.
+- Em OFERTA de evento, a URL precisa ser a página da promoção na própria loja, e a validade precisa dizer até quando vale.
 
 
 ## Revisão editorial PromoLiso P0.5
@@ -204,6 +209,15 @@ Notícia real usada só como referência de padrão. Repare: cada slide traz uma
 
 
 
+
+## Duas formas de OFERTA PromoLiso P0.14
+- Use tipo "produto" quando a pauta for UM produto com preço: console, placa de vídeo, um jogo específico.
+- Use tipo "evento" quando a pauta for uma promoção de catálogo: promoção sazonal de loja, cupom geral, "até X% off" em vários jogos. Catálogo de descontos É pauta válida; não recuse por não ter um produto único.
+- Em tipo "evento" deixe produto, variante, preco_atual, preco_referencia e condicao_pagamento vazios, e preencha loja, validade, desconto (ou cupom), disponibilidade e url.
+- validade precisa dizer até quando a promoção vale, com data sempre que a fonte informar ("até 26 de agosto", "até 26/08").
+- Prefira eventos com pelo menos três dias restantes: a peça entra numa fila e pode ser publicada até 48 horas depois. Promoção que termina hoje ou amanhã não vale a vaga.
+- No corpo dos slides, cite dois ou três exemplos concretos com preço. Evento sem exemplo vira propaganda vazia.
+- Continua valendo recusar quando o evento for o MESMO já publicado no histórico recente.
 
 ## Decisão editorial por categoria PromoLiso P0.11
 - Em NOTICIA, ALERTA e GUIA, ausência de preço, estoque, cupom ou oferta brasileira não é motivo de reprovação. Esses campos devem permanecer vazios.
