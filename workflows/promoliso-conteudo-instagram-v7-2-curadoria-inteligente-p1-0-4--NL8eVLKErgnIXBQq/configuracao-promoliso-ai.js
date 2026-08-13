@@ -19,7 +19,7 @@ return [{
         'nenhum',
       ],
       dominios_primarios: ["blog.playstation.com","news.xbox.com","halowaypoint.com","nintendo.com","nvidia.com","amd.com","intel.com","steampowered.com","steamcommunity.com","epicgames.com","ubisoft.com","ea.com","konami.com","samsung.com","news.samsung.com","asus.com","msi.com","gigabyte.com"],
-      dominios_editoriais: ["adrenaline.com.br","flowgames.gg","gamevicio.com"],
+      dominios_editoriais: ["adrenaline.com.br","flowgames.gg","gamevicio.com","ign.com","gameblast.com.br","tecnoblog.net","gg.deals"],
     },
   },
 }];

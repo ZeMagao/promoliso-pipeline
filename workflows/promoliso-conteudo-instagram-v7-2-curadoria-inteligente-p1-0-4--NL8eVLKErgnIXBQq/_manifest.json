@@ -2,10 +2,10 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "3a39b208-c5f2-4e8d-a2fc-7da8964b7a65",
-  "activeVersionId": "3a39b208-c5f2-4e8d-a2fc-7da8964b7a65",
+  "versionId": "f5934a32-e615-44c6-9ee5-a523aec3557a",
+  "activeVersionId": "f5934a32-e615-44c6-9ee5-a523aec3557a",
   "draft_igual_publicado": true,
-  "total_nos": 117,
+  "total_nos": 121,
   "nos": [
     {
       "nome": "Agente Curador PromoLiso AI",
@@ -258,7 +258,25 @@
       "onError": "continueRegularOutput"
     },
     {
+      "nome": "Feed GameBlast",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
       "nome": "Feed GameVicio",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed GG.deals",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed IGN Brasil",
       "tipo": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1.2,
       "onError": "continueRegularOutput"
@@ -289,6 +307,12 @@
     },
     {
       "nome": "Feed oficial Xbox",
+      "tipo": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "nome": "Feed Tecnoblog",
       "tipo": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1.2,
       "onError": "continueRegularOutput"
@@ -899,7 +923,27 @@
         "Unir feeds oficiais"
       ]
     ],
+    "Feed GG.deals": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed GameBlast": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
     "Feed GameVicio": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed IGN Brasil": [
+      [
+        "Unir feeds oficiais"
+      ]
+    ],
+    "Feed Tecnoblog": [
       [
         "Unir feeds oficiais"
       ]
@@ -1160,7 +1204,11 @@
         "Feed oficial Intel",
         "Feed Adrenaline",
         "Feed Flow Games",
-        "Feed GameVicio"
+        "Feed GameVicio",
+        "Feed IGN Brasil",
+        "Feed GameBlast",
+        "Feed Tecnoblog",
+        "Feed GG.deals"
       ]
     ],
     "Selecionar melhor pauta": [
@@ -1248,7 +1296,11 @@
         "Feed oficial Intel",
         "Feed Adrenaline",
         "Feed Flow Games",
-        "Feed GameVicio"
+        "Feed GameVicio",
+        "Feed IGN Brasil",
+        "Feed GameBlast",
+        "Feed Tecnoblog",
+        "Feed GG.deals"
       ]
     ]
   }
