@@ -1,0 +1,11 @@
+[Unit]
+Description=PromoLiso - teste diario do token do Instagram (a validade gravada nao e sinal de saude)
+
+[Timer]
+OnCalendar=*-*-* 07:20:00
+RandomizedDelaySec=300
+Persistent=true
+Unit=promo-token-check.service
+
+[Install]
+WantedBy=timers.target

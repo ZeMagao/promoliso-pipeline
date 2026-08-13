@@ -1,0 +1,12 @@
+[Unit]
+Description=PromoLiso - confere se o token do Instagram ainda e aceito pela API
+Documentation=file:/usr/local/bin/promo-token-check.cjs
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+ExecStart=/usr/bin/node /usr/local/bin/promo-token-check.cjs
+Nice=10
