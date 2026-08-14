@@ -1,3 +1,27 @@
+// Seleção da fila — publica a notícia de HOJE, não a que está morrendo.
+//
+// O QUE ESTAVA ERRADO (medido em 14/08/2026). A regra anterior publicava a peça mais perto de
+// vencer ("earliest deadline first"), criada em 06/08 para resgatar pauta que ficava encalhada.
+// Só que com a fila cheia isso deixou de ser resgate e virou regra: TODA publicação saía com
+// ~46,5 h de atraso — 43, 42, 34 e 33 saíram todas com exatamente esse número. Não é coincidência,
+// é o que a regra pede: publique o que está mais perto do teto de 48 h.
+//
+// Resultado prático: no dia 14/08 o post das 16:30 era de 12/08, enquanto cinco peças daquele
+// mesmo dia esperavam na fila.
+//
+// A REGRA AGORA, em três degraus:
+//   1. Se existe peça do DIA (até 12 h), publica a de melhor nota entre elas. Frescor primeiro,
+//      qualidade para desempatar — não o contrário, senão uma nota alta de ontem ganha da notícia
+//      de hoje, que é exatamente o que estamos consertando.
+//   2. Senão, entre as que ainda estão dentro das 48 h, publica a MAIS NOVA.
+//   3. Senão, a mais nova de todas. Pauta velha é pior que pauta nova, mas melhor que slot vazio —
+//      e assim esta mudança nunca reduz a quantidade de publicações.
+//
+// O QUE ISSO CUSTA, dito na cara: peça que não for publicada em ~2 dias agora morre de vez. Ela já
+// morria — 11 das 16 peças da fila em 14/08 já estavam fora da janela —, mas agora morre por
+// desenho. O desperdício é real e o conserto dele é OUTRO: produzir menos (a produção faz ~4/dia
+// e a publicação consome ~2,4/dia). Trocar a ordem aqui não resolve excesso de produção, e fingir
+// que resolve seria pior que o problema.
 const rows = $input.all().map(i=>i.json);
 // READY = nunca tentada. RETRY = falhou uma vez e ganhou nova chance (ver "Preparar FALHA").
 const PUBLICAVEIS = ['READY','RETRY'];
