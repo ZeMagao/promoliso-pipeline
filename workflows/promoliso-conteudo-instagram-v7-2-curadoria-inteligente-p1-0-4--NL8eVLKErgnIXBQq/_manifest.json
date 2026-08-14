@@ -2,10 +2,10 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "2e60ef50-7925-43cf-8ce9-ced997503733",
-  "activeVersionId": "2e60ef50-7925-43cf-8ce9-ced997503733",
+  "versionId": "1c04037e-9709-4ceb-8516-c4247d8d6360",
+  "activeVersionId": "1c04037e-9709-4ceb-8516-c4247d8d6360",
   "draft_igual_publicado": true,
-  "total_nos": 121,
+  "total_nos": 123,
   "nos": [
     {
       "nome": "Agente Curador PromoLiso AI",
@@ -236,6 +236,12 @@
       "linhas": 9
     },
     {
+      "nome": "Epic: jogos grátis",
+      "tipo": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueRegularOutput"
+    },
+    {
       "nome": "Estruturar Saída",
       "tipo": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3
@@ -323,7 +329,7 @@
       "typeVersion": 2,
       "onError": "continueRegularOutput",
       "codigo": "fila-montar-row.js",
-      "linhas": 26
+      "linhas": 30
     },
     {
       "nome": "Fila: render story",
@@ -414,6 +420,14 @@
       "typeVersion": 2,
       "codigo": "montar-contexto-editorial.js",
       "linhas": 89
+    },
+    {
+      "nome": "Normalizar Epic",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueRegularOutput",
+      "codigo": "normalizar-epic.js",
+      "linhas": 90
     },
     {
       "nome": "Normalizar notícias PromoLiso AI",
@@ -905,6 +919,11 @@
         "Enriquecer: buscar og"
       ]
     ],
+    "Epic: jogos grátis": [
+      [
+        "Normalizar Epic"
+      ]
+    ],
     "Estruturar Saída": [],
     "Existe pauta para aprovação?": [
       [
@@ -1048,6 +1067,11 @@
     "Montar contexto editorial": [
       [
         "Preparar 2 tentativas"
+      ]
+    ],
+    "Normalizar Epic": [
+      [
+        "Unir feeds oficiais"
       ]
     ],
     "Normalizar notícias PromoLiso AI": [
@@ -1209,7 +1233,8 @@
         "Feed IGN Brasil",
         "Feed GameBlast",
         "Feed Tecnoblog",
-        "Feed GG.deals"
+        "Feed GG.deals",
+        "Epic: jogos grátis"
       ]
     ],
     "Selecionar melhor pauta": [
@@ -1301,7 +1326,8 @@
         "Feed IGN Brasil",
         "Feed GameBlast",
         "Feed Tecnoblog",
-        "Feed GG.deals"
+        "Feed GG.deals",
+        "Epic: jogos grátis"
       ]
     ]
   }
