@@ -7,6 +7,10 @@ const carousel = [cover, agg[0], agg[1], agg[2], agg[3], agg[4]].filter(Boolean)
 const caption = (($('Edit Fields').first().json) || {}).legenda || '';
 const storyUrl = (($input.first().json) || {}).secure_url || '';
 const primary = String(prep.primary_url || '');
+// Nota da curadoria: mesma fonte que o "Selecionar melhor pauta" usou para escolher esta pauta.
+// Antes aqui ia 0 cravado, e o desempate por qualidade do publicador nascia morto.
+const pauta = ($('Selecionar melhor pauta').first().json) || {};
+const nota = Number(pauta.registro && pauta.registro.pontuacao_total);
 return [{
   json: {
     content_key: String(prep.content_key || ''),
@@ -21,6 +25,6 @@ return [{
     created_at: new Date().toISOString(),
     published_at: '',
     execution_id: String($execution.id || ''),
-    score: 0,
+    score: Number.isFinite(nota) ? nota : 0,
   },
 }];
