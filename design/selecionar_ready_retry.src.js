@@ -1,3 +1,9 @@
+// Seleção da fila — agora enxergando também as peças devolvidas para nova tentativa.
+//
+// Mudou em relação à versão anterior: `RETRY` entra junto com `READY`, e a saída passa a carregar
+// `status_anterior` e `created_at`, que é o que o "Preparar FALHA" precisa para decidir entre
+// devolver a peça ou aposentá-la. Sem esses dois campos ele só teria o content_key e teria de
+// consultar o banco de novo.
 const rows = $input.all().map(i=>i.json);
 // READY = nunca tentada. RETRY = falhou uma vez e ganhou nova chance (ver "Preparar FALHA").
 const PUBLICAVEIS = ['READY','RETRY'];
