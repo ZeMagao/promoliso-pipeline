@@ -1,0 +1,37 @@
+{
+  "_leia": "Liga o hash do conteúdo que roda no n8n a um rótulo humano. Formato: artefatos.<artefato>.<primeiros 12 chars do hash de lógica> = rótulo. Preencha rodando `node analytics/registrar-versoes.cjs --adotar=<rotulo>` NO VPS (o conteúdo verdadeiro está no banco de produção) e COMMITE o resultado. Enquanto um hash não estiver aqui, ele aparece como NAO-REGISTRADA e gera alerta — que é o comportamento desejado: conteúdo no ar que ninguém declarou é drift.",
+  "_rollback": "Reverter uma versão NÃO se faz editando este arquivo. Faz-se deployando o conteúdo antigo (design/patch_*.cjs + deploy-vps.sh, ou restaurando o versionId em workflow_history — ver OPERACAO-VPS.md). O hash volta a bater com o rótulo antigo automaticamente.",
+  "atualizado_em": "2026-08-17T13:08:26.096Z",
+  "artefatos": {
+    "prompt_redator": {
+      "5061fd8d894b": "baseline-fase1",
+      "9f52271eb5bc": "w33-oferta-cta-retry"
+    },
+    "prompt_curador": {
+      "b74435d7c77d": "baseline-fase1",
+      "312b0f145171": "curador-publico-v1"
+    },
+    "prompt_verificador": {
+      "cd4c868032dd": "baseline-fase1"
+    },
+    "template_slide": {
+      "cbaf33c7aa70": "baseline-fase1",
+      "8edd0fb9e07e": "w33-oferta-cta-retry"
+    },
+    "template_capa": {
+      "390187e49ba9": "baseline-fase1",
+      "fd24fd7c8632": "w33-oferta-cta-retry"
+    },
+    "regras_validador": {
+      "08b030bf4aeb": "baseline-fase1",
+      "46d75caf9091": "w33-oferta-cta-retry"
+    },
+    "regras_legenda": {
+      "1e94040761c5": "baseline-fase1"
+    },
+    "regras_fila": {
+      "e60b4390886b": "baseline-fase1",
+      "a3424bc94bc2": "w33-oferta-cta-retry"
+    }
+  }
+}
