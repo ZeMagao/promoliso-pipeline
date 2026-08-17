@@ -25,6 +25,24 @@ const semanaArg = (process.argv.find((a) => a.startsWith('--semana=')) || '').sp
 
 const DIA_MS = 86400000;
 
+// ---------------------------------------------------------------------------
+// Réguas de honestidade do relatório. Ficam aqui, em UM lugar, porque são usadas tanto para decidir
+// o que virar "padrão observado" quanto para marcar as tabelas — e número de régua duplicado
+// divergindo é o bug que já custou semanas neste projeto.
+//
+// AMOSTRA_MIN e DIFERENCA_MIN: 5 posts por lado e 30% de diferença. Com 3 posts e diferença de 1
+// (o caso de 10/08: "12:30 = 7 contra 20:30 = 6") qualquer ruído vira padrão, e o responsável mexe
+// no horário por causa de nada.
+//
+// PISO_ESCALA: abaixo deste alcance mediano, comparar cortes é comparar ruído. Em 14/08 o relatório
+// da W33 rankeou 15 posts com alcance mediano 8 — a distância entre o "melhor" e o "pior" post da
+// semana era de SEIS PESSOAS, e a tabela "por formato" elegia um vencedor com UM post medido. O
+// número 30 é julgamento, não estatística: é a ordem de grandeza em que uma diferença de 2 ou 3
+// deixa de caber dentro da variação normal de um punhado de posts. Rever quando o alcance subir.
+const AMOSTRA_MIN = 5;
+const DIFERENCA_MIN = 1.3;
+const PISO_ESCALA = 30;
+
 // Semana ISO (segunda a domingo), que é como o responsável pensa a semana de publicação.
 function semanaIso(d) {
   const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -178,11 +196,8 @@ function agregar({ publicacoes, metricas, inicioMs, fimMs, tz }) {
 function interpretar(ag, historico) {
   const padroes = [];
   const acoes = [];
-  // 5 posts por lado, e diferença de pelo menos 30%. Com 3 posts e diferença de 1 (o caso do
-  // relatório de 10/08: "12:30 = 7 contra 20:30 = 6") qualquer ruído vira "padrão", e o
-  // responsável mexe no horário por causa de nada. Melhor calar do que apontar errado.
-  const AMOSTRA_MIN = 5;
-  const DIFERENCA_MIN = 1.3;
+  // As réguas moram no topo do arquivo (AMOSTRA_MIN, DIFERENCA_MIN, PISO_ESCALA): são as mesmas que
+  // marcam as tabelas como inconclusivas, e ter duas cópias é convite a divergirem.
 
   if (ag.volume === 0) {
     padroes.push('Nenhuma publicação registrada como PUBLISHED nesta semana.');
@@ -245,13 +260,28 @@ function interpretar(ag, historico) {
 function montarTexto(rotulo, periodo, ag, leitura) {
   const l = [];
   const linha = (x) => l.push(x);
+  // A escala inteira do relatório: se o alcance mediano é de um dígito, nenhum corte é conclusivo,
+  // por mais posts que tenha. A coluna "leitura" existe para que ninguém precise fazer essa conta
+  // de cabeça — antes a tabela elegia vencedor com UM post medido, calada.
+  const escalaBaixa = (ag.alcanceMediano ?? 0) < PISO_ESCALA;
+  const leituraDoCorte = (i) => {
+    if (!i.comMetrica) return 'sem métrica';
+    if (i.comMetrica < AMOSTRA_MIN) return `inconclusivo (n=${i.comMetrica})`;
+    if (escalaBaixa) return 'inconclusivo (escala)';
+    return 'comparável';
+  };
   const tabela = (titulo, itens) => {
     linha('');
     linha(`### ${titulo}`);
     if (!itens.length) { linha('_sem dados_'); return; }
-    linha('| chave | posts | com métrica | alcance médio |');
-    linha('|---|---:|---:|---:|');
-    for (const i of itens.slice(0, 8)) linha(`| ${i.chave} | ${i.posts} | ${i.comMetrica} | ${i.alcanceMedio ?? '—'} |`);
+    linha('| chave | posts | com métrica | alcance médio | leitura |');
+    linha('|---|---:|---:|---:|---|');
+    for (const i of itens.slice(0, 8)) {
+      linha(`| ${i.chave} | ${i.posts} | ${i.comMetrica} | ${i.alcanceMedio ?? '—'} | ${leituraDoCorte(i)} |`);
+    }
+    const comparaveis = itens.filter((i) => leituraDoCorte(i) === 'comparável').length;
+    if (!comparaveis) linha('');
+    if (!comparaveis) linha('_nenhuma linha desta tabela tem amostra e escala para sustentar comparação._');
   };
 
   linha(`# PromoLiso — relatório semanal ${rotulo}`);
@@ -269,6 +299,32 @@ function montarTexto(rotulo, periodo, ag, leitura) {
     ag.coberturaPorJanela.map((c) => `${c.janela}=${c.posts}`).join(', ') + '.');
   if (ag.semRef && ag.semRef.aguardando) {
     linha(`> ${ag.semRef.aguardando} post(s) ainda não completaram ${ag.janelaRef} e ficaram fora das comparações.`);
+  }
+
+  // Duas perguntas diferentes moram neste relatório, e misturá-las é o erro mais fácil de cometer:
+  // ler alcance de um dígito como veredito sobre o conteúdo. Uma depende do que publicamos; a outra,
+  // de quantas pessoas alcançamos — e nenhuma mudança de arte ou de pauta move a segunda.
+  linha('');
+  linha('## Como ler este relatório');
+  linha('');
+  linha('**1. O conteúdo melhorou?** Responde-se pelo que controlamos: frescor da pauta, categoria,');
+  linha('versão de prompt e de template. Precisa que a versão no ar esteja declarada em');
+  linha('`analytics/versoes/registry.json` — enquanto aparecer `NAO-REGISTRADA`, arte nova e arte');
+  linha('velha caem no mesmo grupo e a comparação é impossível.');
+  linha('');
+  linha('**2. Quantas pessoas veem?** É alcance, e depende de distribuição — seguidores, hashtags,');
+  linha('horário, algoritmo. Mudança de pauta ou de template praticamente não mexe neste número.');
+  if (escalaBaixa && ag.comMetrica) {
+    const alcances = ag.ranking && ag.ranking.length ? ag.ranking.map((p) => p.alcance) : [];
+    const spread = alcances.length ? Math.max(...alcances) - Math.min(...alcances) : 0;
+    linha('');
+    linha(`> ⚠️ **Escala:** alcance mediano ${ag.alcanceMediano} está abaixo de ${PISO_ESCALA}.`);
+    if (spread) {
+      linha(`> A distância entre o post de maior e o de menor alcance da semana é de **${spread} pessoa(s)**.`);
+    }
+    linha('> Nesta escala, ranking e tabelas medem ruído, não desempenho: as tabelas abaixo vêm');
+    linha('> marcadas como inconclusivas de propósito. O que dá para concluir é sobre a pergunta 1');
+    linha('> (conteúdo), nunca sobre a 2 — e a pergunta 2 é a que precisa de trabalho de distribuição.');
   }
 
   const item = (p, i) => `${i + 1}. **${p.alcance}** alcance / ${p.interacoes} inter. — ${p.topic} _(${p.fonte}, ${p.slot || p.horario})_`;
