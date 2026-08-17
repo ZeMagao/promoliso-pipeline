@@ -252,13 +252,19 @@ const dominiosPrimarios = [
   'unity.com',
   'unrealengine.com',
 ];
-const dominiosLojas = [
+// Loja de eletrônico: vende produto físico. Promoção daqui NÃO é pauta desta conta (pedido do
+// dono em 16/08, depois de um post de monitor em promoção). Continuam na lista porque a URL ainda
+// precisa ser reconhecida como loja — o que muda é o veredito, não o reconhecimento.
+const lojasDeEletronicos = [
   'amazon.com.br',
   'kabum.com.br',
   'magazineluiza.com.br',
   'mercadolivre.com.br',
   'terabyteshop.com.br',
   'pichau.com.br',
+];
+// Loja de jogo: é daqui que sai promoção publicável.
+const lojasDeJogos = [
   'nuuvem.com',
   'greenmangaming.com',
   'gog.com',
@@ -268,6 +274,8 @@ const dominiosLojas = [
   'nintendo.com',
   'epicgames.com',
 ];
+// União: quem só precisa saber "isto é uma loja?" continua usando esta.
+const dominiosLojas = [...lojasDeEletronicos, ...lojasDeJogos];
 const dominiosBloqueados = [
   'google.com',
   'googleusercontent.com',
@@ -858,6 +866,10 @@ if (output.categoria === 'OFERTA') {
   // vale para as duas formas: é o que separa promoção de matéria FALANDO de promoção
   if (!urlOferta || !hostIn(urlOferta.host, dominiosLojas)) {
     erros.push('Oferta sem URL direta de uma loja conhecida');
+  } else if (hostIn(urlOferta.host, lojasDeEletronicos)) {
+    // Promoção de produto físico não é pauta desta conta. Notícia de hardware continua sendo —
+    // o corte é só em OFERTA. Mensagem própria para o alerta não virar caça ao fantasma.
+    erros.push('Promoção de produto físico não é pauta: ' + urlOferta.host + ' é loja de eletrônico, e OFERTA aqui é só de jogo');
   }
   if (/\b(esgotad[oa]|indisponível|encerrad[oa])\b/i.test(oferta.disponibilidade || '')) {
     erros.push('Oferta marcada como indisponível');

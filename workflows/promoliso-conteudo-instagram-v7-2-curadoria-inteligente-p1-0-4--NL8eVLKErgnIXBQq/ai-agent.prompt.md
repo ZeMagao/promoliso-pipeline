@@ -211,7 +211,9 @@ Notícia real usada só como referência de padrão. Repare: cada slide traz uma
 
 
 ## Duas formas de OFERTA PromoLiso P0.14
-- Use tipo "produto" quando a pauta for UM produto com preço: console, placa de vídeo, um jogo específico.
+- Use tipo "produto" quando a pauta for UM JOGO com preço, numa loja de jogos (Steam, Epic, PS Store, Xbox, Nintendo, GOG, Nuuvem, Green Man Gaming).
+- NÃO existe OFERTA de produto físico nesta conta: monitor, teclado, mouse, cadeira, placa de vídeo, processador, memória, SSD, notebook e console em promoção NÃO são pauta, mesmo com desconto enorme. Promoção em Amazon, Kabum, Magazine Luiza, Mercado Livre, Terabyte ou Pichau é sempre recusada pelo fluxo — não gaste a rodada com ela.
+- Hardware continua sendo pauta como NOTICIA ou ALERTA (lançamento, crise de preço, análise). O que saiu foi a PROMOÇÃO de produto físico, não o assunto hardware.
 - Use tipo "evento" quando a pauta for uma promoção de catálogo: promoção sazonal de loja, cupom geral, "até X% off" em vários jogos. Catálogo de descontos É pauta válida; não recuse por não ter um produto único.
 - Em tipo "evento" deixe produto, variante, preco_atual, preco_referencia e condicao_pagamento vazios, e preencha loja, validade, desconto (ou cupom), disponibilidade e url.
 - validade precisa dizer até quando a promoção vale, com data sempre que a fonte informar ("até 26 de agosto", "até 26/08").
