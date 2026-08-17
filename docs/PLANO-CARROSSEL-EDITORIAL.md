@@ -3,9 +3,10 @@
 **Base:** PRD (11/08/2026) + SDD (12/08/2026) de melhoria dos carrosséis.
 **Auditoria (Fase 1):** feita em 12/08/2026. Este documento é o resultado dela — não refaça a
 descoberta, comece do passo 1.
-**Estado (12/08, fim do dia):** nada foi deployado. Prontos e **não deployados**: passo 0
-(expressão de coleção) e passo 2 (CTA contextual). Passo 1 feito **para o CTA** — os outros tipos
-só têm limite depois que existirem (passo 3).
+**Estado (17/08):** passo 0 **no ar** (publicador `caf17307`, prova pendente na publicação das
+20:30 de 17/08) e passo 2 **no ar** (`09b70099`, inerte até o passo 4 existir). Passo 1 feito **para
+o CTA** — os outros tipos só têm limite depois que existirem (passo 3). Passo B (quantidade variável)
+só depois de uma publicação bem-sucedida com a expressão de coleção.
 
 ---
 
@@ -100,7 +101,21 @@ CTA contextual, séries editoriais.
 
 ## 3. Passos, em ordem
 
-### Passo 0 — provar a expressão de coleção (PRONTO, NÃO DEPLOYADO)
+### Passo 0 — provar a expressão de coleção — **NO AR 17/08 12:48** (publicador `caf17307`)
+
+Deployado depois de o dono cobrar por que o carrossel continuava fixo em 6. Conferido no banco vivo:
+`carouselChildren` é string de expressão e **emite `media_type: 'IMAGE'` em cada filho** (a armadilha
+que derrubaria tudo — sem o campo explícito todo filho viraria VIDEO com url indefinida).
+
+Saída deliberadamente idêntica à de antes: as mesmas 6 urls, mesma ordem. **A prova é a publicação
+das 20:30 de 17/08.** Se publicar, a resolução no nível da coleção está provada e o passo B fica
+livre. Se falhar: perde-se um slot, o monitor avisa, a peça volta como `RETRY` (que agora existe) e
+o rollback é `--reverter`.
+
+> ⚠️ **Passo B só depois de uma publicação bem-sucedida nesta forma.** Fazer os dois juntos é
+> exatamente o que quebrou 05/08.
+
+<details><summary>registro original (antes do deploy)</summary>
 
 **Objetivo:** descobrir se dá pra ter quantidade variável com 1 parâmetro ou se precisa de 6 nós.
 
@@ -122,6 +137,9 @@ coleção estática de tamanhos diferentes. Mais nós, zero incógnita.
 
 > **Instagram aceita 2 a 10 imagens.** Post de 1 imagem não é carrossel — é outra operação do nó
 > (`createSinglePost`), trabalho separado.
+
+
+</details>
 
 ---
 
