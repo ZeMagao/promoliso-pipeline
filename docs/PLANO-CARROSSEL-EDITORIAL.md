@@ -3,11 +3,17 @@
 **Base:** PRD (11/08/2026) + SDD (12/08/2026) de melhoria dos carrosséis.
 **Auditoria (Fase 1):** feita em 12/08/2026. Este documento é o resultado dela — não refaça a
 descoberta, comece do passo 1.
-**Estado (17/08, noite):** passo 0 **REVERTIDO** — a prova das 20:30 falhou e respondeu a
-incógnita com um NÃO (publicador de volta em `c83f75d4`). Passo 2 **no ar** (`09b70099`, inerte até
-o passo 4 existir). Passo 1 feito **para o CTA** — os outros tipos só têm limite depois que
-existirem (passo 3). Passo B (quantidade variável) **está bloqueado pelo plano B**, não pela
-expressão: ver passo 0.
+**Estado (18/08):** **quantidade variável resolvida pelo plano B, com prova.** O publicador
+aceita de 2 a 10 imagens e está **no ar** (`4bb8c077`), inerte porque toda peça da fila tem 6. A
+metade do produtor (3 a 7 slides) está **pronta, testada e não deployada** — espera a publicação das
+12:30 provar a etapa 1. Passo 2 **no ar** (`09b70099`, inerte até o passo 4 existir). Passo 1 feito
+**para o CTA** — os outros tipos só têm limite depois que existirem (passo 3).
+
+> **A lição que mudou o método:** as duas falhas (05/08, 17/08) vinham de testar mecanismo novo
+> DENTRO do publicador, onde cada tentativa custa um post. A saída foi o **banco de provas**: um
+> workflow temporário na instância real, que exercita as formas candidatas e não publica nada — só
+> cria containers, que expiram em 24 h. `design/prova_carousel_children.cjs` e
+> `design/prova_switch_quantidade.cjs`. Todo mecanismo novo passa por lá antes.
 
 ---
 
@@ -313,10 +319,66 @@ proibição explícita de inventar timeline ou número que não esteja na fonte.
 
 ---
 
-### Passo 6 — fila e publicador aceitam 2 a 10
+### Passo 6 — fila e publicador aceitam 2 a 10 — **NO AR 18/08** (`4bb8c077`)
 
-`selecionar-ready.js`: `urls.slice(1,6)` → `urls.slice(1)`. Manter compatibilidade com as rows
-antigas (16 `READY` hoje com 6 imagens cada).
+Feito pelo plano B, que agora tem prova em vez de aposta: um `Switch` por quantidade e **um nó do
+Instagram por tamanho** (`Carrossel 02` a `Carrossel 10`), todos gerados do mesmo molde.
+
+Arquivos: `design/patch_carrossel_variavel_publicador.cjs`,
+`design/test_carrossel_variavel_publicador.cjs` (100+ asserções),
+`design/selecionar_ready_variavel.{src.js,gen.cjs}`, `design/selecionar_ready_antes_variavel.txt`.
+
+**Não mudou nenhum post:** toda peça na fila tem 6 imagens (medido nas 61 rows), então ela segue
+pelo `Carrossel 06`, cujas 6 urls são as mesmas, na mesma ordem, do nó de antes. O harness roda o
+`Selecionar READY` contra a fila REAL e exige a mesma peça, a mesma capa e os mesmos slides.
+
+Três decisões que valem para o resto:
+
+1. **A conta de qual saída usar mora no código, não na expressão do Switch.** Índice fora da faixa
+   faz o Switch lançar erro — bom, não é silencioso — mas o erro deixaria a row presa em
+   `PUBLISHING`, o único estado que nem publica nem alerta. Então `Selecionar READY` garante a faixa
+   antes de sair: menos de 2 é erro, mais de 10 é cortado no teto do Instagram.
+2. **`media_type: 'IMAGE'` escrito à mão em todo filho.** Hoje ele não existe e funciona por um
+   default que o n8n preenche em parâmetro aninhado — a mesma armadilha que teria virado todo filho
+   em VIDEO no passo 0.
+3. **O código novo é derivado do que estava no ar por substituições explícitas**
+   (`selecionar_ready_variavel.gen.cjs`), então frescor, RETRY e nota ficam idênticos por
+   construção. Diff real: 3 linhas removidas.
+
+### Passo 6b — produtor gera de 3 a 7 slides — **PRONTO, NÃO DEPLOYADO (18/08)**
+
+Arquivos: `design/patch_carrossel_variavel_produtor.cjs`,
+`design/test_carrossel_variavel_produtor.cjs` (tudo verde).
+
+**Faixa: 3 a 7 slides = 4 a 8 imagens.** Não é o teto do Instagram, e o motivo é medido: cada slide
+do meio consome uma imagem única e a média é 3,4 por pauta (28 execuções). São dois números no patch
+se o dono quiser outra faixa.
+
+**Regra editorial:** primeiro slide sempre `capa`, último sempre `acao` (onde mora o pedido). No
+meio, de 1 a 5 slides de tipo `contexto`, `evidencia` ou `impacto`, em qualquer ordem e podendo
+repetir — o layout dos três é o mesmo, o que muda é o papel no texto.
+
+**As SEIS cópias do mesmo número**, todas no mesmo patch (a lição de 05/08):
+
+| onde | o que era |
+|---|---|
+| `Validar antes de publicar` | os dois `=== 5` |
+| `Validar antes de publicar` | a lista fixa `tipos`, que só descrevia 5 slides |
+| `Validar antes de publicar` | o `!== 6` das imagens → `slides.length + 1` |
+| `Code in JavaScript1` | a guarda da capa |
+| `Edit Fields` | `total: 6` e `pagina: 6` do CTA |
+| `AI Agent` | o prompt ("exatamente cinco slides") |
+
+O sexto **não estava na lista de ninguém** e era o pior: `Fila: montar row` montava
+`[cover, agg[0]…agg[4]]`, cravado em 5. Isso truncaria a peça de 8 imagens de volta pra 6 **em
+silêncio**, na gravação da fila — nada reprova e o post sai com slide faltando.
+
+Conferido que **não** precisou mudar: `Split Out`, `Loop Over Items`, `Aggregate` e a recuperação de
+imagem do validador (`index % imagens.length`) já são agnósticos à quantidade; `Estruturar Saída`
+não constrange tamanho de array.
+
+⚠️ **Deployar só depois de a publicação das 12:30 provar a etapa 1.** Subir as duas metades no mesmo
+slot é exatamente o que quebrou 05/08.
 
 ---
 
