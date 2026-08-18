@@ -48,6 +48,10 @@ design/newversion.txt
 !design/silenthill_output.json
 !design/stress_output.json
 !design/new_example.json
+# a fila de verdade (61 rows: status, data, nota e as urls do carrossel — sem legenda e sem
+# credencial). O harness do carrossel variavel RODA em cima dela pra exigir que o patch escolha a
+# mesma peca e as mesmas imagens de antes; sem ela versionada esse teste nao roda em outra maquina.
+!design/fila_amostra.json
 # saida editorial real da row 36 (exec 261): e a amostra do harness do piso 675 e dos mocks
 !design/row36_output.json
 # limites MEDIDOS do CTA: nao e amostra, e resultado. O harness compara o CTA_LIM do codigo com
