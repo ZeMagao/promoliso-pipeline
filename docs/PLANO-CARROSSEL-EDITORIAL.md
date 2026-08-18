@@ -3,10 +3,11 @@
 **Base:** PRD (11/08/2026) + SDD (12/08/2026) de melhoria dos carrosséis.
 **Auditoria (Fase 1):** feita em 12/08/2026. Este documento é o resultado dela — não refaça a
 descoberta, comece do passo 1.
-**Estado (17/08):** passo 0 **no ar** (publicador `caf17307`, prova pendente na publicação das
-20:30 de 17/08) e passo 2 **no ar** (`09b70099`, inerte até o passo 4 existir). Passo 1 feito **para
-o CTA** — os outros tipos só têm limite depois que existirem (passo 3). Passo B (quantidade variável)
-só depois de uma publicação bem-sucedida com a expressão de coleção.
+**Estado (17/08, noite):** passo 0 **REVERTIDO** — a prova das 20:30 falhou e respondeu a
+incógnita com um NÃO (publicador de volta em `c83f75d4`). Passo 2 **no ar** (`09b70099`, inerte até
+o passo 4 existir). Passo 1 feito **para o CTA** — os outros tipos só têm limite depois que
+existirem (passo 3). Passo B (quantidade variável) **está bloqueado pelo plano B**, não pela
+expressão: ver passo 0.
 
 ---
 
@@ -101,19 +102,48 @@ CTA contextual, séries editoriais.
 
 ## 3. Passos, em ordem
 
-### Passo 0 — provar a expressão de coleção — **NO AR 17/08 12:48** (publicador `caf17307`)
+### Passo 0 — provar a expressão de coleção — **RESPONDIDO: NÃO** (revertido 17/08 23:40)
 
-Deployado depois de o dono cobrar por que o carrossel continuava fixo em 6. Conferido no banco vivo:
-`carouselChildren` é string de expressão e **emite `media_type: 'IMAGE'` em cada filho** (a armadilha
-que derrubaria tudo — sem o campo explícito todo filho viraria VIDEO com url indefinida).
+**O n8n 2.30.4 NÃO resolve expressão no nível da coleção.** A leitura do código-fonte dizia que
+sim; a execução disse que não. Leitura não é execução — e esta é a segunda vez que essa incógnita
+custa um slot (a primeira foi 05/08, 3 dias).
 
-Saída deliberadamente idêntica à de antes: as mesmas 6 urls, mesma ordem. **A prova é a publicação
-das 20:30 de 17/08.** Se publicar, a resolução no nível da coleção está provada e o passo B fica
-livre. Se falhar: perde-se um slot, o monitor avisa, a peça volta como `RETRY` (que agora existe) e
-o rollback é `--reverter`.
+Medido na execução 340 (17/08 20:30, publicador `caf17307`):
 
-> ⚠️ **Passo B só depois de uma publicação bem-sucedida nesta forma.** Fazer os dois juntos é
-> exatamente o que quebrou 05/08.
+| evidência | valor |
+|---|---|
+| saída do nó `Create a carousel post` | ramo de erro, `"The service was not able to process your request"` |
+| tempo do nó | **12,4 s** — 3 tentativas × ~0,46 s + 2 esperas de 5 s |
+| token, no mesmo dia | válido às 07:23 (healthcheck) e publicou às 12:30 |
+| API + imagem da peça, testadas na mão | `POST /me/media` com a 1ª url devolveu `{"id":"18102359591183918"}` |
+| `POST /me/media` com `media_type=CAROUSEL&children=` (vazio) | `OAuthException code 1` em **0,46 s** |
+
+O último item é o fecho: `code 1` é exatamente a assinatura de 05/08, e o tempo por tentativa bate
+com os 12,4 s observados. Se a expressão tivesse resolvido, o nó teria criado 6 containers filhos
+(~1–2 s cada) antes de falhar — não caberia em 12,4 s com 3 tentativas.
+
+A causa mecânica está no código do nó comunitário
+(`n8n-nodes-instagram-integrations/dist/nodes/Instagram/Instagram.node.js:2074`):
+
+```js
+const childrenData = this.getNodeParameter('carouselChildren', i);
+...
+if (childrenData.child && Array.isArray(childrenData.child)) { /* cria os filhos */ }
+const carouselBody = { media_type: 'CAROUSEL', children: childIds.join(','), caption };
+```
+
+Sem `.child` array, ele **não avisa** — segue e posta o pai com `children: ""`. Falha silenciosa
+virando erro genérico do Meta três nós adiante.
+
+Consequências para o passo B:
+
+- a peça voltou como **`RETRY`** (id 59 da fila) — o mecanismo de 13/08 funcionou, a pauta não se
+  perdeu, só o slot;
+- o caminho para quantidade variável agora é o **plano B** (`Switch` na quantidade → um nó Instagram
+  por tamanho, coleção estática), ou **patch no `dist` do nó comunitário** para aceitar string/array
+  em `carouselChildren` — mesma classe de mudança que já fazemos em `getAccessToken`, com a mesma
+  ressalva de sumir se o nó for reinstalado;
+- **não** tentar de novo a expressão de coleção. A pergunta está respondida.
 
 <details><summary>registro original (antes do deploy)</summary>
 
