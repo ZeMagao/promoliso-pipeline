@@ -6,13 +6,6 @@ if(!ready.length) return [];
 
 const FRESCOR_MAX_H = 48;      // teto do que ainda vale publicar
 const JANELA_DO_DIA_H = 12;    // o que conta como "notícia de hoje"
-
-// O Instagram aceita de 2 a 10 imagens num carrossel. A conta de QUAL saída do
-// "Quantas imagens?" recebe a peça vive aqui, em código testável, e não na expressão do
-// Switch — de propósito: índice fora da faixa faz o Switch derrubar a execução, e aí a row
-// fica presa em PUBLISHING, o único estado que nem publica nem alerta.
-const MIN_IMAGENS = 2;
-const MAX_IMAGENS = 10;
 const idadeH = (row) => {
   const t = Date.parse(String(row.created_at || row.createdAt || ''));
   return Number.isFinite(t) ? (Date.now() - t) / 3600000 : Infinity;
@@ -30,28 +23,16 @@ const fila = doDia.length
 
 const r = fila[0];
 let urls=[]; try{ urls=JSON.parse(r.carousel_urls||'[]'); }catch(e){ urls=[]; }
-if(!Array.isArray(urls)) urls=[];
-// Só url https serve: é o Instagram que baixa a imagem, e um item quebrado no meio da coleção
-// fazia o filho nascer sem image_url. Medido nas 61 rows da fila: nenhuma perde imagem por
-// causa deste filtro — ele não muda nada hoje, só fecha a porta.
-const validas = urls.filter((u) => typeof u === 'string' && /^https:\/\//.test(u));
-if(validas.length < MIN_IMAGENS) throw new Error('carousel_urls insuficiente: '+r.carousel_urls);
-const usadas = validas.slice(0, MAX_IMAGENS);
+if(!Array.isArray(urls) || urls.length<2) throw new Error('carousel_urls insuficiente: '+r.carousel_urls);
 return [{ json: {
   content_key: String(r.content_key||''),
   topic: String(r.topic||''),
-  cover: usadas[0],
-  // era slice(1,6): jogava fora a 7a imagem em diante e obrigava a peça a ter exatamente 6
-  slides: usadas.slice(1),
+  cover: urls[0],
+  slides: urls.slice(1,6),
   caption: String(r.caption||''),
   story_url: String(r.story_url||''),
   primary_url: String(r.primary_url||''),
   status_anterior: String(r.status||'').toUpperCase(),
   created_at: String(r.created_at || r.createdAt || ''),
   idade_h: Math.round(idadeH(r) * 10) / 10,
-  n_imagens: usadas.length,
-  // Saída do Switch, zero-based: 2 imagens -> 0, 6 -> 4, 10 -> 8. Dentro da faixa por
-  // construção, porque menos de MIN_IMAGENS virou erro acima e o slice corta em MAX_IMAGENS.
-  saida_carrossel: usadas.length - MIN_IMAGENS,
-  imagens_ignoradas: validas.length - usadas.length,
 } }];

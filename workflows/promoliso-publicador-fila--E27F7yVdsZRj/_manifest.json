@@ -2,10 +2,10 @@
   "id": "E27F7yVdsZRj",
   "name": "PromoLiso - Publicador (fila)",
   "active": true,
-  "versionId": "3ff3ec69-9b30-4f08-b85d-4c30703abf12",
-  "activeVersionId": "3ff3ec69-9b30-4f08-b85d-4c30703abf12",
+  "versionId": "4bb8c077-8a2b-40d2-b25d-806fbb7c70f8",
+  "activeVersionId": "4bb8c077-8a2b-40d2-b25d-806fbb7c70f8",
   "draft_igual_publicado": true,
-  "total_nos": 23,
+  "total_nos": 32,
   "nos": [
     {
       "nome": "Aguardar processamento 1",
@@ -27,6 +27,60 @@
       "typeVersion": 2,
       "codigo": "aguardar-processamento-3.js",
       "linhas": 2
+    },
+    {
+      "nome": "Carrossel 02",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 03",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 04",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 05",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 06",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 07",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 08",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 09",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "nome": "Carrossel 10",
+      "tipo": "n8n-nodes-instagram-integrations.instagram",
+      "typeVersion": 1,
+      "onError": "continueErrorOutput"
     },
     {
       "nome": "Carrossel pronto 1?",
@@ -57,12 +111,6 @@
       "nome": "Consultar status 3",
       "tipo": "n8n-nodes-instagram-integrations.instagram",
       "typeVersion": 1
-    },
-    {
-      "nome": "Create a carousel post",
-      "tipo": "n8n-nodes-instagram-integrations.instagram",
-      "typeVersion": 1,
-      "onError": "continueErrorOutput"
     },
     {
       "nome": "Create a story",
@@ -128,11 +176,16 @@
       "onError": "continueErrorOutput"
     },
     {
+      "nome": "Quantas imagens?",
+      "tipo": "n8n-nodes-base.switch",
+      "typeVersion": 3.4
+    },
+    {
       "nome": "Selecionar READY",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "selecionar-ready.js",
-      "linhas": 39
+      "linhas": 57
     },
     {
       "nome": "Slots de publicação",
@@ -159,6 +212,78 @@
     "Aguardar processamento 3": [
       [
         "Consultar status 3"
+      ]
+    ],
+    "Carrossel 02": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 03": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 04": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 05": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 06": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 07": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 08": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 09": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
+      ]
+    ],
+    "Carrossel 10": [
+      [
+        "Preparar verificação"
+      ],
+      [
+        "Preparar FALHA"
       ]
     ],
     "Carrossel pronto 1?": [
@@ -200,14 +325,6 @@
         "Carrossel pronto 3?"
       ]
     ],
-    "Create a carousel post": [
-      [
-        "Preparar verificação"
-      ],
-      [
-        "Preparar FALHA"
-      ]
-    ],
     "Create a story": [
       [
         "Preparar PUBLISHED"
@@ -230,7 +347,7 @@
     ],
     "Marcar PUBLISHING": [
       [
-        "Create a carousel post"
+        "Quantas imagens?"
       ]
     ],
     "Preparar FALHA": [
@@ -254,6 +371,35 @@
       ],
       [
         "Preparar FALHA"
+      ]
+    ],
+    "Quantas imagens?": [
+      [
+        "Carrossel 02"
+      ],
+      [
+        "Carrossel 03"
+      ],
+      [
+        "Carrossel 04"
+      ],
+      [
+        "Carrossel 05"
+      ],
+      [
+        "Carrossel 06"
+      ],
+      [
+        "Carrossel 07"
+      ],
+      [
+        "Carrossel 08"
+      ],
+      [
+        "Carrossel 09"
+      ],
+      [
+        "Carrossel 10"
       ]
     ],
     "Selecionar READY": [
