@@ -38,6 +38,46 @@ const HORAS = Number((process.argv.find((a) => a.startsWith('--horas=')) || '').
 const PISO_CHAMADAS = 3;      // menos que isso não dá para distinguir padrão de acidente
 const FRACAO_MINIMA = 0.5;    // metade ou mais das chamadas com erro
 
+// FALHAS CONHECIDAS E ACEITAS, COM PRAZO.
+//
+// Por que isto existe: alerta que grita todo dia por condição que o dono já conhece e decidiu não
+// resolver agora ENSINA A IGNORAR ALERTA — e aí o detector perde justamente o valor de existir. Já
+// aconteceu neste projeto em 11/08, quando o watchdog gritou cota da OpenAI por causa de um path de
+// SVG e o alerta passou a ser lido como ruído.
+//
+// TRÊS REGRAS DE DESENHO, cada uma consertando um jeito de silenciamento virar ponto cego:
+//
+//  1. `ate` é OBRIGATÓRIO e o silêncio expira sozinho. Não existe flag que alguém precise lembrar de
+//     desligar — passada a data, o alerta volta por conta própria.
+//  2. Silencia o PAR (nó + mensagem), nunca o nó inteiro. Silenciar `Busca detalhada` por completo
+//     esconderia um erro DIFERENTE do mesmo nó; a mensagem tem de casar.
+//  3. O que está silenciado aparece SEMPRE na saída e no log, e entra no corpo de qualquer e-mail
+//     que for enviado por outro motivo. Silêncio invisível é o mesmo buraco de novo.
+const SILENCIADOS = [
+  {
+    no: 'Busca detalhada',
+    // a frase exata que o Tavily devolve ao estourar as 1000 requisições do plano gratuito
+    mensagem: /exceeds your plan's set usage limit/i,
+    ate: '2026-09-01',
+    motivo: 'plano gratuito do Tavily (1000 req/mes) estourou em 18/08; dono decidiu esperar o reset',
+  },
+];
+
+const hoje = new Date().toISOString().slice(0, 10);
+
+// Devolve o silenciamento VIGENTE que cobre este nó+mensagem, ou null.
+function silenciamentoDe(nome, mensagens) {
+  for (const s of SILENCIADOS) {
+    if (s.no !== nome) continue;
+    if (s.ate <= hoje) continue;                       // venceu: volta a alertar sozinho
+    const msgs = [...mensagens];
+    // TODAS as mensagens do nó têm de casar. Se apareceu uma mensagem nova junto, é outra falha
+    // escondida atrás da mesma ferramenta — e essa tem de alertar.
+    if (msgs.length && msgs.every((m) => s.mensagem.test(m))) return s;
+  }
+  return null;
+}
+
 // Lê o pool `flatted` resolvendo UM nível por vez. Expandir o pool inteiro estoura a memória: ele
 // deduplica referências, e expandir transforma o grafo em árvore (o kernel matou o processo na
 // primeira versão desta análise). O teto `< N` evita tratar um id numérico-como-string como índice.
@@ -96,9 +136,16 @@ async function main({ logger }) {
       pool = null;
     }
 
-    const suspeitos = [...porNo.entries()]
+    const emPadrao = [...porNo.entries()]
       .filter(([, r]) => r.erros >= PISO_CHAMADAS && r.erros / r.chamadas >= FRACAO_MINIMA)
       .sort((a, b) => b[1].erros - a[1].erros);
+
+    const calados = [];
+    const suspeitos = [];
+    for (const [nome, r] of emPadrao) {
+      const s = silenciamentoDe(nome, r.mensagens);
+      if (s) calados.push([nome, r, s]); else suspeitos.push([nome, r]);
+    }
 
     if (VERBOSE) {
       for (const [nome, r] of [...porNo.entries()].filter(([, r]) => r.erros)) {
@@ -107,17 +154,30 @@ async function main({ logger }) {
     }
 
     console.log(`execuções na janela de ${HORAS} h: ${execs.length} | com dados: ${lidas}`);
-    console.log(`nós com erro em padrão (>=${PISO_CHAMADAS} erros e >=${FRACAO_MINIMA * 100}% das chamadas): ${suspeitos.length}`);
+    console.log(`nós com erro em padrão (>=${PISO_CHAMADAS} erros e >=${FRACAO_MINIMA * 100}% das chamadas): ${emPadrao.length}`);
+    for (const [nome, r, s] of calados) {
+      console.log(`  SILENCIADO até ${s.ate}: ${nome} ${r.erros}/${r.chamadas} — ${s.motivo}`);
+      for (const m of r.mensagens) console.log(`     "${m}"`);
+    }
+    if (suspeitos.length) console.log(`  a alertar: ${suspeitos.length}`);
     for (const [nome, r] of suspeitos) {
       console.log(`  ${nome}: ${r.erros}/${r.chamadas} chamadas com erro, ${r.execs.size} execução(ões)`);
       for (const m of r.mensagens) console.log(`     "${m}"`);
     }
 
     const resumo = {
-      janela_h: HORAS, execucoes: execs.length, lidas, suspeitos: suspeitos.length,
+      janela_h: HORAS, execucoes: execs.length, lidas,
+      em_padrao: emPadrao.length, suspeitos: suspeitos.length, silenciados: calados.length,
       nos: suspeitos.map(([n, r]) => `${n}=${r.erros}/${r.chamadas}`),
+      calados: calados.map(([n, r, s]) => `${n}=${r.erros}/${r.chamadas} ate ${s.ate}`),
     };
 
+    // o silenciado vai pro log mesmo sem e-mail: é o registro de que algo está sendo abafado
+    for (const [nome, r, s] of calados) {
+      logger.info('falha conhecida silenciada', JSON.stringify({
+        no: nome, erros: r.erros, chamadas: r.chamadas, ate: s.ate, motivo: s.motivo,
+      }));
+    }
     if (!suspeitos.length) { logger.info('resumo', JSON.stringify(resumo)); return resumo; }
 
     const corpo = 'Nó(s) errando DENTRO de execuções que terminaram success — o Monitor de erros não\n'
@@ -126,6 +186,10 @@ async function main({ logger }) {
         + `${r.execs.size} execução(ões) [${[...r.workflows].join(', ')}]\n`
         + [...r.mensagens].map((m) => `     "${m}"`).join('\n')).join('\n')
       + `\n\nJanela: últimas ${HORAS} h (${lidas} execuções com dados).`
+      + (calados.length
+        ? '\n\nSILENCIADO neste momento (nao gerou alerta, e volta a alertar sozinho na data):\n'
+          + calados.map(([n, r, s]) => ` - ${n}: ${r.erros}/${r.chamadas} até ${s.ate} — ${s.motivo}`).join('\n')
+        : '')
       + '\n\nPor que isto importa em custo: quando a ferramenta de busca do redator erra, o agente'
       + '\nreformula a consulta e tenta de novo, e cada tentativa reenvia a linha de base inteira'
       + '\n(~15.800 tokens). Em 19-20/08 isso deu 17 buscas numa única pauta.'
@@ -148,4 +212,4 @@ if (require.main === module) {
     if (r.status !== 'success') console.error('FALHOU: ' + r.erro);
   });
 }
-module.exports = { main, PISO_CHAMADAS, FRACAO_MINIMA, leitor };
+module.exports = { main, PISO_CHAMADAS, FRACAO_MINIMA, leitor, SILENCIADOS, silenciamentoDe };
