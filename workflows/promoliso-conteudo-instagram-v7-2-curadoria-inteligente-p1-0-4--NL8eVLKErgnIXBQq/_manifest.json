@@ -11,13 +11,17 @@
       "nome": "Agente Curador PromoLiso AI",
       "tipo": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "prompt": "agente-curador-promoliso-ai.prompt.md",
+      "prompt_chars": 4709
     },
     {
       "nome": "Agente Verificador de Confiabilidade",
       "tipo": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "prompt": "agente-verificador-de-confiabilidade.prompt.md",
+      "prompt_chars": 1642
     },
     {
       "nome": "Aggregate",

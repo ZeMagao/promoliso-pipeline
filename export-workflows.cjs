@@ -32,6 +32,25 @@ const SAIDA = path.join(__dirname, 'workflows');
 const db = new sqlite3.Database(DB, sqlite3.OPEN_READONLY);
 const all = (q, p) => new Promise((r, j) => db.all(q, p || [], (e, x) => (e ? j(e) : r(x))));
 
+// O prompt mora em lugar diferente conforme o tipo do nó:
+//   @n8n/n8n-nodes-langchain.agent     -> parameters.options.systemMessage
+//   @n8n/n8n-nodes-langchain.chainLlm  -> parameters.messages.messageValues[].message
+// Este exportador lia só o primeiro. Resultado: os prompts do Curador e do Verificador — os dois
+// que decidem QUAL pauta entra — nunca estiveram no snapshot, ou seja, mudança neles não aparecia
+// como diff. Exatamente o buraco que este arquivo existe para fechar.
+// (o mesmo defeito estava em analytics/lib/versoes.cjs e foi corrigido em 2026-08-07)
+function promptDoNo(p) {
+  const direto = p.options && p.options.systemMessage;
+  if (typeof direto === 'string' && direto.length) return direto;
+  const vals = p.messages && p.messages.messageValues;
+  if (Array.isArray(vals)) {
+    const sistema = vals.filter((v) => v && typeof v.message === 'string' && v.message.length &&
+      (!v.type || /system/i.test(String(v.type))));
+    if (sistema.length) return sistema.map((v) => v.message).join('\n---\n');
+  }
+  return undefined;
+}
+
 // nome de nó -> nome de arquivo seguro, sem perder legibilidade
 function slug(nome) {
   return String(nome)
@@ -94,7 +113,7 @@ function slug(nome) {
         info.linhas = p.jsCode.split('\n').length;
         comCodigo++;
       }
-      const prompt = p.options && p.options.systemMessage;
+      const prompt = promptDoNo(p);
       if (typeof prompt === 'string') {
         const arq = slug(n.name) + '.prompt.md';
         fs.writeFileSync(path.join(dir, arq), prompt);
