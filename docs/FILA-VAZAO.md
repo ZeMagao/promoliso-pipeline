@@ -117,29 +117,52 @@ rede contra um dia de produção zero.
 
 ## Ordem de deploy
 
-O portão é cirurgia de nó, então passa pelo banco de provas primeiro.
+O portão é cirurgia de nó, então passou pelo banco de provas primeiro.
+
+### ✅ Prova feita — 20/08 12:25 BRT, execução 378, veredito PROVADO
+
+| braço | decidiu | eco |
+|---|---|---|
+| fechado (N=0) | FECHOU, devolveu `[]` | **não rodou** |
+| controle (N=999999) | abriu | RODOU |
+| real (N=3, informativo) | abriria (1 fresca na fila) | RODOU |
+
+Os dois mecanismos desconhecidos ficaram provados nesta instância: **nó Code que devolve `[]` corta o
+ramo** (o nó seguinte não executa) e **`dataTable get` lê `promoliso_fila` de dentro do produtor**
+(68 rows). O controle positivo é o que dá valor ao resultado — sem ele "não rodou" seria
+indistinguível de bancada quebrada.
+
+Nota do informativo: com 1 fresca na fila, o portão sobe **inerte**. Ele só morde quando a fila
+enche, que é o desenho e não um problema.
 
 ```bash
-# 1. prova na instância — não publica nada, não chama API
+# 1. prova na instância — não publica nada, não chama API   [JÁ FEITO]
 sudo -u promo node design/prova_portao_da_fila.cjs --criar
 systemctl restart promo-n8n           # a prova dispara de 5 em 5 min
 sudo -u promo node design/prova_portao_da_fila.cjs --ver
+
+# 2. desarmar a bancada (ela dispara de 5 em 5 min até ser removida)
 sudo -u promo node design/prova_portao_da_fila.cjs --remover
 systemctl restart promo-n8n
 
-# 2. só se a prova disser PROVADO
+# 3. só se a prova disser PROVADO
 AUTO=1 /opt/promoliso/deploy-vps.sh design/patch_portao_da_fila.cjs
 
-# 3. o seguro do ramo B (independente, sem nó novo)
+# 4. o seguro do ramo B (independente, sem nó novo)
 AUTO=1 /opt/promoliso/deploy-vps.sh design/patch_ramo_b_por_nota.cjs
 
-# 4. a faxina (dry-run primeiro, é o padrão)
+# 5. a faxina (dry-run primeiro, é o padrão)
 sudo -u promo node design/limpar_fila_nota_zero.cjs
 sudo -u promo node design/limpar_fila_nota_zero.cjs --apagar
 ```
 
 Não deployar em cima dos slots: produtor de 2 em 2 horas das 8 às 22, publicador 12:30 e 20:30 todo
 dia mais 16:30 em ter/qua/sex.
+
+> ⏰ **Ler a hora do VPS antes de decidir a janela** (`ssh ... date -Is`), nunca estimar. Em 20/08 eu
+> estimei "13:40" quando eram 12:23 e quase mandei deployar 7 minutos antes da publicação das 12:30.
+> É o mesmo tipo de erro do fuso duplo (n8n grava UTC, os `patch_*.cjs` gravam hora local): a hora
+> aqui nunca é a que se supõe.
 
 ## O que fica em aberto
 
