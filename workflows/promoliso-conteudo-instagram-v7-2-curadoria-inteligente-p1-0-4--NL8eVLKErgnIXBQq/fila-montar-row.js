@@ -3,7 +3,10 @@
 const prep = ($('Preparar registro pendente').first().json) || {};
 const cover = (($('Obter URL primeira imagem').first().json) || {}).url || '';
 const agg = (($('Aggregate').first().json) || {}).url || [];
-const carousel = [cover, agg[0], agg[1], agg[2], agg[3], agg[4]].filter(Boolean);
+// Era [cover, agg[0]..agg[4]]: cravado em 5 slides. Com quantidade variável isso truncaria a
+// peça de 7 ou 8 imagens de volta pra 6 EM SILÊNCIO, aqui na gravação da fila — o pior lugar
+// possível, porque nada reprova e o post sai com slide faltando.
+const carousel = [cover, ...(Array.isArray(agg) ? agg : [])].filter(Boolean);
 const caption = (($('Edit Fields').first().json) || {}).legenda || '';
 const storyUrl = (($input.first().json) || {}).secure_url || '';
 const primary = String(prep.primary_url || '');

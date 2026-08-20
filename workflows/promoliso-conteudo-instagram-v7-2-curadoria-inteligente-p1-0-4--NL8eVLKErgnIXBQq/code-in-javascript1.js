@@ -407,7 +407,14 @@ function buildCta(slide){
 
 // --- entrada/saída do nó (contrato preservado) ---
 const data = $input.first().json.output;
-if (!data || !Array.isArray(data.slides) || data.slides.length !== 5) {
-  throw new Error('Saída editorial incompleta');
+// A MESMA faixa do validador. Se divergir, a capa derruba a execução de uma pauta que o
+// validador aprovou — o desencontro de números que custou semanas em 05/08. O harness
+// compara estes dois valores com os do validador.
+const MIN_SLIDES = 3;
+const MAX_SLIDES = 7;
+if (!data || !Array.isArray(data.slides) || data.slides.length < MIN_SLIDES || data.slides.length > MAX_SLIDES) {
+  // a mensagem diz QUANTOS vieram: 'incompleta' sozinha manda a gente caçar fantasma
+  throw new Error('Saída editorial incompleta: '
+    + (data && Array.isArray(data.slides) ? data.slides.length + ' slides, fora de ' + MIN_SLIDES + '..' + MAX_SLIDES : 'sem slides'));
 }
 return buildCapa(data);

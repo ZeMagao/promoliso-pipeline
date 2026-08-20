@@ -3,11 +3,17 @@
 **Base:** PRD (11/08/2026) + SDD (12/08/2026) de melhoria dos carrosséis.
 **Auditoria (Fase 1):** feita em 12/08/2026. Este documento é o resultado dela — não refaça a
 descoberta, comece do passo 1.
-**Estado (18/08):** **quantidade variável resolvida pelo plano B, com prova.** O publicador
-aceita de 2 a 10 imagens e está **no ar** (`4bb8c077`), inerte porque toda peça da fila tem 6. A
-metade do produtor (3 a 7 slides) está **pronta, testada e não deployada** — espera a publicação das
-12:30 provar a etapa 1. Passo 2 **no ar** (`09b70099`, inerte até o passo 4 existir). Passo 1 feito
-**para o CTA** — os outros tipos só têm limite depois que existirem (passo 3).
+**Estado (20/08):** **quantidade variável NO AR nas duas metades.** O publicador aceita de 2 a 10
+imagens (`4bb8c077`) e o produtor gera de 3 a 7 slides (`8cdad9a8`, deployado 20/08 11:09). A etapa 1
+foi provada antes de subir a etapa 2, como o plano exigia: **6 publicações em 18–19/08**, 3 slots por
+dia, todas `success` com o publicador novo já no caminho. Passo 2 **no ar** (`09b70099`, inerte até o
+passo 4 existir). Passo 1 feito **para o CTA** — os outros tipos só têm limite depois que existirem
+(passo 3).
+
+> **A primeira peça de tamanho variável nasce na corrida do produtor de 20/08 12:00 BRT.** Ela não
+> publica no mesmo dia: o publicador pega a fresca mais velha e há peça de 6 imagens na frente. O que
+> conferir na primeira: quantos slides o agente escolheu, se `carousel_urls` tem `slides+1` URLs, e se
+> o `total`/`pagina` do CTA batem com a quantidade real.
 
 > **A lição que mudou o método:** as duas falhas (05/08, 17/08) vinham de testar mecanismo novo
 > DENTRO do publicador, onde cada tentativa custa um post. A saída foi o **banco de provas**: um
@@ -345,7 +351,7 @@ Três decisões que valem para o resto:
    (`selecionar_ready_variavel.gen.cjs`), então frescor, RETRY e nota ficam idênticos por
    construção. Diff real: 3 linhas removidas.
 
-### Passo 6b — produtor gera de 3 a 7 slides — **PRONTO, NÃO DEPLOYADO (18/08)**
+### Passo 6b — produtor gera de 3 a 7 slides — **NO AR 20/08** (`8cdad9a8`)
 
 Arquivos: `design/patch_carrossel_variavel_produtor.cjs`,
 `design/test_carrossel_variavel_produtor.cjs` (tudo verde).
@@ -377,8 +383,10 @@ Conferido que **não** precisou mudar: `Split Out`, `Loop Over Items`, `Aggregat
 imagem do validador (`index % imagens.length`) já são agnósticos à quantidade; `Estruturar Saída`
 não constrange tamanho de array.
 
-⚠️ **Deployar só depois de a publicação das 12:30 provar a etapa 1.** Subir as duas metades no mesmo
-slot é exatamente o que quebrou 05/08.
+~~⚠️ **Deployar só depois de a publicação das 12:30 provar a etapa 1.**~~ Cumprido: as 6 publicações
+de 18–19/08 (12:32, 16:32, 20:31 BRT nos dois dias, todas `success`) provaram o publicador novo antes
+de o produtor subir. Deploy em 20/08 11:09 com `draft_igual_pub = 1` — a versão **publicada** é a
+patchada, que é o que o cron roda.
 
 ---
 

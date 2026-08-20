@@ -56,6 +56,12 @@ if (!output || typeof output !== 'object') {
 // truncava em 42/38 e reprovava acima de 34/30, e quase nenhuma pauta passou por semanas.
 // A cópia do prompt é texto estático de outro nó; `design/verifica_limites.cjs` compara os dois.
 const LIMITES = { selo: 22, titulo: 42, destaque: 38, texto: 300, legenda: 1800 };
+// Quantos slides o carrossel pode ter. O publicador aceita de 2 a 10 IMAGENS (versão
+// 4bb8c077, um nó por tamanho); aqui a faixa é mais estreita por motivo editorial: cada
+// slide do meio come uma imagem única, e a média medida é 3,4 por pauta.
+const MIN_SLIDES = 3;
+const MAX_SLIDES = 7;
+const slidesNaFaixa = (n) => n >= MIN_SLIDES && n <= MAX_SLIDES;
 
 function limitar(value, maximo) {
   const texto = String(value || '').trim();
@@ -380,7 +386,7 @@ if (urlCandidato && !fonteDoCandidatoPresente) {
 
 const estruturaEditorialCompleta =
   Array.isArray(output.slides) &&
-  output.slides.length === 5 &&
+  slidesNaFaixa(output.slides.length) &&
   output.slides.every(
     (slide) =>
       slide &&
@@ -485,7 +491,15 @@ if (Array.isArray(output.slides)) {
 
 const erros = [];
 const categorias = ['OFERTA', 'ALERTA', 'GUIA', 'NOTICIA'];
-const tipos = ['capa', 'contexto', 'evidencia', 'impacto', 'acao'];
+// A ordem deixou de ser fixa. Obrigatório: o PRIMEIRO slide é a capa e o ÚLTIMO é a ação
+// (onde mora o pedido ao leitor). No meio, qualquer um destes três, em qualquer ordem e
+// podendo repetir — o layout dos três é o mesmo, o que muda é o papel no texto.
+const TIPO_PRIMEIRO = 'capa';
+const TIPO_ULTIMO = 'acao';
+const TIPOS_DO_MEIO = ['contexto', 'evidencia', 'impacto'];
+const tiposAceitos = (index, total) => (index === 0
+  ? [TIPO_PRIMEIRO]
+  : (index === total - 1 ? [TIPO_ULTIMO] : TIPOS_DO_MEIO));
 
 if (output.aprovado_para_publicar !== true) {
   // o texto do agente vai pro corpo do e-mail de alerta; sem truncar, vira ensaio
@@ -628,12 +642,13 @@ if (output.categoria !== 'OFERTA') {
 const problemasSlides = [];
 if (!Array.isArray(output.slides)) {
   problemasSlides.push('slides não veio como lista');
-} else if (output.slides.length !== 5) {
-  problemasSlides.push('esperava 5 slides e vieram ' + output.slides.length);
+} else if (!slidesNaFaixa(output.slides.length)) {
+  problemasSlides.push('esperava de ' + MIN_SLIDES + ' a ' + MAX_SLIDES + ' slides e vieram ' + output.slides.length);
 } else {
   output.slides.forEach((slide, index) => {
-    const onde = 'slide ' + (index + 1) + ' (' + tipos[index] + ')';
-    if (slide?.tipo !== tipos[index]) {
+    const aceitos = tiposAceitos(index, output.slides.length);
+    const onde = 'slide ' + (index + 1) + ' (' + aceitos.join('|') + ')';
+    if (!aceitos.includes(slide?.tipo)) {
       problemasSlides.push(onde + ': tipo veio "' + (slide?.tipo ?? 'ausente') + '"');
     }
     if (typeof slide?.titulo !== 'string' || slide.titulo.length === 0) {
@@ -655,7 +670,7 @@ if (!Array.isArray(output.slides)) {
 }
 const slidesValidos = problemasSlides.length === 0;
 if (!slidesValidos) {
-  erros.push('Estrutura dos cinco slides inválida -> ' + problemasSlides.join('; '));
+  erros.push('Estrutura dos slides inválida -> ' + problemasSlides.join('; '));
 }
 
 const imagemCapa = urlInfo(output.capa);
@@ -778,9 +793,12 @@ const imagensBaixaResolucao = imagensAuditadas.filter(
 if (!imagemCapa) {
   erros.push('Imagem de capa ausente ou sem URL HTTPS direta e segura');
 }
-if (imagensValidas.length !== 6) {
+// Uma imagem por slide, mais a capa. Antes era 6 cravado, que só valia pra 5 slides.
+const imagensEsperadas = Array.isArray(output.slides) ? output.slides.length + 1 : 0;
+if (imagensValidas.length !== imagensEsperadas) {
   erros.push(
-    'Esperava 6 imagens válidas (capa + 5 slides) e passaram ' + imagensValidas.length,
+    'Esperava ' + imagensEsperadas + ' imagens válidas (capa + ' + output.slides.length
+      + ' slides) e passaram ' + imagensValidas.length,
   );
 }
 if (urlsImagens.length === 0) {
