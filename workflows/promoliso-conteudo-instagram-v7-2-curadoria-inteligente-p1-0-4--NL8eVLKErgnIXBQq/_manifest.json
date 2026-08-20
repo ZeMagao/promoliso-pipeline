@@ -2,10 +2,10 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "8cdad9a8-a2ec-4cc9-a135-b06e38014353",
-  "activeVersionId": "8cdad9a8-a2ec-4cc9-a135-b06e38014353",
+  "versionId": "ccaf3f53-51a3-440e-870e-82b95588b43a",
+  "activeVersionId": "ccaf3f53-51a3-440e-870e-82b95588b43a",
   "draft_igual_publicado": true,
-  "total_nos": 123,
+  "total_nos": 125,
   "nos": [
     {
       "nome": "Agente Curador PromoLiso AI",
@@ -389,6 +389,11 @@
       "linhas": 22
     },
     {
+      "nome": "Ler fila (portão)",
+      "tipo": "n8n-nodes-base.dataTable",
+      "typeVersion": 1
+    },
+    {
       "nome": "Liberar fluxo atual?",
       "tipo": "n8n-nodes-base.if",
       "typeVersion": 2.3
@@ -461,6 +466,13 @@
       "nome": "Persistência confirmada?",
       "tipo": "n8n-nodes-base.if",
       "typeVersion": 2.3
+    },
+    {
+      "nome": "Portão da fila",
+      "tipo": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "codigo": "portao-da-fila.js",
+      "linhas": 37
     },
     {
       "nome": "Preparar 2 tentativas",
@@ -1046,6 +1058,11 @@
         "Carrossel pronto para publicar?"
       ]
     ],
+    "Ler fila (portão)": [
+      [
+        "Portão da fila"
+      ]
+    ],
     "Liberar fluxo atual?": [
       [
         "Consolidar candidatos aprovados"
@@ -1099,6 +1116,23 @@
       ],
       [
         "Bloquear por falha no banco"
+      ]
+    ],
+    "Portão da fila": [
+      [
+        "Feed oficial PlayStation",
+        "Feed oficial Xbox",
+        "Feed oficial Nintendo",
+        "Feed oficial NVIDIA Gaming",
+        "Feed oficial Intel",
+        "Feed Adrenaline",
+        "Feed Flow Games",
+        "Feed GameVicio",
+        "Feed IGN Brasil",
+        "Feed GameBlast",
+        "Feed Tecnoblog",
+        "Feed GG.deals",
+        "Epic: jogos grátis"
       ]
     ],
     "Preparar 2 tentativas": [
@@ -1222,19 +1256,7 @@
     ],
     "Schedule Trigger": [
       [
-        "Feed oficial PlayStation",
-        "Feed oficial Xbox",
-        "Feed oficial Nintendo",
-        "Feed oficial NVIDIA Gaming",
-        "Feed oficial Intel",
-        "Feed Adrenaline",
-        "Feed Flow Games",
-        "Feed GameVicio",
-        "Feed IGN Brasil",
-        "Feed GameBlast",
-        "Feed Tecnoblog",
-        "Feed GG.deals",
-        "Epic: jogos grátis"
+        "Ler fila (portão)"
       ]
     ],
     "Selecionar melhor pauta": [

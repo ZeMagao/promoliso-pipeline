@@ -24,9 +24,15 @@ const maisNovaPrimeiro = (a,b) =>
 
 const doDia = ready.filter((row) => idadeH(row) <= JANELA_DO_DIA_H);
 const frescas = ready.filter((row) => idadeH(row) <= FRESCOR_MAX_H);
+// Ramo A (notícia do dia) e ramo B (12–48 h) ordenam os dois por NOTA. O ramo B ordenava por
+// mais nova e respondia por 51% das publicações, o que jogava a nota no lixo em metade das
+// escolhas: medido em 20/08, peça de nota 82 apodreceu e peça de nota 73 publicou. Quem
+// protege a notícia fresca é o ramo A ter prioridade, não a ordem interna do ramo B — lá
+// dentro tudo já é de ontem ou anteontem.
+// O ramo C (> 48 h) continua por mais nova: nota não salva notícia vencida.
 const fila = doDia.length
   ? doDia.slice().sort(porNota)
-  : (frescas.length ? frescas.slice().sort(maisNovaPrimeiro) : ready.slice().sort(maisNovaPrimeiro));
+  : (frescas.length ? frescas.slice().sort(porNota) : ready.slice().sort(maisNovaPrimeiro));
 
 const r = fila[0];
 let urls=[]; try{ urls=JSON.parse(r.carousel_urls||'[]'); }catch(e){ urls=[]; }
