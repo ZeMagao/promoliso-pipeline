@@ -31,10 +31,11 @@ Primeira cópia no ar: 163 MiB. **Restauração testada de verdade** (md5 igual,
 `https://n8n.promoliso.com.br/rest/oauth2-credential/callback` cadastrado. Confirmado que o
 caminho responde HTTP 200 pelo domínio e que bate com o `N8N_EDITOR_BASE_URL` do unit.
 
-> ⚠️ Sobrou pendente: **remover as duas entradas `*.trycloudflare.com`** da lista de OAuth
-> Redirect URIs. Não é só limpeza — aqueles hostnames são sorteados e voltam pro pool da
-> Cloudflare; enquanto forem redirect URI válido, quem receber o hostname pode capturar um code
-> de OAuth da conta.
+> ✅ **FECHADO 20/08** (o dono removeu; feito antes disso, sem data exata): as duas entradas
+> `*.trycloudflare.com` saíram da lista de OAuth Redirect URIs. Não era só limpeza — aqueles
+> hostnames são sorteados e voltam pro pool da Cloudflare; enquanto fossem redirect URI válido,
+> quem recebesse o hostname podia capturar um code de OAuth da conta.
+> Não é verificável a partir do repo nem do VPS — o estado da lista só se vê na UI do Meta.
 
 ### ~~4. 2FA no owner do n8n~~ ✅ FEITO 2026-08-05
 `<conta-owner-do-n8n>` com `mfaEnabled=1`, secret e códigos de recuperação gravados.
