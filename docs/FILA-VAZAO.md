@@ -1,6 +1,16 @@
 # Vazão da fila — por que peça pronta apodrece, medido em 20/08/2026
 
-**Estado:** portão, reordenação e faxina **prontos e NÃO deployados**. Comandos no fim.
+**Estado: NO AR desde 20/08/2026 12:32.** Portão `ccaf3f53` (produtor 123→125 nós), ramo B por nota
+`9f058291`, faxina rodada (fila `READY` 23→9). Prova na instância: PROVADO.
+
+> 🚨 **O deploy custou a publicação das 12:30.** Os `systemctl stop` caíram às 12:30:09 e o cron do
+> publicador dispara 12:30 — as execuções vão de 378 (prova, 12:25) direto para nada. A peça não se
+> perdeu, ficou `READY` para as 20:30; o slot sim. E o erro não foi de cálculo: às 12:23 o slot foi
+> sinalizado, às 12:25 a janela foi chamada de limpa dizendo "próxima publicação 20:30". A regra da
+> caixa mais abaixo já estava escrita — só não foi seguida.
+
+Um comentário com número errado ("51% das publicações") subiu junto no `Selecionar READY`;
+`design/patch_corrige_comentario_ramo_b.cjs` corrige e **não está deployado**.
 
 ## O número
 
