@@ -1,11 +1,13 @@
 {
   "_leia": "Liga o hash do conteúdo que roda no n8n a um rótulo humano. Formato: artefatos.<artefato>.<primeiros 12 chars do hash de lógica> = rótulo. Preencha rodando `node analytics/registrar-versoes.cjs --adotar=<rotulo>` NO VPS (o conteúdo verdadeiro está no banco de produção) e COMMITE o resultado. Enquanto um hash não estiver aqui, ele aparece como NAO-REGISTRADA e gera alerta — que é o comportamento desejado: conteúdo no ar que ninguém declarou é drift.",
   "_rollback": "Reverter uma versão NÃO se faz editando este arquivo. Faz-se deployando o conteúdo antigo (design/patch_*.cjs + deploy-vps.sh, ou restaurando o versionId em workflow_history — ver OPERACAO-VPS.md). O hash volta a bater com o rótulo antigo automaticamente.",
-  "atualizado_em": "2026-08-17T13:08:26.096Z",
+  "atualizado_em": "2026-08-20T16:10:00.000Z",
   "artefatos": {
     "prompt_redator": {
       "5061fd8d894b": "baseline-fase1",
-      "9f52271eb5bc": "w33-oferta-cta-retry"
+      "9f52271eb5bc": "w33-oferta-cta-retry",
+      "ee74503e88ae": "w34-carrossel-variavel",
+      "79e3885d05c0": "snapshot-18-08"
     },
     "prompt_curador": {
       "b74435d7c77d": "baseline-fase1",
@@ -16,22 +18,31 @@
     },
     "template_slide": {
       "cbaf33c7aa70": "baseline-fase1",
-      "8edd0fb9e07e": "w33-oferta-cta-retry"
+      "8edd0fb9e07e": "w33-oferta-cta-retry",
+      "2d8504712b67": "snapshot-12-08"
     },
     "template_capa": {
       "390187e49ba9": "baseline-fase1",
-      "fd24fd7c8632": "w33-oferta-cta-retry"
+      "fd24fd7c8632": "w33-oferta-cta-retry",
+      "3f91e0f20c2a": "w34-carrossel-variavel",
+      "926c7a810de1": "snapshot-12-08"
     },
     "regras_validador": {
       "08b030bf4aeb": "baseline-fase1",
-      "46d75caf9091": "w33-oferta-cta-retry"
+      "46d75caf9091": "w33-oferta-cta-retry",
+      "e7b76ec308d7": "w34-carrossel-variavel",
+      "dce8f7928870": "snapshot-18-08"
     },
     "regras_legenda": {
       "1e94040761c5": "baseline-fase1"
     },
     "regras_fila": {
       "e60b4390886b": "baseline-fase1",
-      "a3424bc94bc2": "w33-oferta-cta-retry"
+      "a3424bc94bc2": "w33-oferta-cta-retry",
+      "9c4f766f9306": "w34-ramo-b-por-nota",
+      "8be2f1080a8f": "w33-publicador-2a10",
+      "a3c1f038f3f3": "pre-noticia-do-dia"
     }
-  }
+  },
+  "_rotulos": "Um rotulo por ONDA de deploy. `snapshot-DD-MM` = orfao que ninguem consegue atribuir a uma mudanca conhecida: a data e fato, a causa seria chute, e rotulo errado e pior que generico porque faz o relatorio afirmar que a variavel X mudou o alcance. Use analytics/datar-versoes.cjs para ver as janelas antes de rotular."
 }

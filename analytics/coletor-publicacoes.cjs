@@ -193,9 +193,13 @@ async function main({ logger }) {
         formato: 'CARROSSEL',
         registro_versao: cfg.registroVersao,
         analytics_atualizado_em: agoraUtc(),
-        // versões vigentes: só preenchem quando ainda estão vazias, para não reescrever a
-        // versão que valia quando o post saiu (ver comentário em lib/versoes.cjs)
-        ...versaoAtual,
+        // AS VERSÕES NÃO ENTRAM AQUI. Este upsert roda com `somenteVazios` no default (false),
+        // então espalhar `versaoAtual` neste objeto REESCREVIA o carimbo de versão a cada coleta —
+        // o comentário antigo dizia "só preenchem quando ainda estão vazias" e o código fazia o
+        // oposto. Medido em 20/08: as 15 publicações da semana W33 estavam todas estampadas com a
+        // MESMA versão de template, que era a viva na última coleta e não a que produziu o post.
+        // Efeito: a seção "por template" do relatório semanal comparava rótulo com ele mesmo, e
+        // toda a evolução visual de 11 a 20/08 ficou inatribuível. Vão num upsert separado, abaixo.
       };
 
       // da curadoria (durável, não depende de execution_data)
@@ -262,6 +266,21 @@ async function main({ logger }) {
       });
       if (r.acao === 'sem-mudanca') resumo.semMudanca++; else { resumo.atualizadas++; logger.ok(); }
       if (VERBOSE) logger.info('publicação', JSON.stringify({ chave: k, acao: r.acao, mudou: r.mudou }));
+
+      // As versões, em upsert PRÓPRIO e com `somenteVazios: true`: o carimbo tem de ser o da versão
+      // que estava no ar quando o post saiu, e a única forma de garantir isso é escrever uma vez e
+      // nunca mais. O upsert acima já criou a linha, então aqui só os campos vazios são preenchidos.
+      // (Para consertar linhas antigas já sobrescritas: analytics/recarimbar-versoes.cjs)
+      const rv = await tab.upsert(w, {
+        dataTableId: cfg.tabelas.publicacoes,
+        chave: 'content_key',
+        valorChave: p.content_key,
+        campos: { ...versaoAtual },
+        somenteVazios: true,
+      });
+      if (VERBOSE && rv.acao !== 'sem-mudanca') {
+        logger.info('versões carimbadas', JSON.stringify({ chave: k, campos: rv.mudou }));
+      }
     }
 
     // --- promoliso_fontes ----------------------------------------------------------------
