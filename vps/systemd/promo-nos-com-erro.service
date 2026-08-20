@@ -1,0 +1,17 @@
+[Unit]
+Description=PromoLiso - detecta no errando dentro de execucao success (falha silenciosa)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Service]
+Type=oneshot
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso
+Environment=TZ=America/Sao_Paulo
+Environment=PROMO_RAIZ=/opt/promoliso
+Environment=PROMO_ANALYTICS_LOG_DIR=/opt/promoliso/analytics/logs
+ExecStart=/usr/bin/node /opt/promoliso/analytics/verificar-nos-com-erro.cjs --horas=48
+TimeoutStartSec=600
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full

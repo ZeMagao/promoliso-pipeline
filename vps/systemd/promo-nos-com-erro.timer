@@ -1,0 +1,12 @@
+[Unit]
+Description=PromoLiso - falha silenciosa de no (diario)
+Documentation=file:/opt/promoliso/analytics/README.md
+
+[Timer]
+# 07:50, dez minutos depois do registro de versoes: os dois leem o banco e nao competem.
+# Janela de 48 h no script cobre o dia anterior inteiro mesmo se um disparo falhar.
+OnCalendar=*-*-* 07:50:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
