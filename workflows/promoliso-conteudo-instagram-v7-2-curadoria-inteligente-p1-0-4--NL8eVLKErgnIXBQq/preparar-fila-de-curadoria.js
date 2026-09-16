@@ -84,9 +84,59 @@ aiCandidates.sort((a, b) => {
   );
 });
 
+// EQUILÍBRIO DOS CANDIDATOS DE IA.
+// Antes daqui era `aiCandidates.slice(0, 5)` sobre uma lista já ordenada com primária na frente.
+// Isso era inofensivo enquanto o lote tinha 1 primária; depois da reserva de vagas (52ab6c5f) o
+// lote passou a ter 6, e os 5 viravam 5 primárias em 2 hosts — conta brasileira recebendo só
+// anúncio internacional, com o mesmo host repetido três vezes. Medido na exec 601.
+const MAX_IA = Number(config.max_candidatos_ia || 5);
+const TETO_POR_HOST_IA = 2;
+const PISO_NAO_PRIMARIA = 2;
+
+const hostDoCandidato = (c) =>
+  String((c && c.noticia && c.noticia.dominio_fonte) || '').toLowerCase();
+const ehPrimaria = (c) =>
+  String((c && c.noticia && c.noticia.tipo_fonte) || '') === 'primaria';
+
+const escolhidosIA = [];
+const usoPorHostIA = Object.create(null);
+const cabeNoHost = (c) => {
+  const host = hostDoCandidato(c);
+  return !host || (usoPorHostIA[host] || 0) < TETO_POR_HOST_IA;
+};
+const pegar = (c) => {
+  const host = hostDoCandidato(c);
+  if (host) usoPorHostIA[host] = (usoPorHostIA[host] || 0) + 1;
+  escolhidosIA.push(c);
+};
+
+// 1ª passada: preenche na ordem de mérito, deixando PISO_NAO_PRIMARIA vagas guardadas.
+const tetoDaPrimeiraPassada = Math.max(0, MAX_IA - PISO_NAO_PRIMARIA);
+for (const candidato of aiCandidates) {
+  if (escolhidosIA.length >= tetoDaPrimeiraPassada) break;
+  if (!cabeNoHost(candidato)) continue;
+  pegar(candidato);
+}
+// 2ª passada: as vagas guardadas só aceitam NÃO-primária — é o que garante pauta brasileira.
+for (const candidato of aiCandidates) {
+  if (escolhidosIA.length >= MAX_IA) break;
+  if (escolhidosIA.includes(candidato)) continue;
+  if (ehPrimaria(candidato)) continue;
+  if (!cabeNoHost(candidato)) continue;
+  pegar(candidato);
+}
+// 3ª passada: se não houver não-primária suficiente, completa com o que sobrou, IGNORANDO o teto.
+// De propósito: melhor 5 candidatos com host repetido do que 3 candidatos. O piso é preferência,
+// não obrigação — num dia em que só exista fonte primária, o Curador continua recebendo 5.
+for (const candidato of aiCandidates) {
+  if (escolhidosIA.length >= MAX_IA) break;
+  if (escolhidosIA.includes(candidato)) continue;
+  pegar(candidato);
+}
+
 const selected = [
   ...deterministic.slice(0, 3),
-  ...aiCandidates.slice(0, Number(config.max_candidatos_ia || 5)),
+  ...escolhidosIA,
 ];
 
 if (!selected.length) {

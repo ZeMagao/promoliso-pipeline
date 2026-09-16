@@ -93,11 +93,22 @@ const VAGAS_PRIMARIA = 6;   // replay dos 441 itens reais da exec 601
 const TETO_POR_HOST = 3;    // sem ele, news.xbox sozinho leva a reserva inteira
 const TOTAL = 24;
 
+// PISO DE FRESCOR NA RESERVA. Sem ele a reserva desce a lista inteira atrás de primária: o lote
+// da exec 601 tinha 241 primárias, mas só 10 com menos de 24 h — e a mais antiga era de 2016-03-16
+// (nvidianews). Num dia parado, a vaga privilegiada iria para notícia de 2016 sem ninguém ver.
+// Item sem data legível dá Infinity e fica fora da reserva; ainda pode entrar pelo bolo geral.
+const FRESCOR_RESERVA_H = 48;
+const idadeEmHoras = (candidato) => {
+  const t = Date.parse(String(candidato.publicado_em || ''));
+  return Number.isFinite(t) ? (Date.now() - t) / 3600000 : Infinity;
+};
+
 const reservadas = [];
 const usadosPorHost = Object.create(null);
 for (const candidato of candidatos) {
   if (reservadas.length >= VAGAS_PRIMARIA) break;
   if (candidato.tipo_fonte !== 'primaria') continue;
+  if (idadeEmHoras(candidato) > FRESCOR_RESERVA_H) continue;
   const host = hostnameFromUrl(candidato.url);
   if (!host) continue;
   if ((usadosPorHost[host] || 0) >= TETO_POR_HOST) continue;

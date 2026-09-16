@@ -334,16 +334,6 @@ function motivoDescarteImagem(imagem) {
 function imagemUtilizavel(imagem) {
   return motivoDescarteImagem(imagem) === null;
 }
-function imagemUtilizavelAntiga(imagem) {
-  if (!imagem || !imagem.url) return false;
-  if (hostIn(imagem.host, imagensBloqueadas)) return false;
-  const caminho = imagem.url.split(/[?#]/)[0].toLowerCase();
-  if (/\.(?:html?|php|asp|aspx)$/.test(caminho)) return false;
-  if (/\/(?:search|busca)(?:\/|$)/.test(caminho)) return false;
-  // precisa parecer imagem (extensao) OU vir de host de imagem conhecido —
-  // barra capa fabricada tipo xbox.com/games/... (pagina HTML, nao imagem)
-  return pareceImagemUrl(imagem.url) || hostIn(imagem.host, hostsImagemConhecidos);
-}
 const urlUtilizavel = (url) => imagemUtilizavel(urlInfo(url));
 
 
