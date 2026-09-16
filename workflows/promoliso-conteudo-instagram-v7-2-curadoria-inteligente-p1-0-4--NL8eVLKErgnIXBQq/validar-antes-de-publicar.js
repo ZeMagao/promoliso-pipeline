@@ -312,7 +312,29 @@ const hostsImagemConhecidos = [
 ];
 const pareceImagemUrl = (u) =>
   /\.(?:jpe?g|png|webp|gif|avif)$/.test(String(u).split(/[?#]/)[0].toLowerCase());
+// blogger.googleusercontent.com é a CDN do BLOGGER (o GameBlast roda nele), não a do Google
+// Imagens. Ela casa com 'googleusercontent.com' por sufixo e morria aqui — 150 de ~152 imagens
+// daquele feed, em silêncio. Liberada por host EXATO; lh3.googleusercontent.com e afins seguem
+// bloqueados. Medido na exec 598 (15/09/2026).
+const hostsImagemLiberados = ['blogger.googleusercontent.com'];
+// Motivo do descarte em vez de um booleano: sem isto, imagem morta pela lista de bloqueio não
+// deixa rastro nenhum no relatório e "passaram 0" não diz a causa.
+function motivoDescarteImagem(imagem) {
+  if (!imagem || !imagem.url) return 'sem URL utilizável';
+  if (!hostsImagemLiberados.includes(imagem.host)
+      && hostIn(imagem.host, imagensBloqueadas)) return 'host bloqueado';
+  const caminho = imagem.url.split(/[?#]/)[0].toLowerCase();
+  if (/\.(?:html?|php|asp|aspx)$/.test(caminho)) return 'é página, não imagem';
+  if (/\/(?:search|busca)(?:\/|$)/.test(caminho)) return 'veio de busca';
+  if (!(pareceImagemUrl(imagem.url) || hostIn(imagem.host, hostsImagemConhecidos))) {
+    return 'não parece URL de imagem';
+  }
+  return null;
+}
 function imagemUtilizavel(imagem) {
+  return motivoDescarteImagem(imagem) === null;
+}
+function imagemUtilizavelAntiga(imagem) {
   if (!imagem || !imagem.url) return false;
   if (hostIn(imagem.host, imagensBloqueadas)) return false;
   const caminho = imagem.url.split(/[?#]/)[0].toLowerCase();
@@ -673,6 +695,34 @@ if (!slidesValidos) {
   erros.push('Estrutura dos slides inválida -> ' + problemasSlides.join('; '));
 }
 
+// O Blogger carrega o tamanho no CAMINHO (/w640-h360/, /s680/, /s72-w640-h360-c/). Trocar o
+// segmento por /s0/ devolve o original. Medido em 14 URLs reais do feed do GameBlast: 0 quebram,
+// e os 5 thumbs w640-h360 subiram de 52k para 230k, de 33k para 109k, de 52k para 844k.
+// Só troca quando o segmento indica coisa PEQUENA: dois /s1920/ medidos ficaram MENORES com /s0/,
+// então reescrever tudo seria regressão. Reescreve o próprio `output`, que é o que segue para o
+// renderizador — trocar só na cópia da validação deixaria a peça renderizando o thumb.
+const RE_TAMANHO_BLOGGER = /\/(s\d+(?:-[a-z0-9-]+)*|w\d+-h\d+(?:-[a-z0-9-]+)*)\/([^/]+)$/i;
+function blateralMaximo(segmento) {
+  const numeros = String(segmento).match(/\d+/g) || [];
+  return numeros.reduce((maior, n) => Math.max(maior, Number(n)), 0);
+}
+function originalDoBlogger(url) {
+  const bruta = String(url || '');
+  if (!/^https:\/\/blogger\.googleusercontent\.com\//i.test(bruta)) return bruta;
+  const caminho = bruta.split(/[?#]/)[0];
+  const casou = caminho.match(RE_TAMANHO_BLOGGER);
+  if (!casou) return bruta;
+  if (blateralMaximo(casou[1]) >= 1200) return bruta;
+  return caminho.replace(RE_TAMANHO_BLOGGER, '/s0/$2');
+}
+if (typeof output.capa === 'string') output.capa = originalDoBlogger(output.capa);
+if (Array.isArray(output.slides)) {
+  output.slides.forEach((slide) => {
+    if (slide && typeof slide.imagem === 'string') {
+      slide.imagem = originalDoBlogger(slide.imagem);
+    }
+  });
+}
 const imagemCapa = urlInfo(output.capa);
 const imagens = [
   output.capa,
@@ -789,6 +839,16 @@ const imagensSemRelacao = imagensAuditadas.filter(
 const imagensBaixaResolucao = imagensAuditadas.filter(
   (imagem) => imagem.baixa_resolucao,
 );
+// Balde que faltava: imagem que o filtro matou antes de qualquer auditoria. Sem ele o relatório
+// mostra os dois outros baldes vazios e ninguém descobre a causa sem abrir a execução no banco.
+const imagensBloqueadasDetalhe = imagens
+  .map((imagem) => ({ imagem, motivo: motivoDescarteImagem(imagem) }))
+  .filter((x) => x.motivo !== null)
+  .map((x) => ({
+    url: (x.imagem && x.imagem.url) || '',
+    host: (x.imagem && x.imagem.host) || '',
+    motivo: x.motivo,
+  }));
 
 if (!imagemCapa) {
   erros.push('Imagem de capa ausente ou sem URL HTTPS direta e segura');
@@ -802,7 +862,14 @@ if (imagensValidas.length !== imagensEsperadas) {
   );
 }
 if (urlsImagens.length === 0) {
-  erros.push('Nenhuma imagem válida');
+  erros.push(
+    imagensBloqueadasDetalhe.length
+      ? 'Nenhuma imagem válida -> ' + imagensBloqueadasDetalhe
+        .map((x) => (x.host || '(sem host)') + ': ' + x.motivo)
+        .filter((texto, i, todas) => todas.indexOf(texto) === i)
+        .join('; ')
+      : 'Nenhuma imagem válida',
+  );
 }
 const imagemUnicaInfo =
   urlsImagens.length === 1 ? urlInfo(urlsImagens[0]) : null;
@@ -1046,6 +1113,7 @@ return [{
       imagens_unicas: urlsImagens.length,
       imagens_sem_relacao: imagensSemRelacao,
       imagens_baixa_resolucao: imagensBaixaResolucao,
+      imagens_bloqueadas: imagensBloqueadasDetalhe,
       hosts_imagens: hostsImagens,
       oferta: ofertaAuditada,
       erros,

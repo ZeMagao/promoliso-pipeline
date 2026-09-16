@@ -82,7 +82,36 @@ const candidatos = $input.all()
   .sort(
     (a, b) =>
       new Date(b.publicado_em || 0) - new Date(a.publicado_em || 0),
-  )
-  .slice(0, 24);
+  );
 
-return [{ json: { candidatos } }];
+// RESERVA DE VAGA PARA FONTE PRIMÁRIA.
+// Antes daqui era `.slice(0, 24)` direto sobre a ordem por data, e o resultado medido na exec 601
+// foi 23 portais e 1 primária — Xbox, Nintendo e NVIDIA zerados. O peso de fonte que existe em
+// "Preparar fila de curadoria" roda DEPOIS do corte e não alcança quem já morreu aqui.
+// A primária importa por imagem: traz 5-11 por artigo contra 1 do portal.
+const VAGAS_PRIMARIA = 6;   // replay dos 441 itens reais da exec 601
+const TETO_POR_HOST = 3;    // sem ele, news.xbox sozinho leva a reserva inteira
+const TOTAL = 24;
+
+const reservadas = [];
+const usadosPorHost = Object.create(null);
+for (const candidato of candidatos) {
+  if (reservadas.length >= VAGAS_PRIMARIA) break;
+  if (candidato.tipo_fonte !== 'primaria') continue;
+  const host = hostnameFromUrl(candidato.url);
+  if (!host) continue;
+  if ((usadosPorHost[host] || 0) >= TETO_POR_HOST) continue;
+  usadosPorHost[host] = (usadosPorHost[host] || 0) + 1;
+  reservadas.push(candidato);
+}
+// PISO, NÃO COTA: vaga de primária que sobrou volta pro bolo geral, então o total continua 24
+// mesmo num dia em que nenhuma primária publique.
+const naReserva = new Set(reservadas);
+const completando = candidatos
+  .filter((candidato) => !naReserva.has(candidato))
+  .slice(0, TOTAL - reservadas.length);
+const selecionados = [...reservadas, ...completando].sort(
+  (a, b) => new Date(b.publicado_em || 0) - new Date(a.publicado_em || 0),
+);
+
+return [{ json: { candidatos: selecionados } }];

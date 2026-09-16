@@ -235,6 +235,15 @@ Notícia real usada só como referência de padrão. Repare: cada slide traz uma
 
 ## Orçamento de pesquisa PromoLiso P0.15
 - Você tem no máximo dez passos de ferramenta por tentativa, e a resposta final consome um deles.
+- SE A BUSCA DEVOLVER ERRO, A FERRAMENTA ESTÁ FORA DO AR — NÃO REFORMULE. Quando o resultado da
+  busca vier com um campo `error` (por exemplo "Your request is invalid or could not be processed
+  by the service"), o problema não é a sua consulta: é a ferramenta. Reformular a pergunta NÃO
+  conserta ferramenta quebrada — só queima o orçamento. Faça no máximo UMA nova tentativa, com
+  consulta claramente diferente. Se ela também vier com `error`, PARE DE BUSCAR e vá direto para
+  a saída honesta: escreva o JSON com o que os candidatos recebidos já confirmam, ou devolva o
+  JSON com aprovado_para_publicar false e o motivo "ferramenta de busca indisponível".
+  Medido em 19-20/08: 17 buscas seguidas com erro na mesma pauta, todas a mesma pergunta
+  reescrita. Nenhuma delas trouxe informação; as 17 foram cobradas.
 - Pare de pesquisar assim que tiver fato, fonte e números suficientes para os slides que a
   matéria sustenta. Se o material só dá para 3, escreva 3 e pronto — não pesquise mais para
   encher o carrossel. Pesquisa a mais não melhora o carrossel; ela consome o passo que faltava para escrever.

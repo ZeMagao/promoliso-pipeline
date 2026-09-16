@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "ccaf3f53-51a3-440e-870e-82b95588b43a",
-  "activeVersionId": "ccaf3f53-51a3-440e-870e-82b95588b43a",
+  "versionId": "81c54175-de0a-4453-8347-44ac48e2ff13",
+  "activeVersionId": "81c54175-de0a-4453-8347-44ac48e2ff13",
   "draft_igual_publicado": true,
   "total_nos": 125,
   "nos": [
@@ -39,7 +39,7 @@
       "typeVersion": 3,
       "onError": "continueRegularOutput",
       "prompt": "ai-agent.prompt.md",
-      "prompt_chars": 19509
+      "prompt_chars": 20329
     },
     {
       "nome": "Aprovar pauta curada",
@@ -490,7 +490,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "preparar-candidatos.js",
-      "linhas": 88
+      "linhas": 117
     },
     {
       "nome": "Preparar carrossel publicado",
@@ -734,7 +734,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "validar-antes-de-publicar.js",
-      "linhas": 1055
+      "linhas": 1123
     },
     {
       "nome": "Validar e consolidar curadoria",
