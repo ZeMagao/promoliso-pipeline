@@ -1,0 +1,29 @@
+{
+	email <email-do-acme>
+}
+
+n8n.promoliso.com.br {
+	encode zstd gzip
+
+	# /cdn/<versao>/<id>.jpg — as imagens do carrossel servidas por NÓS (serviço promo-cdn, 5701).
+	# Existe porque o buscador de mídia do Meta não baixa do res.cloudinary.com de forma confiável
+	# (medido 16/09/2026: 3/8 e 3/6 lá contra 8/8 fora de lá) e os três slots do dia falharam.
+	# O matcher é estreito de propósito: só este formato entra, então este host não vira proxy.
+	@cdn path_regexp cdnrota ^/cdn/v[0-9]+/[A-Za-z0-9_-]{4,128}\.jpg$
+	handle @cdn {
+		reverse_proxy 127.0.0.1:5701
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:5678 {
+			flush_interval -1
+		}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}

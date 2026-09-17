@@ -42,7 +42,17 @@ if(!Array.isArray(urls)) urls=[];
 // causa deste filtro — ele não muda nada hoje, só fecha a porta.
 const validas = urls.filter((u) => typeof u === 'string' && /^https:\/\//.test(u));
 if(validas.length < MIN_IMAGENS) throw new Error('carousel_urls insuficiente: '+r.carousel_urls);
-const usadas = validas.slice(0, MAX_IMAGENS);
+// HOST PRÓPRIO PARA A IMAGEM (17/09). O buscador do Meta falha ao baixar de res.cloudinary.com —
+// medido em 16/09: 3/8 e 3/6 por imagem lá, 8/8 fora de lá. Com 6 filhos, publicar virava 0,8% e
+// os três slots do dia falharam com "Bad request". Aqui a URL vira a do nosso host, que serve a
+// mesma imagem de disco (serviço promo-cdn). O que não casa o padrão do nosso cloud passa intacto.
+const CDN_BASE = 'https://n8n.promoliso.com.br';
+const RE_CLOUDINARY = /^https:\/\/res\.cloudinary\.com\/fy2n2qvr\/image\/upload\/(v[0-9]+)\/([A-Za-z0-9_-]{4,128})\.jpg$/;
+const paraCdn = (url) => {
+  const m = RE_CLOUDINARY.exec(String(url || ''));
+  return m ? CDN_BASE + '/cdn/' + m[1] + '/' + m[2] + '.jpg' : String(url || '');
+};
+const usadas = validas.slice(0, MAX_IMAGENS).map(paraCdn);
 return [{ json: {
   content_key: String(r.content_key||''),
   topic: String(r.topic||''),
@@ -50,7 +60,7 @@ return [{ json: {
   // era slice(1,6): jogava fora a 7a imagem em diante e obrigava a peça a ter exatamente 6
   slides: usadas.slice(1),
   caption: String(r.caption||''),
-  story_url: String(r.story_url||''),
+  story_url: paraCdn(r.story_url),
   primary_url: String(r.primary_url||''),
   status_anterior: String(r.status||'').toUpperCase(),
   created_at: String(r.created_at || r.createdAt || ''),

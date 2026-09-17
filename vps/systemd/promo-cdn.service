@@ -1,0 +1,26 @@
+[Unit]
+Description=PromoLiso CDN (serve as imagens do carrossel de um host nosso)
+After=network.target
+
+[Service]
+Type=simple
+User=promo
+Group=promo
+WorkingDirectory=/opt/promoliso/cdn
+Environment=NODE_ENV=production
+Environment=PROMO_CDN_HOST=127.0.0.1
+Environment=PROMO_CDN_PORT=5701
+Environment=PROMO_CDN_CLOUD=fy2n2qvr
+Environment=PROMO_CDN_CACHE=/opt/promoliso/cdn-cache
+Environment=TZ=America/Sao_Paulo
+ExecStart=/usr/bin/node /opt/promoliso/cdn/promo-cdn.cjs
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/promoliso
+
+[Install]
+WantedBy=multi-user.target
