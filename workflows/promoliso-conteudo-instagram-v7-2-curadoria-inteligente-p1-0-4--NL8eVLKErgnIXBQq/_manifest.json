@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "401658dc-0885-42fb-bcae-6ca43e878756",
-  "activeVersionId": "401658dc-0885-42fb-bcae-6ca43e878756",
+  "versionId": "67be2041-e3d0-4bca-a6db-3cff19dc70f0",
+  "activeVersionId": "67be2041-e3d0-4bca-a6db-3cff19dc70f0",
   "draft_igual_publicado": true,
   "total_nos": 125,
   "nos": [
@@ -443,7 +443,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "normalizar-noticias-promoliso-ai.js",
-      "linhas": 306
+      "linhas": 310
     },
     {
       "nome": "Obter noticias",
@@ -490,7 +490,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "preparar-candidatos.js",
-      "linhas": 128
+      "linhas": 204
     },
     {
       "nome": "Preparar carrossel publicado",
@@ -539,7 +539,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "preparar-fila-de-curadoria.js",
-      "linhas": 162
+      "linhas": 176
     },
     {
       "nome": "Preparar publicação concluída",
@@ -675,7 +675,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "selecionar-melhor-pauta.js",
-      "linhas": 73
+      "linhas": 79
     },
     {
       "nome": "Split Out",

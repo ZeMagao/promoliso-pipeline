@@ -278,6 +278,10 @@ const noticias = candidatos.map((item, index) => {
     fonte: source,
     dominio_fonte: url.domain,
     tipo_fonte: clean(item.tipo_fonte, 50),
+    // Pauta de calendário: classificada uma vez em "Preparar candidatos" e carregada daqui pra
+    // frente. Este objeto é montado campo a campo, então o que não for listado aqui some.
+    tema_calendario: clean(item.tema_calendario, 40),
+    tema_pendente: !!item.tema_pendente,
     autor: author,
     data_publicacao: publishedAt,
     data_coleta: collectedAt,

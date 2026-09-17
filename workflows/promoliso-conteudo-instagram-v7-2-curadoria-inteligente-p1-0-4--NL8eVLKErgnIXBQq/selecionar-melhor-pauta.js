@@ -41,10 +41,16 @@ const eligible = items
     // vence pauta com 2, e pauta de foto única não leva nada.
     // Teto mantido em 8, ABAIXO dos 10 da fonte primária: arte não vence procedência.
     const bonusDeImagem = (fotos) => (fotos <= 1 ? 0 : Math.min(2 * fotos, 8));
+    // PAUTA DE CALENDÁRIO: enquanto o mês não tiver o post de Game Pass / PS Plus (entrando e
+    // saindo, 1 de cada), a onda passa na frente. 15 > 10 da primária e > 8 das imagens de
+    // propósito: é a única pauta que o dono pediu para existir todo mês. Cumprida a cota,
+    // `tema_pendente` vem false e este termo vira 0 sozinho — não há régua para desligar depois.
+    const BONUS_TEMA = 15;
     const efetivo = (x) =>
       Number(x.registro?.pontuacao_total || 0) +
       (String(x.noticia?.tipo_fonte || '') === 'primaria' ? 10 : 0) +
-      bonusDeImagem(imagensDistintas(x));
+      bonusDeImagem(imagensDistintas(x)) +
+      (x.noticia?.tema_pendente ? BONUS_TEMA : 0);
     const score = efetivo(b) - efetivo(a);
     if (score) return score;
     return (

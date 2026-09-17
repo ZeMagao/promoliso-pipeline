@@ -110,10 +110,24 @@ const pegar = (c) => {
   escolhidosIA.push(c);
 };
 
+// VAGA DA PAUTA DE CALENDÁRIO (17/09). O Curador só vê 5 itens; sem vaga própria, a onda do mês
+// disputa com o dia inteiro e perde por acaso — 32 chegaram aqui em 7 semanas e 3 viraram post.
+// A vaga vale 1 e só enquanto o mês não tem o post; cumprida a cota, este bloco não pega ninguém.
+// Ignora o teto por host de propósito: a onda vem do host oficial, que é o que tem imagem.
+const VAGA_TEMA_IA = 1;
+for (const candidato of aiCandidates) {
+  if (escolhidosIA.length >= VAGA_TEMA_IA) break;
+  if (!candidato.noticia || !candidato.noticia.tema_pendente) continue;
+  pegar(candidato);
+}
+
 // 1ª passada: preenche na ordem de mérito, deixando PISO_NAO_PRIMARIA vagas guardadas.
 const tetoDaPrimeiraPassada = Math.max(0, MAX_IA - PISO_NAO_PRIMARIA);
 for (const candidato of aiCandidates) {
   if (escolhidosIA.length >= tetoDaPrimeiraPassada) break;
+  // A vaga do tema já pode ter pego este item: sem esta linha ele entraria duas vezes e o
+  // Curador receberia 4 pautas distintas em vez de 5.
+  if (escolhidosIA.includes(candidato)) continue;
   if (!cabeNoHost(candidato)) continue;
   pegar(candidato);
 }

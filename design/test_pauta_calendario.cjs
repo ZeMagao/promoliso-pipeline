@@ -35,13 +35,25 @@ const ARQUIVOS = {
 };
 const antigo = {};
 const novo = {};
+// O harness roda nos dois estados. Com o patch já no ar, o "antes" vem de REVERTER o que está no
+// ar — sem isso, `antigo` e `novo` seriam o mesmo texto e as provas de antes/depois passariam a
+// comparar a coisa com ela mesma, dando falha (ou, pior, passando à toa).
+// A marca de "já aplicado" é por NÓ: só "Preparar candidatos" ganha o classificador inteiro; os
+// outros três recebem apenas os campos.
 for (const [no, arquivo] of Object.entries(ARQUIVOS)) {
-  antigo[no] = lf(fs.readFileSync(path.join(WFDIR, arquivo), 'utf8'));
-  novo[no] = antigo[no].includes('classificarTema') ? antigo[no] : aplicarNo(antigo[no], no, false);
+  const texto = lf(fs.readFileSync(path.join(WFDIR, arquivo), 'utf8'));
+  const jaTem = /tema_(?:calendario|pendente)/.test(texto);
+  novo[no] = jaTem ? texto : aplicarNo(texto, no, false);
+  antigo[no] = jaTem ? aplicarNo(texto, no, true) : texto;
 }
-const APLICADO = antigo['Preparar candidatos'].includes('classificarTema');
-console.log(APLICADO ? '# o export JÁ tem a pauta de calendário — conferindo o que está no ar'
+const APLICADO = /tema_calendario/.test(novo['Preparar candidatos'])
+  && Object.keys(ARQUIVOS).every((no) => /tema_(?:calendario|pendente)/.test(
+    lf(fs.readFileSync(path.join(WFDIR, ARQUIVOS[no]), 'utf8'))));
+const METADE = !APLICADO && Object.keys(ARQUIVOS).some((no) => /tema_(?:calendario|pendente)/.test(
+  lf(fs.readFileSync(path.join(WFDIR, ARQUIVOS[no]), 'utf8'))));
+console.log(APLICADO ? '# os quatro nós JÁ estão com a pauta de calendário — conferindo o que está no ar'
                      : '# o export ainda não tem — conferindo a troca');
+if (METADE) console.log('AVISO: os quatro nós não estão no mesmo estado — patch aplicado pela metade?');
 
 // ── mini-n8n: roda o jsCode do nó com os globais que ele usa ──────────────────
 function rodar(codigo, { entrada = [], nos = {}, execId = '1' } = {}) {
