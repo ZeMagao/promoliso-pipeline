@@ -11,6 +11,20 @@ const eligible = items
   .sort((a, b) => {
     // Pauta que não renderiza vale 0: dá desempate pra quem tem arte suficiente pro
     // carrossel. 8 < 10 de propósito — arte não vence procedência.
+    // MESMA FOTO EM TAMANHOS DIFERENTES É UMA FOTO. Antes daqui a contagem era por URL, e
+    // duas variantes do mesmo arquivo valiam duas imagens — a pauta levava o bônus sem ter
+    // variedade nenhuma. Medido na exec 601: a peça que venceu contava 2 e tinha 1
+    // (…-scaled.jpg e …-2048x1365.jpg, mesmo hash), e saiu com a mesma foto em todos os slides.
+    const TAMANHO_WP = /-\d{2,4}x\d{2,4}(?=\.[a-z]{3,4}$)/i;
+    const ESCALADA_WP = /-scaled(?=\.[a-z]{3,4}$)/i;
+    const TAMANHO_BLOGGER = /\/(s\d+(?:-[a-z0-9-]+)*|w\d+-h\d+(?:-[a-z0-9-]+)*)\/([^/]+)$/i;
+    const identidadeVisual = (url) => {
+      let limpa = String(url).toLowerCase().split(/[?#]/)[0];
+      if (/^https:\/\/blogger\.googleusercontent\.com\//i.test(limpa)) {
+        limpa = limpa.replace(TAMANHO_BLOGGER, '/TAM/$2');
+      }
+      return limpa.replace(TAMANHO_WP, '').replace(ESCALADA_WP, '');
+    };
     const imagensDistintas = (x) => {
       const noticia = x.noticia || {};
       const lista = Array.isArray(noticia.imagens_oficiais)
@@ -19,13 +33,18 @@ const eligible = items
       return new Set(
         [...lista, noticia.imagem_principal]
           .filter((u) => typeof u === 'string' && /^https:\/\//i.test(u))
-          .map((u) => String(u).split(/[?#]/)[0].toLowerCase()),
+          .map(identidadeVisual),
       ).size;
     };
+    // BÔNUS GRADUADO. Era binário (>=2 imagens valia 8), e 37 das 40 notícias medidas passavam
+    // desse corte — régua que não separa o que precisamos separar. Agora pauta com 4+ fotos
+    // vence pauta com 2, e pauta de foto única não leva nada.
+    // Teto mantido em 8, ABAIXO dos 10 da fonte primária: arte não vence procedência.
+    const bonusDeImagem = (fotos) => (fotos <= 1 ? 0 : Math.min(2 * fotos, 8));
     const efetivo = (x) =>
       Number(x.registro?.pontuacao_total || 0) +
       (String(x.noticia?.tipo_fonte || '') === 'primaria' ? 10 : 0) +
-      (imagensDistintas(x) >= 2 ? 8 : 0);
+      bonusDeImagem(imagensDistintas(x));
     const score = efetivo(b) - efetivo(a);
     if (score) return score;
     return (
