@@ -1,0 +1,15 @@
+[Unit]
+Description=PromoLiso - roda o vigia 4x por dia (manha + depois de cada slot de publicacao)
+
+[Timer]
+# Slots de publicacao: 12:30, 16:30 (ter/qua/sex) e 20:30. O vigia passa depois de cada um,
+# mais uma checagem de manha para pegar a noite inteira.
+OnCalendar=*-*-* 08:00:00
+OnCalendar=*-*-* 13:15:00
+OnCalendar=*-*-* 17:15:00
+OnCalendar=*-*-* 21:15:00
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target
