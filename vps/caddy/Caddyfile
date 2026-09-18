@@ -14,6 +14,13 @@ n8n.promoliso.com.br {
 		reverse_proxy 127.0.0.1:5701
 	}
 
+	# /jogo/fotos?titulo=... — fotos oficiais do jogo da manchete, pelo mesmo serviço.
+	# Sem esta rota o caminho cai no n8n e o fluxo recebe o HTML do editor no lugar do JSON:
+	# foi exatamente o que o dry-run do patch pegou ("Unexpected token '<'").
+	handle /jogo/fotos {
+		reverse_proxy 127.0.0.1:5701
+	}
+
 	handle {
 		reverse_proxy 127.0.0.1:5678 {
 			flush_interval -1

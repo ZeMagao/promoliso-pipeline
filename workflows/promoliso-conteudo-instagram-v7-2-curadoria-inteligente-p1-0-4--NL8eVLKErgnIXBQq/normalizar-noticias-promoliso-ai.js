@@ -110,13 +110,16 @@ function semRedimensionar(url) {
   return u.slice(0, corte);
 }
 
-function collectOfficialImages(item, sourceDomain) {
+function collectOfficialImages(item, sourceDomain, fotosDoJogo) {
   const officialCdnDomains = {
     'news.xbox.com': ['xboxwire.thesourcemediaassets.com'],
     'blog.playstation.com': ['blog.playstation.com'],
   };
   const allowedCdnDomains = officialCdnDomains[sourceDomain] || [];
   const values = [
+    // As fotos oficiais do jogo entram no fim da ordenação de propósito: o `oficial` da matéria
+    // continua na frente, e a Steam é reforço, não substituta.
+    ...(Array.isArray(fotosDoJogo) ? fotosDoJogo : []),
     item.imagem_principal,
     item.image?.url,
     item.image,
@@ -166,8 +169,12 @@ function collectOfficialImages(item, sourceDomain) {
     // e as "imagens em baixa resolução" reclamadas na revisão.
     const hostDescartavel =
       /(?:gravatar|feedburner|doubleclick|googlesyndication|google-analytics|facebook|fbcdn|twimg|adservice|analytics)/i.test(host);
+    // LOGO NÃO É FOTO. A peça do Gears contou xpalogo_black.png (logo da Microsoft Store) como
+    // uma das suas 2 "imagens distintas" — e aí sobrou UMA foto de verdade para 6 slides. Medido
+    // nas 3332 URLs da exec 621: este padrão pega 21, e as 21 são cromo de site (logo da Sony, do
+    // GameBlast, do Xbox Wire, da loja).
     const caminhoDescartavel =
-      /(?:\/avatars?\/|\/emoji\/|\/icons?\/|spacer|tracking|\/ads?\/|1x1)/i.test(direct);
+      /(?:\/avatars?\/|\/emoji\/|\/icons?\/|spacer|tracking|\/ads?\/|1x1|logo|badge|sprite|placeholder)/i.test(direct);
     if (hostDescartavel || caminhoDescartavel || seen.has(direct)) {
       continue;
     }
@@ -223,6 +230,7 @@ const noticias = candidatos.map((item, index) => {
   const officialImages = collectOfficialImages(
     item.dados_brutos ?? item,
     url.domain,
+    item.fotos_do_jogo,
   );
   const image = officialImages[0] || directImageUrl(
     item.imagem_principal ??

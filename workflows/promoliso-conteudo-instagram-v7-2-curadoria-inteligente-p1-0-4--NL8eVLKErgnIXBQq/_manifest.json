@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "67be2041-e3d0-4bca-a6db-3cff19dc70f0",
-  "activeVersionId": "67be2041-e3d0-4bca-a6db-3cff19dc70f0",
+  "versionId": "ef9d227d-a885-4378-956f-bfa117d0b4a1",
+  "activeVersionId": "ef9d227d-a885-4378-956f-bfa117d0b4a1",
   "draft_igual_publicado": true,
   "total_nos": 125,
   "nos": [
@@ -39,7 +39,7 @@
       "typeVersion": 3,
       "onError": "continueRegularOutput",
       "prompt": "ai-agent.prompt.md",
-      "prompt_chars": 20793
+      "prompt_chars": 20936
     },
     {
       "nome": "Aprovar pauta curada",
@@ -223,7 +223,7 @@
       "typeVersion": 2,
       "onError": "continueRegularOutput",
       "codigo": "enriquecer-aplicar.js",
-      "linhas": 33
+      "linhas": 48
     },
     {
       "nome": "Enriquecer: buscar og",
@@ -237,7 +237,7 @@
       "typeVersion": 2,
       "onError": "continueRegularOutput",
       "codigo": "enriquecer-separar.js",
-      "linhas": 9
+      "linhas": 34
     },
     {
       "nome": "Epic: jogos grátis",
@@ -443,7 +443,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "normalizar-noticias-promoliso-ai.js",
-      "linhas": 310
+      "linhas": 318
     },
     {
       "nome": "Obter noticias",

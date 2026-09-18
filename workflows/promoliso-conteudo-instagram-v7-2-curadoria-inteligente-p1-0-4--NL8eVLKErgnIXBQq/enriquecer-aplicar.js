@@ -18,6 +18,21 @@ try {
     if (typeof idx !== 'number' || idx < 0) continue;
     const html = String((respostas[k] && respostas[k].data) || '');
     if (!html) continue;
+
+    // Resposta do nosso serviço de fotos do jogo: JSON, não HTML. Guardamos a lista na candidata;
+    // quem decide o que fazer com ela é o "Normalizar notícias", junto das fotos da matéria.
+    if (alvos[k].__tipo === 'jogo') {
+      try {
+        const ficha = JSON.parse(html);
+        const fotos = (ficha && Array.isArray(ficha.fotos)) ? ficha.fotos.filter((u) => /^https:\/\//i.test(u)) : [];
+        const cand = pool[idx];
+        if (cand && fotos.length) {
+          cand.fotos_do_jogo = fotos.slice(0, 8);
+          cand.jogo_identificado = String((ficha && ficha.jogo) || '');
+        }
+      } catch (e) { /* serviço fora do ar ou resposta estranha: a pauta segue com o que tem */ }
+      continue;
+    }
     const m = html.match(ogRe) || html.match(twRe);
     const og = m ? String(m[1]).trim() : '';
     const cand = pool[idx];
