@@ -48,14 +48,27 @@ async function api(token, metodo, corpo) {
 
 async function mandar(texto) {
   const c = conf();
-  if (!c.chat_id) throw new Error('faltando "chat_id" em ' + ARQ + ' — rode --descobrir-chat');
+  // Aceita um chat_id ou uma lista: o dono tem duas contas (a pessoal e a da marca) e pode querer
+  // o alerta nas duas. Uma falha num destino nao pode calar os outros.
+  const destinos = []
+    .concat(c.chat_ids || [])
+    .concat(c.chat_id ? [c.chat_id] : [])
+    .map(String)
+    .filter((v, i, a) => v && a.indexOf(v) === i);
+  if (!destinos.length) throw new Error('faltando "chat_id" em ' + ARQ + ' — rode --descobrir-chat');
   const corte = String(texto).slice(0, LIMITE);
-  await api(c.token, 'sendMessage', {
-    chat_id: c.chat_id,
-    text: corte,
-    parse_mode: 'HTML',
-    disable_web_page_preview: true,
-  });
+  const erros = [];
+  for (const chat of destinos) {
+    try {
+      await api(c.token, 'sendMessage', {
+        chat_id: chat,
+        text: corte,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+      });
+    } catch (e) { erros.push(e.message); }
+  }
+  if (erros.length === destinos.length) throw new Error(erros.join(' | '));
   return corte.length;
 }
 
