@@ -216,6 +216,59 @@ async function fotosDoJogo(manchete) {
   return Object.assign({}, ficha, { cache: false });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PONTE PARA HOSTS QUE BLOQUEIAM O CLOUDINARY (20/09/2026)
+//
+// A capa das pecas e montada como `image/fetch` do Cloudinary, ou seja, quem busca a imagem no
+// portal e o Cloudinary — nao nos. Dois hosts respondem 403 PARA ELE e 200 para o nosso VPS:
+//
+//   www.adrenaline.com.br            do VPS 200 · via Cloudinary 400 (x-cld-error: 403 Forbidden)
+//   blogger.googleusercontent.com    do VPS 200 · via Cloudinary 400   (e o host do GameBlast)
+//
+// Medido em 22 hosts de imagem colhidos de uma execucao real: so estes dois bloqueiam. Como a
+// capa e obrigatoria, a execucao inteira do produtor morria — 4 das 8 rodadas de 20/09.
+//
+// Esta rota busca a imagem daqui (onde ela responde 200) e serve, para o Cloudinary transformar
+// a partir do nosso host. NAO e proxy aberto: so os hosts da lista passam, e so imagem.
+const HOSTS_PONTE = [
+  'adrenaline.com.br',
+  'blogger.googleusercontent.com',
+];
+
+function hostPermitido(url) {
+  let u;
+  try { u = new URL(String(url || '')); } catch (e) { return false; }
+  if (u.protocol !== 'https:') return false;
+  const host = u.hostname.toLowerCase().replace(/^www\./, '');
+  return HOSTS_PONTE.some((h) => host === h || host.endsWith('.' + h));
+}
+
+function precisaDePonte(url) {
+  return hostPermitido(url);
+}
+
+async function buscarComNavegador(url) {
+  const ctrl = new AbortController();
+  const relogio = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  try {
+    const r = await fetch(url, {
+      signal: ctrl.signal,
+      headers: {
+        // O 403 e anti-hotlink: com cara de navegador e um Referer do proprio site, passa.
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+        Accept: 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+        Referer: new URL(url).origin + '/',
+      },
+    });
+    if (!r.ok) throw new Error('origem respondeu HTTP ' + r.status);
+    const tipo = String(r.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+    if (!tipo.startsWith('image/')) throw new Error('origem devolveu ' + (tipo || 'sem content-type'));
+    const buf = Buffer.from(await r.arrayBuffer());
+    if (buf.length < 512) throw new Error('origem devolveu ' + buf.length + ' bytes');
+    return { buf, tipo };
+  } finally { clearTimeout(relogio); }
+}
+
 const servidor = http.createServer(async (req, res) => {
   const inicio = Date.now();
   const caminho = String(req.url || '').split('?')[0];
@@ -227,6 +280,46 @@ const servidor = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     return res.end('ok\n');
   }
+  if (caminho === '/img') {
+    const alvo = new URL(req.url, 'http://x').searchParams.get('u') || '';
+    if (!hostPermitido(alvo)) {
+      res.writeHead(403, { 'Content-Type': 'text/plain' });
+      console.error('GET /img 403 host fora da lista: ' + String(alvo).slice(0, 80));
+      return res.end('host nao permitido\n');
+    }
+    // Cache em disco pela URL: a mesma capa é pedida pelo Cloudinary mais de uma vez por peça.
+    const nome = Buffer.from(alvo).toString('base64url').slice(0, 120);
+    const arquivo = path.join(CACHE, '_ponte', nome + '.bin');
+    try {
+      let tipo = 'image/jpeg';
+      if (!fs.existsSync(arquivo) || fs.statSync(arquivo).size === 0) {
+        const { buf, tipo: t } = await buscarComNavegador(alvo);
+        fs.mkdirSync(path.dirname(arquivo), { recursive: true });
+        const tmp = arquivo + '.' + process.pid + '.tmp';
+        fs.writeFileSync(tmp, buf);
+        fs.renameSync(tmp, arquivo);
+        fs.writeFileSync(arquivo + '.tipo', t);
+        tipo = t;
+        console.log('GET /img 200 baixado ' + buf.length + 'B ' + (Date.now() - inicio) + 'ms ' + alvo.slice(0, 90));
+      } else {
+        try { tipo = fs.readFileSync(arquivo + '.tipo', 'utf8') || tipo; } catch (e) { /* padrão */ }
+        console.log('GET /img 200 cache ' + (Date.now() - inicio) + 'ms ' + alvo.slice(0, 90));
+      }
+      const st = fs.statSync(arquivo);
+      res.writeHead(200, {
+        'Content-Type': tipo,
+        'Content-Length': st.size,
+        'Cache-Control': 'public, max-age=86400',
+      });
+      if (req.method === 'HEAD') return res.end();
+      return fs.createReadStream(arquivo).pipe(res);
+    } catch (e) {
+      res.writeHead(502, { 'Content-Type': 'text/plain' });
+      console.error('GET /img 502 ' + e.message + ' ' + alvo.slice(0, 90));
+      return res.end('falha ao buscar na origem\n');
+    }
+  }
+
   if (caminho === '/jogo/fotos') {
     const titulo = new URL(req.url, 'http://x').searchParams.get('titulo') || '';
     if (!titulo.trim()) {
@@ -271,7 +364,7 @@ const servidor = http.createServer(async (req, res) => {
   }
 });
 
-module.exports = { paraCaminhoLocal, upstream, ROTA, CLOUD, baixar, confirmaNome, termosDaManchete, fotosDoJogo, normal };
+module.exports = { paraCaminhoLocal, upstream, ROTA, CLOUD, baixar, confirmaNome, termosDaManchete, fotosDoJogo, normal, hostPermitido, precisaDePonte, HOSTS_PONTE };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

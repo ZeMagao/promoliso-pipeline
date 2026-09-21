@@ -22,8 +22,13 @@ function safeImage(value, fallback) {
   if (source.startsWith('https://image.mux.com/')) {
     return source + (source.includes('?') ? '&' : '?') + 'width=1400';
   }
+  // PONTE (20/09): estes hosts respondem 403 ao buscador do Cloudinary e 200 para o nosso VPS —
+  // medido em 22 hosts. Sem isto, a capa devolve 400 e a execução inteira do produtor morre.
+  const paraBuscar = /^https:\/\/(?:[a-z0-9-]+\.)*(?:adrenaline\.com\.br|blogger\.googleusercontent\.com)\//i.test(source)
+    ? 'https://n8n.promoliso.com.br/img?u=' + encodeURIComponent(source)
+    : source;
   return 'https://res.cloudinary.com/fy2n2qvr/image/fetch/c_fit,w_1400,h_900,q_auto,f_auto/' +
-    encodeURIComponent(source);
+    encodeURIComponent(paraBuscar);
 }
 
 const substituto = safeImage(imagemFallback);

@@ -16,6 +16,11 @@ function cloud(source, transform){
   if(!/^https:\/\//i.test(source)) return '';
   if(/^https:\/\/res\.cloudinary\.com\/fy2n2qvr\//i.test(source)) return source;
   if(source.startsWith('https://image.mux.com/')) return source+(source.includes('?')?'&':'?')+'width=1600';
+  // PONTE (20/09): estes hosts respondem 403 ao buscador do Cloudinary e 200 para o nosso VPS —
+  // medido em 22 hosts. Sem isto, a capa devolve 400 e a execução inteira do produtor morre.
+  if (/^https:\/\/(?:[a-z0-9-]+\.)*(?:adrenaline\.com\.br|blogger\.googleusercontent\.com)\//i.test(source)) {
+    source = 'https://n8n.promoliso.com.br/img?u=' + encodeURIComponent(source);
+  }
   return 'https://res.cloudinary.com/fy2n2qvr/image/fetch/'+transform+'/'+encodeURIComponent(source);
 }
 

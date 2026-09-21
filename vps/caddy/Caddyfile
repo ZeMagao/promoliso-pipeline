@@ -21,6 +21,13 @@ n8n.promoliso.com.br {
 		reverse_proxy 127.0.0.1:5701
 	}
 
+	# /img?u=... — ponte para os hosts que respondem 403 ao buscador do Cloudinary
+	# (adrenaline e blogger/GameBlast, medidos em 20/09). A lista de hosts permitidos mora no
+	# serviço; aqui só passa o caminho adiante.
+	handle /img {
+		reverse_proxy 127.0.0.1:5701
+	}
+
 	handle {
 		reverse_proxy 127.0.0.1:5678 {
 			flush_interval -1
