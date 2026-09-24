@@ -12,6 +12,15 @@ self-hosted num VPS, com serviços auxiliares em Node.
 > harnesses. A parte mais útil para quem avalia está em [docs/METODO.md](docs/METODO.md) e nos
 > arquivos de `design/`, onde o cabeçalho de cada patch conta a medição que motivou a mudança.
 
+**O que ele publicou, sem ninguém no meio** — peças geradas, renderizadas e postadas pelo
+pipeline, na conta [@promoliso0](https://www.instagram.com/promoliso0/):
+
+| post | pauta |
+|---|---|
+| [24/09](https://www.instagram.com/p/DdrNi09CPFm/) | Quake Champions deixa o free-to-play |
+| [23/09](https://www.instagram.com/p/Ddpfss6iIWy/) | Age of Empires II recebe os vikings |
+| [23/09](https://www.instagram.com/p/DdpENjMiPR6/) | Frozen Trail, a maior atualização do ano em Arc Raiders |
+
 ---
 
 ## Prove em 2 minutos, sem instalar nada
