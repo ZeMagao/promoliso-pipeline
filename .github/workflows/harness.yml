@@ -1,0 +1,30 @@
+# Roda a suíte viva a cada push. O README afirma "8/8 verdes sem instalar nada" — aqui isso
+# deixa de ser palavra do autor e passa a ser um robô rodando num Ubuntu limpo, sem npm install,
+# sem acesso ao servidor de produção.
+#
+# Não roda as "provas de época" de propósito: elas provaram mudanças específicas numa data e
+# envelhecem quando um patch posterior mexe no mesmo nó. O critério está em tools/harness.cjs.
+name: harness
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  vivos:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['20', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Suíte viva (sem instalar dependências)
+        run: node tools/harness.cjs
+      - name: Mapa completo (informativo)
+        if: always()
+        run: node tools/harness.cjs --todos || true

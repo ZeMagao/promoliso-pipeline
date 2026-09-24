@@ -81,3 +81,8 @@ design/auditoria_*.html
 analytics/logs/
 # retorno REAL da Epic em 14/08/2026: fixture do harness do feed de ofertas
 !design/epic_amostra.json
+
+# lixo de editor/backup manual — nao entra num repositorio publico
+*.bak
+*.orig
+*.pre-*

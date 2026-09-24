@@ -1,5 +1,7 @@
 # PromoLiso — pipeline autônomo de conteúdo para Instagram
 
+[![harness](https://github.com/ZeMagao/promoliso-pipeline/actions/workflows/harness.yml/badge.svg)](https://github.com/ZeMagao/promoliso-pipeline/actions/workflows/harness.yml)
+
 Um sistema que lê 12 feeds de games e tech, escolhe a pauta, escreve o texto, renderiza o
 carrossel e publica no Instagram sozinho, todo dia, sem ninguém apertar botão. Roda em n8n
 self-hosted num VPS, com serviços auxiliares em Node.
@@ -12,8 +14,15 @@ self-hosted num VPS, com serviços auxiliares em Node.
 > harnesses. A parte mais útil para quem avalia está em [docs/METODO.md](docs/METODO.md) e nos
 > arquivos de `design/`, onde o cabeçalho de cada patch conta a medição que motivou a mudança.
 
-**O que ele publicou, sem ninguém no meio** — peças geradas, renderizadas e postadas pelo
-pipeline, na conta [@promoliso0](https://www.instagram.com/promoliso0/):
+**O que ele publicou, sem ninguém no meio.** Capa e segundo slide de um carrossel real, gerados,
+renderizados e postados pelo pipeline — texto, foto, crédito e paginação incluídos:
+
+<p align="center">
+  <img src="assets/exemplos/carrossel-capa.jpg" width="46%" alt="Capa: Quake Champions vira jogo pago após 9 anos">
+  <img src="assets/exemplos/carrossel-slide.jpg" width="46%" alt="Slide 02/06: toda a economia de microtransação foi">
+</p>
+
+Últimas peças na conta [@promoliso0](https://www.instagram.com/promoliso0/):
 
 | post | pauta |
 |---|---|
@@ -210,3 +219,15 @@ Honestidade sobre o que não está resolvido vale mais que uma lista de features
 n8n 2.30.4 self-hosted (SQLite) · Node 24 · Chrome headless + sharp · Caddy · Cloudinary ·
 OpenAI (curadoria) · Anthropic Claude (redação) · Instagram Graph API · Hetzner CX23 ·
 backup diário para Cloudflare R2 com restauração testada.
+
+---
+
+## Licença
+
+Código sob [Apache License 2.0](LICENSE). A fonte **Barlow Condensed** é de terceiros, sob
+[SIL Open Font License 1.1](assets/OFL.txt) — os avisos exigidos estão em [NOTICE](NOTICE),
+inclusive para as cópias embutidas em base64 dentro dos nós de render.
+
+As imagens de exemplo em `assets/exemplos/` são peças já publicadas na conta; as fotos dentro
+delas pertencem aos respectivos estúdios e aparecem com crédito na própria arte, como no material
+publicado.

@@ -1,0 +1,25 @@
+PromoLiso — pipeline autônomo de conteúdo para Instagram
+Copyright 2026 Magal (github.com/ZeMagao)
+
+Este produto inclui software licenciado sob a Apache License 2.0 (ver LICENSE).
+
+────────────────────────────────────────────────────────────────────────────
+Fonte tipográfica de terceiros
+
+Barlow Condensed ExtraBold
+Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)
+Licenciada sob a SIL Open Font License, Version 1.1 — texto completo em
+assets/OFL.txt.
+
+A fonte é redistribuída aqui de duas formas, e as duas estão cobertas pela
+mesma licença:
+
+  - assets/BarlowCondensed-ExtraBold.ttf — o arquivo original
+  - embutida em base64 dentro dos nós de render (design/node_capa.js,
+    design/node_slide.js, design/asset_font.txt e nos jsCode exportados em
+    workflows/), porque o renderizador monta o HTML sem acesso ao disco do
+    repositório
+
+A OFL permite redistribuição e uso embutido; exige manter este aviso de
+copyright e a licença junto, e proíbe vender a fonte isoladamente. Nada aqui
+faz isso.

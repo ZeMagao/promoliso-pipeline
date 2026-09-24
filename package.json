@@ -1,7 +1,12 @@
 {
-  "name": "promoliso-n8n-local",
+  "name": "promoliso-pipeline",
+  "description": "Pipeline autonomo de conteudo para Instagram em n8n. Os harnesses rodam so com Node: `npm test` nao precisa de `npm install`. A dependencia n8n existe para a instalacao no servidor, nao para ler o repositorio.",
   "private": true,
   "version": "1.0.0",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "node tools/harness.cjs",
     "test:epoca": "node tools/harness.cjs --epoca",
