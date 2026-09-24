@@ -209,9 +209,6 @@ provar** e por quê, geralmente citando o incidente real que motivou cada asser�
 
 Honestidade sobre o que não está resolvido vale mais que uma lista de features:
 
-- **Capa que falha derruba a rodada inteira.** O nó tem retry, não tem saída de erro. Em 24/09 uma
-  URL do `news.xbox.com` que redireciona para si mesma (50 saltos, 0 byte) matou uma rodada. O
-  conserto precisa de decisão editorial junto: reprovar só a peça ou tentar outra pauta.
 - **Retry do carrossel é all-or-nothing.** Falhou um dos 6 filhos, refaz os 6. Com 6% de falha por
   imagem dá ~71% por passada; num dia ruim do Meta derruba todos os slots. Trocar isso exige
   substituir o nó da comunidade por HTTP Requests — cirurgia que já quebrou a publicação por 3 dias.

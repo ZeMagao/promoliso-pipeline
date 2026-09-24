@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer-core');
+const { primeiraQueResponde, alvosDoHtml } = require('./candidatos.cjs');
 let sharp = null;
 try { sharp = require('sharp'); } catch { /* sem sharp: supersample sem downscale controlado */ }
 
@@ -203,24 +204,23 @@ async function fetchImageDataUri(url) {
   return request;
 }
 
+// CAPA COM CANDIDATOS (24/09/2026). A regra de escolha mora em candidatos.cjs, sem dependencia
+// de Chrome nem de sharp, para o harness poder rodar offline. Aqui fica so a costura com o fetch.
 async function inlineRemoteImages(html) {
-  const urls = [
-    ...new Set(
-      Array.from(
-        html.matchAll(
-          /<img\b[^>]*\bsrc=(["'])(https:\/\/res\.cloudinary\.com\/[^"']+)\1/gi,
-        ),
-        (match) => match[2],
-      ),
-    ),
-  ];
-  if (urls.length > 10) {
+  const alvos = alvosDoHtml(html);
+  if (alvos.length > 10) {
     throw new Error('Quantidade de imagens acima do limite');
   }
-  const dataUris = await Promise.all(urls.map(fetchImageDataUri));
+  const resolvidas = await Promise.all(
+    alvos.map((a) => primeiraQueResponde(a.candidatos, fetchImageDataUri)),
+  );
   let inlined = html;
-  for (let index = 0; index < urls.length; index += 1) {
-    inlined = inlined.split(urls[index]).join(dataUris[index]);
+  for (let i = 0; i < alvos.length; i += 1) {
+    // Troca a URL PRIMARIA pelo data URI de quem respondeu — pode ser um dos fallbacks.
+    inlined = inlined.split(alvos[i].primaria).join(resolvidas[i].dataUri);
+    if (resolvidas[i].url !== alvos[i].primaria) {
+      console.log('[imagem] primaria falhou, usei candidato: ' + resolvidas[i].url.slice(0, 80));
+    }
   }
   return inlined;
 }
@@ -403,16 +403,21 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(
-    JSON.stringify({
-      status: 'ready',
-      host: HOST,
-      port: PORT,
-      chrome: chromeExecutable,
-    }),
-  );
-});
+// Só sobe o servidor quando este arquivo É o programa. Sem esta guarda, o harness que importa
+// `inlineRemoteImages` para testá-la subiria um listener na porta 5680 e nunca terminaria — e no
+// servidor brigaria com o serviço que já está rodando.
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    console.log(
+      JSON.stringify({
+        status: 'ready',
+        host: HOST,
+        port: PORT,
+        chrome: chromeExecutable,
+      }),
+    );
+  });
+}
 
 async function shutdown() {
   server.close();
@@ -425,3 +430,5 @@ async function shutdown() {
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
+module.exports = { inlineRemoteImages };

@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "5dcd24c9-7f7d-46e8-8625-b405e81c023c",
-  "activeVersionId": "5dcd24c9-7f7d-46e8-8625-b405e81c023c",
+  "versionId": "0f9b4bd8-2738-4397-9cbe-dc0849b4c972",
+  "activeVersionId": "0f9b4bd8-2738-4397-9cbe-dc0849b4c972",
   "draft_igual_publicado": true,
   "total_nos": 125,
   "nos": [
@@ -113,7 +113,7 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "code-in-javascript1.js",
-      "linhas": 434
+      "linhas": 450
     },
     {
       "nome": "Configuração PromoLiso AI",

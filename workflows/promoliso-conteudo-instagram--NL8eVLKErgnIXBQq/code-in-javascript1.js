@@ -245,7 +245,7 @@ function buildSlide(slide){
 // ---------- CAPA ----------
 const CAPA_MIN_W = 1000, CAPA_MIN_H = 675;
 
-function capaImg(source){
+function capaImg(source, alternativas){
   // e_trim tira a tarja preta do screenshot cinematográfico ANTES do corte. Sem ele o recorte
   // vertical corta as LATERAIS e preserva as barras — a capa nascia com faixa morta no topo.
   const cheia = 'e_trim:10/c_fill,g_auto,w_1728,h_2160';
@@ -254,7 +254,16 @@ function capaImg(source){
   // devolve 400 quando o cliente aceita AVIF/WebP — ou seja, some no Chrome do renderizador e
   // funciona em qualquer teste que peça a URL com Accept: */*.
   const t = 'if_iw_gte_' + CAPA_MIN_W + '_and_ih_gte_' + CAPA_MIN_H + '/' + cheia + '/if_else/' + contida + '/if_end/' + QUAL;
-  return '<img src="' + cloud(source, t) + '" style="position:absolute;inset:0;width:1080px;height:1350px;object-fit:cover;filter:contrast(1.06) saturate(1.06);" />';
+  // CANDIDATOS DE CAPA: as outras fotos da mesma peça, na ordem, para o renderizador tentar se a
+  // primária estiver morta na origem. Em 24/09 uma URL que redirecionava para si mesma derrubou a
+  // execução inteira — e a pauta se perdeu, porque a curadoria já a tinha marcado como processada.
+  const outras = (Array.isArray(alternativas) ? alternativas : [])
+    .filter((u) => typeof u === 'string' && /^https:\/\//i.test(u) && u !== source)
+    .slice(0, 4)
+    .map((u) => cloud(u, t))
+    .filter(Boolean);
+  const fallback = outras.length ? ' data-fallback="' + outras.join(' ') + '"' : '';
+  return '<img src="' + cloud(source, t) + '"' + fallback + ' style="position:absolute;inset:0;width:1080px;height:1350px;object-fit:cover;filter:contrast(1.06) saturate(1.06);" />';
 }
 
 // Escurece o rodapé pro texto ganhar contraste sem apagar a foto no topo. `inicio` é onde o
@@ -298,6 +307,13 @@ function capaFonte(output){
   const slide = output.slides[0];
   return /^https:\/\//i.test(String(slide.imagem||'')) ? slide.imagem : output.capa;
 }
+// Alternativas de capa, em ordem de preferência: a capa declarada na pauta e depois as fotos dos
+// slides. São as imagens que o validador já aprovou para esta peça — não entra nada de fora.
+function capaAlternativas(output){
+  const slides = Array.isArray(output.slides) ? output.slides : [];
+  return [output.capa, ...slides.map((s) => s && s.imagem)]
+    .filter((u) => typeof u === 'string' && /^https:\/\//i.test(u));
+}
 function capaCredito(output){
   const slide = output.slides[0];
   return esc(slide.fonte_imagem || (output.fontes&&output.fontes[0]&&output.fontes[0].nome) || 'OFICIAL');
@@ -337,7 +353,7 @@ function buildCapa(output){
 
   const html = `${STYLE}
 <div style="width:1080px;height:1350px;position:relative;display:flex;overflow:hidden;background:${INK};font-family:Arial,Helvetica,sans-serif;">
-  ${capaImg(source)}
+  ${capaImg(source, capaAlternativas(output))}
   ${capaVinheta(0.5)}
   <div style="position:absolute;left:0;right:0;bottom:0;height:260px;display:flex;background:linear-gradient(180deg,rgba(5,6,10,0) 0,rgba(5,6,10,.82) 60%,#05060A 100%);"></div>
   ${grain()}

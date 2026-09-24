@@ -7,7 +7,7 @@ os comandos de verificação estão no fim.
 
 | workflow | id | versão publicada | cadência |
 |---|---|---|---|
-| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `5dcd24c9` (24/09 18:29) | de 2 em 2 h, horas pares BRT |
+| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `0f9b4bd8` (24/09 18:43) | de 2 em 2 h, horas pares BRT |
 | Publicador (fila) | `E27F7yVdsZRj` | `d1ff7341` (17/09 12:16) | 12:30 · 16:30 ter/qua/sex · 20:30 BRT |
 | Watchdog de saúde | `MJly91QFGKep` | `dfb31644` | 2× por dia |
 | Monitor de erros | `PRMLERR20260725A` | `9a276b27` | por evento (Error Trigger) |
@@ -43,7 +43,6 @@ item de encanamento abaixo.
 
 | o quê | impacto medido | por que ainda não foi consertado |
 |---|---|---|
-| Capa que falha mata a rodada inteira | 1 rodada perdida em 24/09 (URL do `news.xbox.com` redirecionando para si mesma, 50 saltos) | precisa de decisão editorial: reprovar a peça ou tentar outra pauta |
 | Retry do carrossel é all-or-nothing nos 6 filhos | em dia ruim do Meta derruba todos os slots (16/09: 3 de 3) | exige trocar o nó da comunidade por HTTP Requests; cirurgia de conexão já quebrou 3 dias de publicação |
 | Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
 | Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
@@ -53,6 +52,7 @@ item de encanamento abaixo.
 
 | data | o que entrou | versão |
 |---|---|---|
+| 24/09 | capa ganha fotos candidatas: foto morta na origem deixa de derrubar a rodada | `0f9b4bd8` |
 | 24/09 | segurança: legenda e slides só citam link/domínio da allowlist | `5dcd24c9` |
 | 24/09 | segurança: URL de imagem não pode fechar o atributo `src` | `562cf5af` |
 | 20/09 | ponte para hosts que bloqueiam o buscador do Cloudinary (capa parou de matar a rodada) | `9d7698da` |
