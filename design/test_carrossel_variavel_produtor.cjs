@@ -16,7 +16,7 @@ function ok(nome, cond, detalhe) {
 }
 const lf = P.lf;
 const WDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ler = (f) => lf(fs.readFileSync(path.join(WDIR, f), 'utf8'));
 
 const VAL_ANTES = ler('validar-antes-de-publicar.js');

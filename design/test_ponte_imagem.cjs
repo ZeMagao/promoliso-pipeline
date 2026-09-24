@@ -15,7 +15,7 @@ const path = require('path');
 const { aplicarNo, lf, EDICOES, PONTE } = require('./patch_ponte_imagem.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ARQUIVOS = {
   'Code in JavaScript1': 'code-in-javascript1.js',
   'Code in JavaScript': 'code-in-javascript.js',

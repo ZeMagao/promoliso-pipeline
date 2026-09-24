@@ -30,7 +30,7 @@ const { chromium } = require('../node_modules/playwright-core');
 const { NOVO, trocarRender } = require('./patch_cta_contextual.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 
 const cands = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',

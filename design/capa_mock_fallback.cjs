@@ -10,7 +10,7 @@ const path = require('path');
 
 const OUT = __dirname;
 const NO = path.join(OUT, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq',
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq',
   'code-in-javascript1.js');
 
 // tira a cauda de entrada do nó pra poder injetar a variante e devolver o que eu quiser

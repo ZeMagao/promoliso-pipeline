@@ -16,7 +16,7 @@ const path = require('path');
 const { trocarRender, trocarEditFields, ALVOS, SHA_ANTIGO, NOVO } = require('./patch_cta_contextual.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ARQUIVO = { 'Code in JavaScript': 'code-in-javascript.js', 'Code in JavaScript1': 'code-in-javascript1.js' };
 
 let falhas = 0;

@@ -52,12 +52,20 @@ function promptDoNo(p) {
 }
 
 // nome de nó -> nome de arquivo seguro, sem perder legibilidade
+// O nome do workflow vira pasta, e o id ja garante unicidade — entao o slug e CURTO de proposito.
+// Com o nome inteiro ("PromoLiso - Conteudo Instagram v7.2 - Curadoria Inteligente P1.0.4") a
+// pasta ficava com 80 caracteres e, somada ao caminho do clone, estourava o limite de caminho do
+// Windows: `git clone` falhava no checkout com "Filename too long". Repo que nao clona em metade
+// das maquinas nao e repo.
+const SLUG_MAX = 28;
+
 function slug(nome) {
-  return String(nome)
+  const limpo = String(nome)
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .toLowerCase() || 'sem-nome';
+  return limpo.slice(0, SLUG_MAX).replace(/-+$/, '');
 }
 
 (async () => {

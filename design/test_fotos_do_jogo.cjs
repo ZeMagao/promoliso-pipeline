@@ -17,7 +17,7 @@ const path = require('path');
 const { aplicarNo, lf, ALVOS_JOGO } = require('./patch_fotos_do_jogo.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ARQUIVOS = {
   'Enriquecer: separar': 'enriquecer-separar.js',
   'Enriquecer: aplicar': 'enriquecer-aplicar.js',

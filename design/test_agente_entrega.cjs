@@ -11,7 +11,7 @@ const path = require('path');
 const { trocarPrompt, trocarOpcoes, DE_ITER, PARA_ITER, ANCORA, REGRA } = require('./patch_agente_entrega.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 
 let falhas = 0;
 function ok(nome, cond, detalhe) {

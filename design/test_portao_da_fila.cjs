@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const P = require('./patch_portao_da_fila.cjs');
 
-const WFDIR_PROD = path.join(__dirname, '..', 'workflows', 'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+const WFDIR_PROD = path.join(__dirname, '..', 'workflows', 'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const WFDIR_PUB = path.join(__dirname, '..', 'workflows', 'promoliso-publicador-fila--E27F7yVdsZRj');
 
 let falhas = 0;

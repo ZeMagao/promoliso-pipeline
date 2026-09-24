@@ -18,7 +18,7 @@ const path = require('path');
 const { aplicarNo, lf, BONUS_TEMA } = require('./patch_pauta_calendario.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const AMOSTRA = JSON.parse(fs.readFileSync(path.join(__dirname, 'tema_calendario_amostra.json'), 'utf8'));
 
 let falhas = 0;

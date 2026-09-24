@@ -7,7 +7,7 @@ const path = require('path');
 const { trocar, DE, PARA } = require('./patch_fallback_multitransform.cjs');
 
 const ARQ = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq',
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq',
   'usar-capa-como-fallback.js');
 
 let falhas = 0;

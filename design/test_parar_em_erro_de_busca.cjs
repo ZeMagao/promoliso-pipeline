@@ -6,7 +6,7 @@ const path = require('path');
 const P = require('./patch_parar_em_erro_de_busca.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ARQ = path.join(WFDIR, 'ai-agent.prompt.md');
 
 let falhas = 0;

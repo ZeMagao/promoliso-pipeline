@@ -6,7 +6,7 @@ const path = require('path');
 const { trocar, NO } = require('./patch_score_na_fila.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 
 let falhas = 0;
 function ok(nome, cond, detalhe) {

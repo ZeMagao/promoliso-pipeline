@@ -15,7 +15,7 @@ const path = require('path');
 const { trocar, lf, TROCAS, MIN_SLIDES, MARCA } = require('./patch_sem_repetir_imagem.cjs');
 
 const PROMPT = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq',
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq',
   'ai-agent.prompt.md');
 
 let falhas = 0;

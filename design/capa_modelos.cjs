@@ -11,7 +11,7 @@ const { trocar, blocoDoModelo } = require('./patch_capa_fullbleed.cjs');
 
 const OUT = __dirname;
 const NO = path.join(OUT, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq',
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq',
   'code-in-javascript1.js');
 
 const MODELOS = ['a', 'b', 'c'];

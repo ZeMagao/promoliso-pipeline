@@ -8,7 +8,7 @@ const path = require('path');
 const { trocar, DE, PARA, ALVOS } = require('./patch_piso_capa_675.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
-  'promoliso-conteudo-instagram-v7-2-curadoria-inteligente-p1-0-4--NL8eVLKErgnIXBQq');
+  'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const ARQUIVO = { 'Code in JavaScript1': 'code-in-javascript1.js', 'Code in JavaScript': 'code-in-javascript.js' };
 const REDE = process.argv.includes('--rede');
 
