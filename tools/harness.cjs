@@ -34,6 +34,8 @@ const VIVOS = [
   'design/test_pauta_calendario.cjs',
   'design/test_ponte_imagem.cjs',
   'design/test_sem_repetir_imagem.cjs',
+  'design/test_url_attr.cjs',
+  'design/test_link_allowlist.cjs',
   'vps/bin/test_promo_vigia.cjs',
   'vps/cdn/test_promo_cdn_jogo.cjs',
   'vps/cdn/test_promo_cdn_ponte.cjs',

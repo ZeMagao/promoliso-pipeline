@@ -896,6 +896,64 @@ if (
   erros.push('Legenda ausente, longa demais ou com Markdown');
 }
 
+// >>> LINK ALLOWLIST (seguranca 2026-08-07, no ar em 2026-09-24)
+// Allowlist do que pode aparecer como link/dominio no texto publicado: dominios primarios, lojas
+// conhecidas, os hosts das fontes JA VALIDADAS desta pauta, e o proprio dominio. Qualquer outro
+// host escrito na legenda ou nos slides reprova a pauta.
+//
+// Por que isto existe: a legenda vai pro Instagram verbatim e e escrita pelo agente, que le feeds
+// RSS de terceiros. Sem esta checagem, uma injecao no feed publica o link que quiser no perfil.
+// Medido contra as pecas reais da amostra: zero bloqueios no conteudo legitimo de hoje.
+const hostsPermitidosNoTexto = [
+  ...dominiosPrimarios,
+  ...dominiosLojas,
+  ...fontes.map((fonte) => fonte.host),
+  'promoliso.com.br',
+];
+const hostDoToken = (token) => String(token || '')
+  .replace(/^https?:\/\//i, '')
+  .replace(/^www\./i, '')
+  .split(/[/?#]/)[0]
+  .toLowerCase()
+  .replace(/:\d+$/, '');
+const textoPublicado = [
+  output.legenda,
+  ...(Array.isArray(output.slides)
+    ? output.slides.flatMap((slide) => [
+        slide?.selo,
+        slide?.titulo,
+        slide?.destaque,
+        slide?.texto,
+        slide?.subtitulo,
+      ])
+    : []),
+].map((valor) => String(valor || '')).join('\n');
+const linksExplicitos = [...new Set(
+  (textoPublicado.match(/(?:https?:\/\/|www\.)[^\s<>"')\]]+/gi) || []).map(hostDoToken),
+)].filter(Boolean);
+// dominio sem esquema ("aproveite em promo-falsa.com.br") — exige TLD conhecido pra nao confundir
+// com numero ("1.999,00") nem com versao ("v1.5.0"). A lista inclui TLD de encurtador (ly, gd,
+// to, me): o harness pegou que "bit.ly/xyz" passava batido, e encurtador e justamente o que
+// alguem usaria pra esconder o destino. Remedido depois de ampliar: zero falso positivo nas
+// legendas reais.
+const dominiosSoltos = [...new Set(
+  (textoPublicado.match(/\b[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.(?:com\.br|co\.uk|com|net|org|io|gg|store|shop|link|xyz|top|site|online|ly|gd|to|me|app|dev|info|biz|vip|club|page|live|fun|icu)\b/gi) || [])
+    // mesma normalizacao dos explicitos (tira www., minusculas), senao "www.x.com" seria
+    // reportado duas vezes: uma como link explicito e outra como dominio solto
+    .map(hostDoToken),
+)].filter((host) => host && !linksExplicitos.includes(host));
+const linksNoTexto = [...new Set([...linksExplicitos, ...dominiosSoltos])];
+const explicitosFora = linksExplicitos.filter((host) => !hostIn(host, hostsPermitidosNoTexto));
+const soltosFora = dominiosSoltos.filter((host) => !hostIn(host, hostsPermitidosNoTexto));
+const linksForaAllowlist = [...explicitosFora, ...soltosFora];
+if (explicitosFora.length) {
+  erros.push('Legenda/slides com link fora da allowlist: ' + explicitosFora.join(', '));
+}
+if (soltosFora.length) {
+  erros.push('Legenda/slides citam dominio fora da allowlist: ' + soltosFora.join(', '));
+}
+// <<< LINK ALLOWLIST
+
 function fimDaPromocao(texto) {
   const t = String(texto || '').toLowerCase();
   if (!t.trim()) return null;
@@ -1106,6 +1164,8 @@ return [{
       imagens_bloqueadas: imagensBloqueadasDetalhe,
       hosts_imagens: hostsImagens,
       oferta: ofertaAuditada,
+      links_no_texto: linksNoTexto,
+      links_fora_allowlist: linksForaAllowlist,
       erros,
     },
     output,

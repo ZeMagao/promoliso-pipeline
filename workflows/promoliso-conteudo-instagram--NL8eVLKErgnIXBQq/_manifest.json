@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "9d7698da-33a4-46bd-a3e8-29e7213e1fc0",
-  "activeVersionId": "9d7698da-33a4-46bd-a3e8-29e7213e1fc0",
+  "versionId": "5dcd24c9-7f7d-46e8-8625-b405e81c023c",
+  "activeVersionId": "5dcd24c9-7f7d-46e8-8625-b405e81c023c",
   "draft_igual_publicado": true,
   "total_nos": 125,
   "nos": [
@@ -20,7 +20,7 @@
       "tipo": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "onError": "continueRegularOutput",
-      "prompt": "agente-verificador-de-confiabilidade.prompt.md",
+      "prompt": "agente-verificador-de-confia.prompt.md",
       "prompt_chars": 1642
     },
     {
@@ -106,14 +106,14 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "code-in-javascript.js",
-      "linhas": 416
+      "linhas": 424
     },
     {
       "nome": "Code in JavaScript1",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "code-in-javascript1.js",
-      "linhas": 426
+      "linhas": 434
     },
     {
       "nome": "Configuração PromoLiso AI",
@@ -126,21 +126,21 @@
       "nome": "Confirmar persistência da curadoria",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "confirmar-persistencia-da-curadoria.js",
+      "codigo": "confirmar-persistencia-da-cu.js",
       "linhas": 20
     },
     {
       "nome": "Consolidar candidatos aprovados",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "consolidar-candidatos-aprovados.js",
+      "codigo": "consolidar-candidatos-aprova.js",
       "linhas": 35
     },
     {
       "nome": "Consolidar decisão determinística",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "consolidar-decisao-deterministica.js",
+      "codigo": "consolidar-decisao-determini.js",
       "linhas": 113
     },
     {
@@ -389,7 +389,7 @@
       "nome": "Interpretar status do carrossel",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "interpretar-status-do-carrossel.js",
+      "codigo": "interpretar-status-do-carros.js",
       "linhas": 22
     },
     {
@@ -442,7 +442,7 @@
       "nome": "Normalizar notícias PromoLiso AI",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "normalizar-noticias-promoliso-ai.js",
+      "codigo": "normalizar-noticias-promolis.js",
       "linhas": 318
     },
     {
@@ -503,21 +503,21 @@
       "nome": "Preparar decisão manual da curadoria",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-decisao-manual-da-curadoria.js",
+      "codigo": "preparar-decisao-manual-da-c.js",
       "linhas": 23
     },
     {
       "nome": "Preparar falha ao criar carrossel",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-falha-ao-criar-carrossel.js",
+      "codigo": "preparar-falha-ao-criar-carr.js",
       "linhas": 36
     },
     {
       "nome": "Preparar falha ao publicar carrossel",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-falha-ao-publicar-carrossel.js",
+      "codigo": "preparar-falha-ao-publicar-c.js",
       "linhas": 41
     },
     {
@@ -531,7 +531,7 @@
       "nome": "Preparar falha no processamento",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-falha-no-processamento.js",
+      "codigo": "preparar-falha-no-processame.js",
       "linhas": 42
     },
     {
@@ -545,7 +545,7 @@
       "nome": "Preparar publicação concluída",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-publicacao-concluida.js",
+      "codigo": "preparar-publicacao-concluid.js",
       "linhas": 26
     },
     {
@@ -559,7 +559,7 @@
       "nome": "Preparar verificação do carrossel",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "preparar-verificacao-do-carrossel.js",
+      "codigo": "preparar-verificacao-do-carr.js",
       "linhas": 8
     },
     {
@@ -727,20 +727,20 @@
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "usar-capa-como-fallback.js",
-      "linhas": 96
+      "linhas": 104
     },
     {
       "nome": "Validar antes de publicar",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "validar-antes-de-publicar.js",
-      "linhas": 1113
+      "linhas": 1173
     },
     {
       "nome": "Validar e consolidar curadoria",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "validar-e-consolidar-curadoria.js",
+      "codigo": "validar-e-consolidar-curador.js",
       "linhas": 352
     },
     {

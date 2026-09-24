@@ -229,6 +229,11 @@ Honestidade sobre o que não está resolvido vale mais que uma lista de features
   guarda credenciais cifradas **e** a `encryptionKey` fica ao lado dele, então subir a pasta vazaria
   todas as chaves.
 - Segredos de serviço ficam em `/etc/promoliso/*.json`, dono `promo`, modo 600, fora do repo.
+- **Duas travas vieram de uma auditoria do próprio sistema** (07/08) e entraram em produção em
+  24/09: a URL de imagem não consegue mais fechar o atributo `src` do HTML que vai para o Chrome
+  do renderizador, e a legenda só pode citar link ou domínio de uma allowlist — ela é escrita por
+  um agente que lê 12 feeds de terceiros e vai para o Instagram verbatim. As duas foram medidas
+  antes de subir: 480 URLs reais passam byte a byte iguais, e 68 legendas reais não são bloqueadas.
 - **O que este repositório deliberadamente não contém:** o banco, os backups, qualquer token, o
   IP do servidor, o e-mail da conta administradora e o relatório da auditoria de segurança. O
   relatório descreve falhas encontradas no próprio sistema; publicá-lo junto com o endereço da

@@ -8,19 +8,27 @@ if (!imagemFallback) throw new Error('A imagem do slide falhou e não existe cap
 // Mesma transformação de "Code in JavaScript": o HTML contém a URL já embrulhada
 // pelo Cloudinary fetch e percent-encoded, não a URL crua. Procurar a crua aqui
 // era o motivo de o fallback nunca trocar nada.
+function urlAttr(u){
+  // Blindagem de atributo: os dois atalhos do cloud() devolvem a URL CRUA (sem encodeURIComponent)
+  // direto pra dentro de src="...". URL com aspas fecha o atributo e vira HTML executando no
+  // Chrome do renderizador. Estes caracteres sao proibidos crus numa URI (RFC 3986), entao
+  // percent-encoda-los nao altera nenhuma URL legitima — so fecha a fuga. '&' fica intacto.
+  return String(u||'').replace(/["'<>\`\\]|[\u0000-\u0020]|\u007f/g,
+    (c)=>'%'+c.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0'));
+}
 function safeImage(value, fallback) {
   const source = /^https:\/\//i.test(String(value || ''))
     ? String(value)
     : String(fallback || '');
   if (!source) return '';
   if (/^https:\/\/res\.cloudinary\.com\/fy2n2qvr\//i.test(source)) {
-    return source;
+    return urlAttr(source);
   }
   // Cloudinary image/fetch não consegue buscar image.mux.com (retorna 400); o
   // PlayStation Blog serve thumbnails via Mux com URL assinada. O renderizador
   // busca direto (o Mux aceita o token e honra o parâmetro width). Bypass:
   if (source.startsWith('https://image.mux.com/')) {
-    return source + (source.includes('?') ? '&' : '?') + 'width=1400';
+    return urlAttr(source + (source.includes('?') ? '&' : '?') + 'width=1400');
   }
   // PONTE (20/09): estes hosts respondem 403 ao buscador do Cloudinary e 200 para o nosso VPS —
   // medido em 22 hosts. Sem isto, a capa devolve 400 e a execução inteira do produtor morre.

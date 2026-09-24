@@ -11,11 +11,19 @@ function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 // nitidez + qualidade (renderizador roda a 2x e faz downscale lanczos)
 const QUAL = 'f_auto,q_auto:best,e_sharpen:60';
+function urlAttr(u){
+  // Blindagem de atributo: os dois atalhos do cloud() devolvem a URL CRUA (sem encodeURIComponent)
+  // direto pra dentro de src="...". URL com aspas fecha o atributo e vira HTML executando no
+  // Chrome do renderizador. Estes caracteres sao proibidos crus numa URI (RFC 3986), entao
+  // percent-encoda-los nao altera nenhuma URL legitima — so fecha a fuga. '&' fica intacto.
+  return String(u||'').replace(/["'<>\`\\]|[\u0000-\u0020]|\u007f/g,
+    (c)=>'%'+c.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0'));
+}
 function cloud(source, transform){
   source = String(source||'');
   if(!/^https:\/\//i.test(source)) return '';
-  if(/^https:\/\/res\.cloudinary\.com\/fy2n2qvr\//i.test(source)) return source;
-  if(source.startsWith('https://image.mux.com/')) return source+(source.includes('?')?'&':'?')+'width=1600';
+  if(/^https:\/\/res\.cloudinary\.com\/fy2n2qvr\//i.test(source)) return urlAttr(source);
+  if(source.startsWith('https://image.mux.com/')) return urlAttr(source+(source.includes('?')?'&':'?')+'width=1600');
   // PONTE (20/09): estes hosts respondem 403 ao buscador do Cloudinary e 200 para o nosso VPS —
   // medido em 22 hosts. Sem isto, a capa devolve 400 e a execução inteira do produtor morre.
   if (/^https:\/\/(?:[a-z0-9-]+\.)*(?:adrenaline\.com\.br|blogger\.googleusercontent\.com)\//i.test(source)) {

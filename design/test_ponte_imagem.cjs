@@ -30,6 +30,18 @@ const ok = (nome, cond, detalhe) => {
 
 // Extrai a função de montagem do nó e a executa isolada — é o jeito de provar o comportamento
 // sem rodar 700 KB de código com fonte embutida.
+// Fatia a definição de urlAttr, se ela existir no nó.
+function depoisDeUrlAttr(texto) {
+  const i = texto.indexOf('function urlAttr(u){');
+  if (i < 0) return '';
+  let nivel = 0;
+  for (let k = texto.indexOf('{', i); k < texto.length; k += 1) {
+    if (texto[k] === '{') nivel += 1;
+    else if (texto[k] === '}') { nivel -= 1; if (nivel === 0) return texto.slice(i, k + 1); }
+  }
+  return '';
+}
+
 function extrair(texto, nome) {
   const inicio = texto.indexOf(nome === 'safeImage' ? 'function safeImage' : 'function cloud');
   if (inicio < 0) return null;
@@ -40,8 +52,11 @@ function extrair(texto, nome) {
     else if (texto[k] === '}') { nivel -= 1; if (nivel === 0) { i = k; break; } }
   }
   const corpo = texto.slice(inicio, i + 1);
+  // A função fatiada chama `urlAttr` desde o patch de segurança de 24/09 — sem trazer a
+  // dependência junto, o teste quebra por falta de contexto e não por defeito no código.
+  const dep = depoisDeUrlAttr(texto);
   // eslint-disable-next-line no-new-func
-  return new Function(corpo + '; return ' + (nome === 'safeImage' ? 'safeImage' : 'cloud') + ';')();
+  return new Function([dep, corpo, 'return ' + (nome === 'safeImage' ? 'safeImage' : 'cloud') + ';'].join('\n'))();
 }
 
 const BLOQUEADOS = [
@@ -57,23 +72,31 @@ const ALCANCAVEIS = [
   'https://files.tecnoblog.net/wp-content/uploads/2026/08/x.jpg',
 ];
 
+// ⚠️ ESTE HARNESS MUDOU DE FORMA EM 24/09, e a razão é a lição: ele reconstruía o "antes"
+// revertendo o próprio patch da ponte. Quando o patch de segurança (urlAttr) tocou as MESMAS
+// linhas, a reversão parou de casar e o teste ficou vermelho sem nada estar quebrado em produção.
+// Um teste de regressão não pode depender de conseguir desfazer um patch histórico: agora ele
+// afirma o COMPORTAMENTO do código que está no ar. Só quando a ponte ainda não foi aplicada é
+// que ele compara antes × depois.
 for (const [no, arquivo] of Object.entries(ARQUIVOS)) {
   const texto = lf(fs.readFileSync(path.join(WFDIR, arquivo), 'utf8'));
   const jaTem = texto.includes(PONTE);
   const novo = jaTem ? texto : aplicarNo(texto, no, false);
-  const antigo = jaTem ? aplicarNo(texto, no, true) : texto;
+  const antigo = jaTem ? null : texto;
 
   const ehFallback = no === 'Usar capa como fallback';
   const fnNova = extrair(novo, ehFallback ? 'safeImage' : 'cloud');
-  const fnVelha = extrair(antigo, ehFallback ? 'safeImage' : 'cloud');
-  ok(`${no}: a função foi encontrada`, typeof fnNova === 'function' && typeof fnVelha === 'function');
+  const fnVelha = antigo === null ? null : extrair(antigo, ehFallback ? 'safeImage' : 'cloud');
+  ok(`${no}: a função foi encontrada`, typeof fnNova === 'function');
   if (typeof fnNova !== 'function') continue;
   const chamar = (fn, u) => (ehFallback ? fn(u) : fn(u, 'f_auto'));
 
   for (const u of BLOQUEADOS) {
-    const antes = chamar(fnVelha, u);
     const depois = chamar(fnNova, u);
-    ok(`${no}: antes ia direto ao portal — ${u.slice(8, 40)}`, antes.includes(encodeURIComponent(u)));
+    if (fnVelha) {
+      ok(`${no}: antes ia direto ao portal — ${u.slice(8, 40)}`,
+        chamar(fnVelha, u).includes(encodeURIComponent(u)));
+    }
     // A transformação da capa tem barras (c_fill,g_auto/if_else/...), então separar por '/' para
     // achar a fonte não funciona. O que importa: a URL é fetch do Cloudinary e a fonte, depois de
     // decodificada uma vez, é a nossa ponte.
@@ -88,7 +111,11 @@ for (const [no, arquivo] of Object.entries(ARQUIVOS)) {
   for (const u of ALCANCAVEIS) {
     const depois = chamar(fnNova, u);
     ok(`${no}: host alcançável continua direto — ${u.slice(8, 38)}`, !depois.includes('/img?u='), depois.slice(0, 100));
-    ok(`${no}: e igual ao de antes — ${u.slice(8, 30)}`, depois === chamar(fnVelha, u));
+    // a URL entregue tem que continuar sendo a do Cloudinary com a origem dentro, intacta
+    ok(`${no}: e a origem chega inteira ao Cloudinary — ${u.slice(8, 30)}`,
+      depois.startsWith('https://res.cloudinary.com/fy2n2qvr/image/fetch/')
+      && decodeURIComponent(depois).includes(u));
+    if (fnVelha) ok(`${no}: e igual ao de antes — ${u.slice(8, 30)}`, depois === chamar(fnVelha, u));
   }
 
   if (!ehFallback) {
@@ -97,7 +124,9 @@ for (const [no, arquivo] of Object.entries(ARQUIVOS)) {
     ok(`${no}: URL que não é https vira vazio`, chamar(fnNova, 'http://x.com/a.jpg') === '');
   }
 
-  ok(`${no}: reverter e reaplicar volta byte a byte`, aplicarNo(aplicarNo(novo, no, true), no, false) === lf(novo));
+  if (!jaTem) {
+    ok(`${no}: reverter e reaplicar volta byte a byte`, aplicarNo(aplicarNo(novo, no, true), no, false) === lf(novo));
+  }
 }
 
 ok('o patch cobre os três nós', new Set(EDICOES.map((e) => e.no)).size === 3);
