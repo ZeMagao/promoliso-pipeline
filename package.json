@@ -3,6 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "test": "node tools/harness.cjs",
+    "test:epoca": "node tools/harness.cjs --epoca",
+    "test:mapa": "node tools/harness.cjs --todos",
     "start": "node ./node_modules/n8n/bin/n8n start"
   },
   "dependencies": {
