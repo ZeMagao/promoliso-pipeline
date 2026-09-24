@@ -46,6 +46,7 @@ item de encanamento abaixo.
 | Capa que falha mata a rodada inteira | 1 rodada perdida em 24/09 (URL do `news.xbox.com` redirecionando para si mesma, 50 saltos) | precisa de decisão editorial: reprovar a peça ou tentar outra pauta |
 | Retry do carrossel é all-or-nothing nos 6 filhos | em dia ruim do Meta derruba todos os slots (16/09: 3 de 3) | exige trocar o nó da comunidade por HTTP Requests; cirurgia de conexão já quebrou 3 dias de publicação |
 | Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
+| Duas correções de segurança escritas e não deployadas | auditoria de 07/08; os patches existem, mas as âncoras envelheceram em 7 semanas de mudanças e os harnesses falham contra o código de hoje | precisa refazer as âncoras e reprovar antes de subir — mudança de segurança sem prova é pior que a dívida |
 | Backup não cobre o código | `analytics/`, units, scripts e serviços vivem só no disco do VPS | o repositório cobre hoje; a origem do backup continua com 2 arquivos |
 
 ## Últimos deploys

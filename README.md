@@ -184,6 +184,11 @@ Honestidade sobre o que não está resolvido vale mais que uma lista de features
   guarda credenciais cifradas **e** a `encryptionKey` fica ao lado dele, então subir a pasta vazaria
   todas as chaves.
 - Segredos de serviço ficam em `/etc/promoliso/*.json`, dono `promo`, modo 600, fora do repo.
+- **O que este repositório deliberadamente não contém:** o banco, os backups, qualquer token, o
+  IP do servidor, o e-mail da conta administradora e o relatório da auditoria de segurança. O
+  relatório descreve falhas encontradas no próprio sistema; publicá-lo junto com o endereço da
+  máquina seria entregar mapa e endereço ao mesmo tempo. Ele existe fora do repositório público,
+  e a dívida que ele aponta está declarada em [docs/ESTADO.md](docs/ESTADO.md).
 - O `promo-cdn` expõe uma ponte de imagem: ela aceita **só** hosts de uma lista, só `https`, e o
   harness prova que recusa `127.0.0.1`, `169.254.169.254`, `file://` e truques de subdomínio
   (`adrenaline.com.br.evil.com`). Um endpoint que baixa qualquer URL e serve pelo nosso domínio é

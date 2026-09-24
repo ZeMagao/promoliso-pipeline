@@ -4,7 +4,22 @@ const fs = require('fs');
 const { execFileSync } = require('child_process');
 
 const DB = '/opt/promoliso/data/.n8n/database.sqlite';
-const DESTINO = process.env.ALERT_EMAIL || '<email-de-alerta>';
+
+// O destino NAO mora no repositorio: o repo e publico e e-mail em codigo vira alvo de spam e
+// pista de engenharia social. Ordem de leitura: variavel de ambiente, depois
+// /etc/promoliso/alerta.json (dono promo, modo 600). Sem nenhum dos dois, o script FALHA em vez
+// de adivinhar -- alarme que manda para o lugar errado e pior do que alarme que nao manda.
+const CONF = process.env.PROMO_ALERTA_CONF || '/etc/promoliso/alerta.json';
+function destino() {
+  if (process.env.ALERT_EMAIL) return process.env.ALERT_EMAIL;
+  try {
+    const email = JSON.parse(fs.readFileSync(CONF, 'utf8')).email;
+    if (email) return email;
+  } catch (e) { /* cai no erro abaixo */ }
+  throw new Error('destino do alerta nao configurado: defina ALERT_EMAIL ou crie ' + CONF
+    + ' com {"email":"..."} (dono promo, chmod 600)');
+}
+const DESTINO = destino();
 const assunto = process.argv[2] || '[PromoLiso] alerta';
 
 function credSmtp() {

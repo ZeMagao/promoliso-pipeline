@@ -1,4 +1,7 @@
 {
+	# E-mail do ACME (Let's Encrypt). Fica fora do repositorio porque ele e publico; o valor real
+	# esta no /etc/caddy/Caddyfile do servidor. Trocar por um e-mail valido antes de usar esta
+	# copia para restaurar.
 	email <email-do-acme>
 }
 
