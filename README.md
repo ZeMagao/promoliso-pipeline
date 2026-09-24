@@ -119,6 +119,33 @@ certo" — sem esse batimento, alarme quebrado se parece com sistema saudável.
 
 ---
 
+## As IAs do pipeline
+
+Três chamadas de modelo por rodada, cada uma com um papel estreito. Nenhuma decide sozinha: o que
+elas produzem passa por regra determinística depois.
+
+| papel | modelo | onde | o que decide — e o que NÃO decide |
+|---|---|---|---|
+| **Curador** | `gpt-5.4-mini` (OpenAI) | `Agente Curador PromoLiso AI` | dá nota de 0 a 100 a 5 candidatos. Não escolhe a pauta: o corte (78) e o desempate são código |
+| **Verificador de confiabilidade** | `gpt-5.4-mini` (OpenAI) | `Agente Verificador de Confiabilidade` | confere se a matéria se sustenta na fonte. Não reescreve nada |
+| **Redator** | `claude-sonnet-5` (Anthropic) | `AI Agent` | escreve título, destaque, texto dos slides e legenda. Não escolhe imagem: as URLs são aplicadas pelo fluxo |
+
+Ferramentas do Redator: **Tavily** (busca, nó `Busca detalhada`) e um *think tool* (`Pensar`). A
+saída é presa a um **output parser** com esquema; um `gpt-5.4-mini` auxiliar só entra se o JSON
+vier malformado.
+
+**O que segura a IA**, porque prompt não é garantia:
+
+- `Validar antes de publicar` é um gate determinístico: estrutura dos slides, limites de texto,
+  imagem em https, fonte, e nada de URL inventada. Reprovou, não publica.
+- A nota do Curador é **teto**, não decisão: quem escolhe é a soma com fonte primária, variedade de
+  imagem e cota de pauta mensal — tudo em código, auditável no diff.
+- O agente já falhou de maneiras que só a medição revelou: anunciava "vou escrever agora" e não
+  entregava (faltava o parser ligado — 37% das reprovações), e, com a busca quebrada, reformulava
+  a consulta 17× por pauta e escrevia sem pesquisa. Os dois viraram patch e harness.
+
+---
+
 ## Arquitetura
 
 ```

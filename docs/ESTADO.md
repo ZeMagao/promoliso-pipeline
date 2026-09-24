@@ -47,6 +47,7 @@ item de encanamento abaixo.
 | Retry do carrossel é all-or-nothing nos 6 filhos | em dia ruim do Meta derruba todos os slots (16/09: 3 de 3) | exige trocar o nó da comunidade por HTTP Requests; cirurgia de conexão já quebrou 3 dias de publicação |
 | Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
 | Duas correções de segurança escritas e não deployadas | auditoria de 07/08; os patches existem, mas as âncoras envelheceram em 7 semanas de mudanças e os harnesses falham contra o código de hoje | precisa refazer as âncoras e reprovar antes de subir — mudança de segurança sem prova é pior que a dívida |
+| Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
 | Backup não cobre o código | `analytics/`, units, scripts e serviços vivem só no disco do VPS | o repositório cobre hoje; a origem do backup continua com 2 arquivos |
 
 ## Últimos deploys
