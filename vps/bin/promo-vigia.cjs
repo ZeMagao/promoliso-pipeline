@@ -67,6 +67,29 @@ function avaliar(f) {
     add('fila_vazia', 'aviso', 'fila sem peça publicável', 'o próximo slot vai passar em branco');
   }
 
+  // O PUBLICADOR (02/10). Até aqui uma peça perdida só gerava e-mail — o canal que já ficou 23
+  // dias sem ser lido. E a peça presa em PUBLISHING não gerava nada: é o único estado que nem
+  // publica nem alerta (execução morta no meio, por deploy ou por nó sem onError).
+  // Chave `evento_*`: é um fato que aconteceu, não uma situação que dura — sai da janela de 24 h
+  // sozinha, e por isso não manda "resolvido" (ver `decidir`).
+  for (const r of (f.pub_eventos || [])) {
+    if (r.status === 'FAILED') {
+      add('evento_falhou_' + r.id, 'grave', `peça ${r.id} perdida no publicador (FAILED)`,
+        'o nó só guarda "Bad request": ver a execução do slot e refazer a chamada à mão');
+    } else if (r.status === 'RETRY') {
+      add('evento_retry_' + r.id, 'aviso', `peça ${r.id} falhou no publicador e volta no próximo slot`,
+        'se falhar de novo vira FAILED; um dia ruim do Meta derruba os slots em sequência');
+    }
+  }
+  for (const r of (f.pub_presas || [])) {
+    add('pub_presa_' + r.id, 'grave', `peça ${r.id} presa em PUBLISHING há ${r.minutos} min`,
+      'execução morreu no meio: conferir no Instagram se saiu e corrigir o status na fila');
+  }
+  if (f.fila_invalidas > 0) {
+    add('fila_invalida', 'aviso', `${f.fila_invalidas} peça(s) fresca(s) com menos de 2 imagens na fila`,
+      'o publicador pula essas peças; ver o produtor');
+  }
+
   for (const s of (f.servicos || [])) {
     if (!s.ativo) add('svc_' + s.nome, 'grave', 'serviço parado: ' + s.nome, 'systemctl status ' + s.nome);
   }
@@ -106,8 +129,9 @@ function decidir(estadoAnterior, problemas, agora, opts) {
     };
   }
 
-  // O que sumiu da lista voltou ao normal.
-  const resolvidos = Object.keys(anterior).filter((k) => !chaves[k]);
+  // O que sumiu da lista voltou ao normal. Evento não "volta ao normal": ele só sai da janela, e
+  // anunciar "resolvido: evento_falhou_72" mentiria — a peça continua perdida.
+  const resolvidos = Object.keys(anterior).filter((k) => !chaves[k] && !k.startsWith('evento_'));
 
   const precisaHeartbeat = !problemas.length && !resolvidos.length
     && (agora - ultimoEnvio) >= HEARTBEAT_DIAS * 24 * H;
@@ -170,7 +194,22 @@ function coletar() {
   const t = Date.parse(ultimo);
   f.horas_sem_post = Number.isFinite(t) ? (agora - t) / H : null;
   f.posts_7d = Number(sql(`SELECT COUNT(*) FROM ${FILA} WHERE status='PUBLISHED' AND published_at >= datetime('now','-7 days');`)) || 0;
-  f.publicaveis = Number(sql(`SELECT COUNT(*) FROM ${FILA} WHERE status IN ('READY','RETRY') AND created_at >= datetime('now','-48 hours');`)) || 0;
+  // Publicável é o que o `Selecionar READY` aceita: fresca E com 2+ imagens. Contar peça sem imagem
+  // como publicável faria o "fila vazia" calar justo quando o slot vai passar em branco.
+  // CASE e não AND: o sqlite não garante curto-circuito, e JSON quebrado derrubaria a consulta.
+  const N_IMAGENS = `CASE WHEN json_valid(carousel_urls) THEN json_array_length(carousel_urls) ELSE 0 END`;
+  const FRESCA = `status IN ('READY','RETRY') AND created_at >= datetime('now','-48 hours')`;
+  f.publicaveis = Number(sql(`SELECT COUNT(*) FROM ${FILA} WHERE ${FRESCA} AND ${N_IMAGENS} >= 2;`)) || 0;
+  f.fila_invalidas = Number(sql(`SELECT COUNT(*) FROM ${FILA} WHERE ${FRESCA} AND ${N_IMAGENS} < 2;`)) || 0;
+
+  // `updatedAt` da fila é UTC no mesmo formato do datetime() do sqlite, então a comparação é direta.
+  // Ele muda quando o publicador grava o status — é a hora da falha.
+  const linhas = (q) => sql(q).split('\n').filter(Boolean).map((l) => l.split('|'));
+  f.pub_eventos = linhas(`SELECT id, status FROM ${FILA} WHERE status IN ('FAILED','RETRY') AND updatedAt >= datetime('now','-24 hours');`)
+    .map(([id, status]) => ({ id, status }));
+  // Uma publicação normal fica ~2 min em PUBLISHING. 60 min é execução que morreu.
+  f.pub_presas = linhas(`SELECT id, CAST((julianday('now') - julianday(updatedAt)) * 1440 AS INTEGER) FROM ${FILA} WHERE status = 'PUBLISHING' AND updatedAt < datetime('now','-60 minutes');`)
+    .map(([id, minutos]) => ({ id, minutos: Number(minutos) }));
 
   try {
     const df = execFileSync('df', ['--output=pcent', '/'], { encoding: 'utf8' }).split('\n')[1] || '';

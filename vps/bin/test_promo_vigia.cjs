@@ -100,6 +100,35 @@ const dD = decidir(d1.novoEstado, probGrave, t0 + 30 * H, {});
 ok('o "desde" do problema não é reescrito a cada rodada',
   dD.novoEstado.chaves.sem_post.desde === d1.novoEstado.chaves.sem_post.desde);
 
+// 7. o publicador (02/10): falha de peça só ia por e-mail, e PUBLISHING preso não ia para lugar nenhum
+ok('dia saudável com listas vazias continua sem problema',
+  avaliar(com({ pub_eventos: [], pub_presas: [], fila_invalidas: 0 })).length === 0);
+const falhou = avaliar(com({ pub_eventos: [{ id: '72', status: 'FAILED' }] }));
+ok('peça FAILED nas últimas 24 h é GRAVE', nivelDe(falhou, 'evento_falhou_72') === 'grave');
+const retry = avaliar(com({ pub_eventos: [{ id: '73', status: 'RETRY' }] }));
+ok('peça RETRY é aviso', nivelDe(retry, 'evento_retry_73') === 'aviso');
+const presa = avaliar(com({ pub_presas: [{ id: '90', minutos: 75 }] }));
+ok('peça presa em PUBLISHING é GRAVE', nivelDe(presa, 'pub_presa_90') === 'grave');
+ok('a mensagem da presa diz há quanto tempo', /75 min/.test((presa[0] || {}).titulo || ''));
+ok('peça fresca sem imagem suficiente avisa',
+  nivelDe(avaliar(com({ fila_invalidas: 2 })), 'fila_invalida') === 'aviso');
+
+const eF1 = decidir({ chaves: {}, ultimo_envio: 0 }, falhou, t0, {});
+ok('falha de peça manda na hora', eF1.enviar && eF1.novos.length === 1);
+const eF2 = decidir(eF1.novoEstado, falhou, t0 + 6 * H, {});
+ok('a mesma falha não repete na rodada seguinte', !eF2.enviar);
+const eF3 = decidir(eF1.novoEstado, [], t0 + 25 * H, {});
+ok('falha que sai da janela NÃO anuncia "resolvido" (a peça segue perdida)',
+  eF3.resolvidos.length === 0 && !eF3.novoEstado.chaves.evento_falhou_72, JSON.stringify(eF3.resolvidos));
+// RETRY que vira FAILED é outra chave — tem que avisar de novo, e mais alto
+const eR1 = decidir({ chaves: {}, ultimo_envio: 0 }, retry, t0, {});
+const eR2 = decidir(eR1.novoEstado, avaliar(com({ pub_eventos: [{ id: '73', status: 'FAILED' }] })), t0 + 4 * H, {});
+ok('RETRY que vira FAILED avisa de novo', eR2.enviar && eR2.novos.some((p) => p.chave === 'evento_falhou_73'));
+// presa NÃO é evento: quando alguém corrige o status, o "resolvido" é verdadeiro
+const eP1 = decidir({ chaves: {}, ultimo_envio: 0 }, presa, t0, {});
+const eP2 = decidir(eP1.novoEstado, [], t0 + 2 * H, {});
+ok('peça destravada anuncia "resolvido"', eP2.resolvidos.includes('pub_presa_90'));
+
 console.log('');
 console.log(falhas ? `${falhas} FALHA(S)` : 'TUDO PASSOU');
 process.exit(falhas ? 1 : 0);

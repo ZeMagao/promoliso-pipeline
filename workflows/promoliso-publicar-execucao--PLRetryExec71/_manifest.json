@@ -67,7 +67,7 @@
       "nome": "Dados aprovados da execução 71",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "codigo": "dados-aprovados-da-execucao-71.js",
+      "codigo": "dados-aprovados-da-execucao.js",
       "linhas": 16
     },
     {

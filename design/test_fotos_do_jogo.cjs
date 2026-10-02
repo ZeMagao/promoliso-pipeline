@@ -18,11 +18,17 @@ const { aplicarNo, lf, ALVOS_JOGO } = require('./patch_fotos_do_jogo.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows',
   'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
-const ARQUIVOS = {
-  'Enriquecer: separar': 'enriquecer-separar.js',
-  'Enriquecer: aplicar': 'enriquecer-aplicar.js',
-  'Normalizar notícias PromoLiso AI': 'normalizar-noticias-promoliso-ai.js',
+// O arquivo de cada nó vem do manifest, não escrito à mão: o exportador corta o nome em 28
+// caracteres, e em 02/10 o primeiro export depois dessa regra renomeou 14 arquivos — nome escrito
+// à mão deixaria este harness vermelho sem nada ter mudado no nó.
+const MANIFEST = JSON.parse(fs.readFileSync(path.join(WFDIR, '_manifest.json'), 'utf8'));
+const arquivoDe = (no) => {
+  const n = MANIFEST.nos.find((x) => x.nome === no);
+  if (!n || !n.codigo) throw new Error('manifest sem código para o nó: ' + no);
+  return n.codigo;
 };
+const ARQUIVOS = Object.fromEntries(
+  ['Enriquecer: separar', 'Enriquecer: aplicar', 'Normalizar notícias PromoLiso AI'].map((no) => [no, arquivoDe(no)]));
 
 let falhas = 0;
 function ok(nome, cond, detalhe) {

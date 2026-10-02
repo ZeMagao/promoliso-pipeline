@@ -27,12 +27,18 @@ function ok(nome, cond, detalhe) {
   if (!cond) falhas += 1;
 }
 
-const ARQUIVOS = {
-  'Preparar candidatos': 'preparar-candidatos.js',
-  'Normalizar notícias PromoLiso AI': 'normalizar-noticias-promoliso-ai.js',
-  'Preparar fila de curadoria': 'preparar-fila-de-curadoria.js',
-  'Selecionar melhor pauta': 'selecionar-melhor-pauta.js',
+// O arquivo de cada nó vem do manifest, não escrito à mão: o exportador corta o nome em 28
+// caracteres, e em 02/10 o primeiro export depois dessa regra renomeou 14 arquivos — nome escrito
+// à mão deixaria este harness vermelho sem nada ter mudado no nó.
+const MANIFEST = JSON.parse(fs.readFileSync(path.join(WFDIR, '_manifest.json'), 'utf8'));
+const arquivoDe = (no) => {
+  const n = MANIFEST.nos.find((x) => x.nome === no);
+  if (!n || !n.codigo) throw new Error('manifest sem código para o nó: ' + no);
+  return n.codigo;
 };
+const ARQUIVOS = Object.fromEntries(
+  ['Preparar candidatos', 'Normalizar notícias PromoLiso AI', 'Preparar fila de curadoria', 'Selecionar melhor pauta']
+    .map((no) => [no, arquivoDe(no)]));
 const antigo = {};
 const novo = {};
 // O harness roda nos dois estados. Com o patch já no ar, o "antes" vem de REVERTER o que está no

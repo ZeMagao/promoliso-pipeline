@@ -1,8 +1,8 @@
 const rows = $input.all().map(i=>i.json);
 // READY = nunca tentada. RETRY = falhou uma vez e ganhou nova chance (ver "Preparar FALHA").
 const PUBLICAVEIS = ['READY','RETRY'];
-const ready = rows.filter(r=>PUBLICAVEIS.includes(String(r.status||'').toUpperCase()));
-if(!ready.length) return [];
+const candidatas = rows.filter(r=>PUBLICAVEIS.includes(String(r.status||'').toUpperCase()));
+if(!candidatas.length) return [];
 
 const FRESCOR_MAX_H = 48;      // teto do que ainda vale publicar
 const JANELA_DO_DIA_H = 12;    // o que conta como "notícia de hoje"
@@ -13,6 +13,20 @@ const JANELA_DO_DIA_H = 12;    // o que conta como "notícia de hoje"
 // fica presa em PUBLISHING, o único estado que nem publica nem alerta.
 const MIN_IMAGENS = 2;
 const MAX_IMAGENS = 10;
+// Só url https serve: é o Instagram que baixa a imagem, e um item quebrado no meio da coleção
+// fazia o filho nascer sem image_url. Medido nas 61 rows da fila: nenhuma perde imagem por
+// causa deste filtro — ele não muda nada hoje, só fecha a porta.
+const validasDe = (row) => {
+  let urls=[]; try{ urls=JSON.parse(row.carousel_urls||'[]'); }catch(e){ urls=[]; }
+  if(!Array.isArray(urls)) urls=[];
+  return urls.filter((u) => typeof u === 'string' && /^https:\/\//.test(u));
+};
+// PEÇA SEM IMAGEM NÃO ENTRA NA DISPUTA (02/10). Antes ela era escolhida e o nó lançava erro
+// ANTES do "Marcar PUBLISHING": a row seguia READY, ganhava de novo no slot seguinte e travava
+// TODOS os slots enquanto fosse a melhor da fila. Agora ela fica de fora e a próxima publica;
+// quem avisa que ela existe é o promo-vigia ("peça fresca com menos de 2 imagens").
+const ready = candidatas.filter((row) => validasDe(row).length >= MIN_IMAGENS);
+if(!ready.length) return [];
 const idadeH = (row) => {
   const t = Date.parse(String(row.created_at || row.createdAt || ''));
   return Number.isFinite(t) ? (Date.now() - t) / 3600000 : Infinity;
@@ -35,12 +49,8 @@ const fila = doDia.length
   : (frescas.length ? frescas.slice().sort(porNota) : ready.slice().sort(maisNovaPrimeiro));
 
 const r = fila[0];
-let urls=[]; try{ urls=JSON.parse(r.carousel_urls||'[]'); }catch(e){ urls=[]; }
-if(!Array.isArray(urls)) urls=[];
-// Só url https serve: é o Instagram que baixa a imagem, e um item quebrado no meio da coleção
-// fazia o filho nascer sem image_url. Medido nas 61 rows da fila: nenhuma perde imagem por
-// causa deste filtro — ele não muda nada hoje, só fecha a porta.
-const validas = urls.filter((u) => typeof u === 'string' && /^https:\/\//.test(u));
+const validas = validasDe(r);
+// Inalcançável depois do filtro acima; fica como trava se alguém mexer nele.
 if(validas.length < MIN_IMAGENS) throw new Error('carousel_urls insuficiente: '+r.carousel_urls);
 // HOST PRÓPRIO PARA A IMAGEM (17/09). O buscador do Meta falha ao baixar de res.cloudinary.com —
 // medido em 16/09: 3/8 e 3/6 por imagem lá, 8/8 fora de lá. Com 6 filhos, publicar virava 0,8% e
