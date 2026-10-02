@@ -43,16 +43,15 @@ item de encanamento abaixo.
 
 | o quê | impacto medido | por que ainda não foi consertado |
 |---|---|---|
-| Retry do carrossel é all-or-nothing nos 6 filhos | em dia ruim do Meta derruba todos os slots (16/09: 3 de 3). **Medido em 02/10: 36/36 publicações desde 17/09 e o retry nunca disparou** — risco latente, não falha ativa | o retry do motor do n8n tem teto (5 tentativas, 5 s); conserto planejado é retry por filho dentro do `dist` do nó, sem mexer em conexão |
-| O nó do Instagram descarta a mensagem do Meta | toda falha chega como "Bad request - please check your parameters"; a causa real só aparece refazendo a chamada à mão | mesmo patch no `dist` do item acima |
 | Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
 | Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
-| Backup não cobre o código | `analytics/`, units, scripts e serviços vivem só no disco do VPS | o repositório cobre hoje; a origem do backup continua com 2 arquivos |
+| Backup não cobre o código | `analytics/`, units, scripts e serviços vivem só no disco do VPS; o código do nó do Instagram tem cópia em `vps/instagram-node/` desde 02/10 | o repositório cobre hoje; a origem do backup continua com 2 arquivos |
 
 ## Últimos deploys
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | nó do Instagram (`dist`): cada filho do carrossel tenta de novo sozinho (15/30/60 s, teto de 3 min), a mensagem do Meta chega no erro, filho sem id vira erro. Provado ao vivo sem publicar. Ainda: **reinstalar o pacote apaga o patch** — o vigia confere | `patch_dist_instagram.cjs` |
 | 02/10 | story ganha retry 3×5s (falhava calada ~1 em 17); peça com menos de 2 imagens sai da disputa em vez de travar todos os slots | `85996042` |
 | 02/10 | vigia avisa no Telegram peça FAILED/RETRY, peça presa em PUBLISHING e peça sem imagem | `promo-vigia.cjs` |
 | 24/09 | capa ganha fotos candidatas: foto morta na origem deixa de derrubar a rodada | `0f9b4bd8` |

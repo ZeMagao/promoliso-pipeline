@@ -129,6 +129,11 @@ const eP1 = decidir({ chaves: {}, ultimo_envio: 0 }, presa, t0, {});
 const eP2 = decidir(eP1.novoEstado, [], t0 + 2 * H, {});
 ok('peça destravada anuncia "resolvido"', eP2.resolvidos.includes('pub_presa_90'));
 
+// 8. patches no código do nó do Instagram (reinstalar o pacote apaga os dois calado)
+ok('patches presentes: sem problema', avaliar(com({ patch_ig: { token: true, retry: true } })).length === 0);
+ok('patch do token sumiu é GRAVE', nivelDe(avaliar(com({ patch_ig: { token: false, retry: true } })), 'patch_ig_token') === 'grave');
+ok('patch do retry sumiu é aviso', nivelDe(avaliar(com({ patch_ig: { token: true, retry: false } })), 'patch_ig_retry') === 'aviso');
+
 console.log('');
 console.log(falhas ? `${falhas} FALHA(S)` : 'TUDO PASSOU');
 process.exit(falhas ? 1 : 0);

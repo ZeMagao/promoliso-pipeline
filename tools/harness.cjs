@@ -31,6 +31,7 @@ const RAIZ = path.join(__dirname, '..');
 const VIVOS = [
   'design/test_cdn_publicador.cjs',
   'design/test_publicador_robustez.cjs',
+  'design/test_dist_instagram.cjs',
   'design/test_fotos_do_jogo.cjs',
   'design/test_pauta_calendario.cjs',
   'design/test_ponte_imagem.cjs',

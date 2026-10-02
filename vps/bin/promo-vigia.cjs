@@ -27,6 +27,8 @@ const ESTADO = process.env.PROMO_VIGIA_ESTADO || '/var/lib/promo-vigia/estado.js
 const TELEGRAM = process.env.PROMO_TELEGRAM || '/usr/local/bin/promo-telegram.cjs';
 const ALERTA_EMAIL = '/usr/local/bin/promo-alerta.sh';
 const FILA = 'data_table_user_i2e8ZwnL9kwOV6OG';
+const DIST_IG = process.env.PROMO_IG_DIST
+  || '/opt/promoliso/data/.n8n/nodes/node_modules/n8n-nodes-instagram-integrations/dist/nodes/Instagram';
 
 const H = 3600 * 1000;
 const REPETIR_H = 24;        // enquanto continuar grave, no maximo um lembrete por dia
@@ -84,6 +86,18 @@ function avaliar(f) {
   for (const r of (f.pub_presas || [])) {
     add('pub_presa_' + r.id, 'grave', `peça ${r.id} presa em PUBLISHING há ${r.minutos} min`,
       'execução morreu no meio: conferir no Instagram se saiu e corrigir o status na fila');
+  }
+  // Os patches no código do nó do Instagram moram no `dist` do pacote: reinstalar apaga os dois
+  // em silêncio. O do token é o pior — o token para de renovar e a publicação morre em ~60 dias.
+  if (f.patch_ig) {
+    if (f.patch_ig.token === false) {
+      add('patch_ig_token', 'grave', 'patch do TOKEN sumiu do nó do Instagram (pacote reinstalado?)',
+        'o token para de renovar; ver instagram-token-fix e vps/instagram-node/README.md');
+    }
+    if (f.patch_ig.retry === false) {
+      add('patch_ig_retry', 'aviso', 'patch do retry por filho sumiu do nó do Instagram',
+        'reaplicar: deploy-vps.sh design/patch_dist_instagram.cjs');
+    }
   }
   if (f.fila_invalidas > 0) {
     add('fila_invalida', 'aviso', `${f.fila_invalidas} peça(s) fresca(s) com menos de 2 imagens na fila`,
@@ -210,6 +224,17 @@ function coletar() {
   // Uma publicação normal fica ~2 min em PUBLISHING. 60 min é execução que morreu.
   f.pub_presas = linhas(`SELECT id, CAST((julianday('now') - julianday(updatedAt)) * 1440 AS INTEGER) FROM ${FILA} WHERE status = 'PUBLISHING' AND updatedAt < datetime('now','-60 minutes');`)
     .map(([id, minutos]) => ({ id, minutos: Number(minutos) }));
+
+  // As marcas são as mesmas que design/patch_dist_instagram.cjs confere.
+  try {
+    const ler = (arq) => fs.readFileSync(path.join(DIST_IG, arq), 'utf8');
+    const gf = ler('GenericFunctions.js');
+    const no = ler('Instagram.node.js');
+    f.patch_ig = {
+      token: gf.includes('igTokenStorePath'),
+      retry: no.includes('PROMO_ESPERAS_FILHO') && gf.includes('promoErroDoMeta'),
+    };
+  } catch (e) { f.patch_ig = { token: false, retry: false }; }
 
   try {
     const df = execFileSync('df', ['--output=pcent', '/'], { encoding: 'utf8' }).split('\n')[1] || '';

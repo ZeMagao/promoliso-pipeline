@@ -6,3 +6,6 @@ workflows/** text eol=lf
 # Os patches e o exportador rodam no VPS (Linux); manter LF evita o mesmo problema.
 *.cjs text eol=lf
 *.sh text eol=lf
+
+# Cópia exata do nó do Instagram em produção: o hash tem que bater com o do VPS.
+vps/instagram-node/** text eol=lf
