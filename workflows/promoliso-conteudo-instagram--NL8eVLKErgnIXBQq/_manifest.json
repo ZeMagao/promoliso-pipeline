@@ -2,8 +2,8 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "699c1521-97e2-496a-a79e-5e784aeac5b8",
-  "activeVersionId": "699c1521-97e2-496a-a79e-5e784aeac5b8",
+  "versionId": "26021c12-b45a-4ce1-903d-c7492286ef90",
+  "activeVersionId": "26021c12-b45a-4ce1-903d-c7492286ef90",
   "draft_igual_publicado": true,
   "total_nos": 95,
   "nos": [
@@ -292,11 +292,6 @@
       "linhas": 38
     },
     {
-      "nome": "GPT 5.4 mini",
-      "tipo": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
-      "typeVersion": 1.4
-    },
-    {
       "nome": "GPT auxiliar de estruturacao",
       "tipo": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2
@@ -345,6 +340,11 @@
       "nome": "Modelo do Curador PromoLiso AI",
       "tipo": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2
+    },
+    {
+      "nome": "Modelo do Redator PromoLiso AI",
+      "tipo": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.4
     },
     {
       "nome": "Montar contexto editorial",
@@ -791,7 +791,6 @@
         "Edit Fields"
       ]
     ],
-    "GPT 5.4 mini": [],
     "GPT auxiliar de estruturacao": [],
     "Há notícias novas?": [
       [
@@ -842,6 +841,7 @@
     ],
     "Modelo de Confiabilidade PromoLiso AI": [],
     "Modelo do Curador PromoLiso AI": [],
+    "Modelo do Redator PromoLiso AI": [],
     "Montar contexto editorial": [
       [
         "Preparar 2 tentativas"

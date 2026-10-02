@@ -79,8 +79,11 @@ async function metadadosDoProdutor(w, execucaoId) {
 
 // Qual modelo escreveu o post. Não há campo explícito, então lemos o nome do nó de LLM que rodou —
 // é a informação que existe sem instrumentar o workflow por dentro.
+// O nó do redator se chamava "GPT 5.4 mini" e sempre foi Anthropic (claude-sonnet-5): o nome mentia.
+// Em 02/10/2026 virou "Modelo do Redator PromoLiso AI". Os dois ficam aqui — execução antiga usa o
+// nome antigo — e a ordem dá o mesmo formato de antes ("redator + curador + confiabilidade").
 function modeloDoAgente(rd) {
-  const candidatos = ['GPT 5.4 mini', 'Modelo do Curador PromoLiso AI', 'Modelo de Confiabilidade PromoLiso AI'];
+  const candidatos = ['GPT 5.4 mini', 'Modelo do Redator PromoLiso AI', 'Modelo do Curador PromoLiso AI', 'Modelo de Confiabilidade PromoLiso AI'];
   const usados = candidatos.filter((n) => rd[n]);
   return usados.join(' + ');
 }

@@ -53,6 +53,20 @@ function agoraUtc() {
   return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}.${p(d.getUTCMilliseconds(), 3)}`;
 }
 
+// O CONTÊINER DO CARROSSEL (02/10/2026). Até 18/08 ele saía de "Create a carousel post"; o carrossel
+// variável trocou esse nó por "Carrossel 02".."Carrossel 10", um por tamanho, e este script
+// continuou procurando o nome antigo: `carousel_container_id` ficou vazio desde 17/08 (29 de 88
+// publicações tinham o id). Aceita os dois, e só a saída de SUCESSO (main[0]) — a de erro é main[1].
+const NO_CARROSSEL = /^(?:Create a carousel post|Carrossel \d{2})$/;
+function containerDoCarrossel(rd) {
+  for (const [nome, runs] of Object.entries(rd || {})) {
+    if (!NO_CARROSSEL.test(nome)) continue;
+    const id = runs?.slice(-1)[0]?.data?.main?.[0]?.[0]?.json?.id;
+    if (id) return id;
+  }
+  return undefined;
+}
+
 // Extrai (content_key -> ids do Instagram) das execuções do publicador que ainda estão no banco.
 function idsPorContentKey() {
   const mapa = new Map();
@@ -74,7 +88,7 @@ function idsPorContentKey() {
     const ck = String(rd['Selecionar READY']?.[0]?.data?.main?.[0]?.[0]?.json?.content_key || '').trim();
     if (!ck) continue;
     const post = rd['Publish a post']?.slice(-1)[0]?.data?.main?.[0]?.[0]?.json?.id;
-    const container = rd['Create a carousel post']?.slice(-1)[0]?.data?.main?.[0]?.[0]?.json?.id;
+    const container = containerDoCarrossel(rd);
     const story = rd['Create a story']?.slice(-1)[0]?.data?.main?.[0]?.[0]?.json?.id;
     if (!post) continue; // sem post publicado não há o que registrar
     // execução mais recente vence (se a mesma pauta foi republicada, o id atual é o que vale)
