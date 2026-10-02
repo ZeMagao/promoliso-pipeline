@@ -41,6 +41,7 @@ const VIVOS = [
   'design/test_capa_candidatos.cjs',
   'vps/renderer/test_capa_candidatos.cjs',
   'vps/bin/test_promo_vigia.cjs',
+  'vps/bin/test_promo_repescagem.cjs',
   'vps/cdn/test_promo_cdn_jogo.cjs',
   'vps/cdn/test_promo_cdn_ponte.cjs',
   'vps/cdn/test_promo_cdn_apelido.cjs',

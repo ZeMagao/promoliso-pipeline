@@ -15,7 +15,7 @@ os comandos de verificação estão no fim.
 | serviço (systemd) | estado |
 |---|---|
 | `promo-n8n`, `promo-renderer`, `promo-cdn`, `caddy` | ativos |
-| 9 timers (`promo-vigia`, backup, token-check, analytics, writeback, detector de nó com erro) | ativos |
+| 10 timers (`promo-vigia`, backup, token-check, analytics, writeback, detector de nó com erro, repescagem) | ativos |
 
 Stack: n8n 2.30.4 · Node 24.19 · Hetzner CX23 · backup diário para Cloudflare R2 (restauração
 testada).
@@ -51,6 +51,7 @@ item de encanamento abaixo.
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | repescagem: rodada do produtor que morre DEPOIS de validar devolve a pauta aprovada à disputa (uma vez), em vez de perdê-la para sempre; aviso no Telegram | `promo-repescagem.timer` |
 | 02/10 | allowlist de link aceita domínios oficiais citados como nome (battle.net, callofduty.com, minecraft.net, mojang.com): eram as 3 reprovações da semana, e a pauta do MW4 se perdeu | `22bdc897` |
 | 02/10 | capa do Blogger/GameBlast deixa de matar a rodada: URL acima de 230 caracteres vira apelido curto (`/img?a=`) — o Cloudinary recusa public_id > 255 e a pauta se perdia (3 das 57 rodadas). Ponte passa a nomear o cache pelo hash da URL inteira (44 URLs caíam em 33 arquivos; 5 fotos diferentes saíam iguais) | `promo-cdn` + `promo-renderer` |
 | 02/10 | nó do Instagram (`dist`): cada filho do carrossel tenta de novo sozinho (15/30/60 s, teto de 3 min), a mensagem do Meta chega no erro, filho sem id vira erro. Provado ao vivo sem publicar. Ainda: **reinstalar o pacote apaga o patch** — o vigia confere | `patch_dist_instagram.cjs` |

@@ -1,0 +1,12 @@
+[Unit]
+Description=PromoLiso - repescagem de pauta perdida (de hora em hora, aos :20)
+
+[Timer]
+# :20 — o produtor roda nas horas pares e termina em poucos minutos; a próxima rodada vem 1h40
+# depois, com a pauta já de volta. Rodar toda hora (e não só nas ímpares) cobre rodada que atrasou.
+OnCalendar=*-*-* *:20:00
+Persistent=true
+Unit=promo-repescagem.service
+
+[Install]
+WantedBy=timers.target
