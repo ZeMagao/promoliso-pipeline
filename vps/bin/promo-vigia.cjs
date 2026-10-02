@@ -83,6 +83,16 @@ function avaliar(f) {
         'se falhar de novo vira FAILED; um dia ruim do Meta derruba os slots em sequência');
     }
   }
+  // RODADA QUE MORREU (02/10). O monitor de erros do n8n só manda e-mail — e em 02/10 18:01 ele
+  // morreu junto com a rodada que devia denunciar (o deploy parou o n8n no meio). Daqui de fora,
+  // pelo status da execução no banco, o aviso chega mesmo quando o n8n caiu.
+  for (const e of (f.execs_com_erro || [])) {
+    const quem = e.workflow === 'E27F7yVdsZRj' ? 'publicador' : 'produtor';
+    add('evento_exec_' + e.id, quem === 'publicador' ? 'grave' : 'aviso',
+      `rodada ${e.id} do ${quem} terminou com erro (${e.hora})`,
+      quem === 'publicador' ? 'ver a execução: o slot pode ter passado em branco'
+        : 'se a pauta já estava aprovada, a repescagem devolve à disputa; ver a execução');
+  }
   for (const r of (f.pub_presas || [])) {
     add('pub_presa_' + r.id, 'grave', `peça ${r.id} presa em PUBLISHING há ${r.minutos} min`,
       'execução morreu no meio: conferir no Instagram se saiu e corrigir o status na fila');
@@ -221,6 +231,10 @@ function coletar() {
   const linhas = (q) => sql(q).split('\n').filter(Boolean).map((l) => l.split('|'));
   f.pub_eventos = linhas(`SELECT id, status FROM ${FILA} WHERE status IN ('FAILED','RETRY') AND updatedAt >= datetime('now','-24 hours');`)
     .map(([id, status]) => ({ id, status }));
+  // stoppedAt é UTC; a hora vai em BRT na mensagem. Só os dois workflows que produzem e publicam.
+  f.execs_com_erro = linhas(`SELECT id, workflowId, strftime('%d/%m %H:%M', stoppedAt, '-3 hours') FROM execution_entity `
+    + `WHERE status = 'error' AND workflowId IN ('NL8eVLKErgnIXBQq','E27F7yVdsZRj') AND stoppedAt >= datetime('now','-24 hours');`)
+    .map(([id, workflow, hora]) => ({ id, workflow, hora }));
   // Uma publicação normal fica ~2 min em PUBLISHING. 60 min é execução que morreu.
   f.pub_presas = linhas(`SELECT id, CAST((julianday('now') - julianday(updatedAt)) * 1440 AS INTEGER) FROM ${FILA} WHERE status = 'PUBLISHING' AND updatedAt < datetime('now','-60 minutes');`)
     .map(([id, minutos]) => ({ id, minutos: Number(minutos) }));

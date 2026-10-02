@@ -129,6 +129,17 @@ const eP1 = decidir({ chaves: {}, ultimo_envio: 0 }, presa, t0, {});
 const eP2 = decidir(eP1.novoEstado, [], t0 + 2 * H, {});
 ok('peça destravada anuncia "resolvido"', eP2.resolvidos.includes('pub_presa_90'));
 
+// 7b. rodada que morreu (02/10 18:01: o deploy parou o n8n e o monitor de erros morreu junto)
+const morreu = avaliar(com({ execs_com_erro: [{ id: '825', workflow: 'NL8eVLKErgnIXBQq', hora: '02/10 18:01' }] }));
+ok('rodada do produtor com erro avisa', nivelDe(morreu, 'evento_exec_825') === 'aviso');
+ok('a mensagem diz qual rodada e quando', /825/.test((morreu[0] || {}).titulo || '') && /18:01/.test((morreu[0] || {}).titulo || ''));
+ok('rodada do publicador com erro é GRAVE (slot pode ter passado em branco)',
+  nivelDe(avaliar(com({ execs_com_erro: [{ id: '900', workflow: 'E27F7yVdsZRj', hora: '02/10 20:31' }] })), 'evento_exec_900') === 'grave');
+const eM1 = decidir({ chaves: {}, ultimo_envio: 0 }, morreu, t0, {});
+const eM2 = decidir(eM1.novoEstado, morreu, t0 + 6 * H, {});
+ok('a mesma rodada morta não repete na passada seguinte', eM1.enviar && !eM2.enviar);
+ok('quando sai da janela, não anuncia "resolvido"', decidir(eM1.novoEstado, [], t0 + 25 * H, {}).resolvidos.length === 0);
+
 // 8. patches no código do nó do Instagram (reinstalar o pacote apaga os dois calado)
 ok('patches presentes: sem problema', avaliar(com({ patch_ig: { token: true, retry: true } })).length === 0);
 ok('patch do token sumiu é GRAVE', nivelDe(avaliar(com({ patch_ig: { token: false, retry: true } })), 'patch_ig_token') === 'grave');
