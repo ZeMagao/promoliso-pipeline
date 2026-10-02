@@ -1,5 +1,5 @@
 [Unit]
-Description=PromoLiso - devolve à disputa a pauta aprovada cuja rodada morreu depois de validar
+Description=PromoLiso - devolve à disputa a pauta aprovada cuja rodada morreu (status error)
 Documentation=file:/usr/local/bin/promo-repescagem.cjs
 After=promo-n8n.service
 

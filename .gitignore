@@ -83,6 +83,7 @@ analytics/logs/
 !design/epic_amostra.json
 !design/ponte_urls_amostra_20261002.json
 !design/validador_casos_20261002.json
+!design/produtor_topologia_20261002.json
 
 # lixo de editor/backup manual — nao entra num repositorio publico
 *.bak

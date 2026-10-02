@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// PROMO-REPESCAGEM — a pauta que morreu DEPOIS de aprovada volta para a disputa (02/10/2026).
+// PROMO-REPESCAGEM — a pauta aprovada cuja rodada morreu volta para a disputa (02/10/2026).
 //
 // O DEFEITO, MEDIDO. A curadoria marca a pauta como APROVADO antes de o redator escrever. Se a
 // rodada morre depois disso (capa que não renderiza, upload que falha), a pauta fica APROVADO para

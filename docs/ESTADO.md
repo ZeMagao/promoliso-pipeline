@@ -7,7 +7,7 @@ os comandos de verificação estão no fim.
 
 | workflow | id | versão publicada | cadência |
 |---|---|---|---|
-| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `22ddebed` (02/10 18:01) | de 2 em 2 h, horas pares BRT |
+| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `699c1521` (02/10 18:21) | de 2 em 2 h, horas pares BRT |
 | Publicador (fila) | `E27F7yVdsZRj` | `85996042` (02/10 12:08) | 12:30 · 16:30 ter/qua/sex · 20:30 BRT |
 | Watchdog de saúde | `MJly91QFGKep` | `dfb31644` | 2× por dia |
 | Monitor de erros | `PRMLERR20260725A` | `9a276b27` | por evento (Error Trigger) |
@@ -44,12 +44,14 @@ item de encanamento abaixo.
 | o quê | impacto medido | por que ainda não foi consertado |
 |---|---|---|
 | Mesma regra em vários nós | 10 regras gêmeas (frescor 48 h em 4 lugares, faixa de slides em 3, piso da capa em 3, hosts e prefixo da ponte, nome do cloud, domínio, tetos das notas) | um Code node não importa código de outro; em vez de mexer em 8 nós, `design/test_regras_gemeas.cjs` (vivo) lê cada cópia do export e fica vermelho quando uma muda sozinha |
-| Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
+| Nó com nome que mente | `GPT 5.4 mini` é Anthropic `claude-sonnet-5` | o analytics (`coletor-publicacoes`) grava `modelo_ia` lendo esse nome; renomear muda a série — decisão do dono |
+| writeback sem id do contêiner | procura `Create a carousel post` no publicador, que sumiu em 18/08: `carousel_container_id` não é gravado desde então | só registro; publicação não depende |
 
 ## Últimos deploys
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | limpeza: 30 nós inalcançáveis saem do produtor (ramo antigo de publicação direta, Buscar capa, Embeddings, 3 desabilitados): 125 → 95 nós, os 93 vivos idênticos | `699c1521` |
 | 02/10 | `deploy-vps.sh` recusa rodar com execução em andamento ou na janela de uma rodada (produtor nas horas pares, publicador às :30) — o deploy já comeu rodada 3 vezes | `deploy-vps.sh` |
 | 02/10 | feed da Intel: newsroom (403 em 43/43 rodadas) → `game.intel.com/us/feed/` (10/10 itens com imagem, só jogo) | `22ddebed` |
 | 02/10 | backup diário passa a levar o código e a configuração fora do banco (nó do Instagram com patches, renderizador, ponte, units, scripts, token, alertas): +55 MB por cópia; restauração ensaiada, 7020 arquivos idênticos | `promo-backup.sh` |

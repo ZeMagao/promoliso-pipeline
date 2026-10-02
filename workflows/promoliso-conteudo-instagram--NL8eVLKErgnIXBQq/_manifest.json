@@ -2,10 +2,10 @@
   "id": "NL8eVLKErgnIXBQq",
   "name": "PromoLiso - Conteúdo Instagram v7.2 - Curadoria Inteligente P1.0.4",
   "active": true,
-  "versionId": "22ddebed-1089-4ed6-a784-58b0f5b36380",
-  "activeVersionId": "22ddebed-1089-4ed6-a784-58b0f5b36380",
+  "versionId": "699c1521-97e2-496a-a79e-5e784aeac5b8",
+  "activeVersionId": "699c1521-97e2-496a-a79e-5e784aeac5b8",
   "draft_igual_publicado": true,
-  "total_nos": 125,
+  "total_nos": 95,
   "nos": [
     {
       "nome": "Agente Curador PromoLiso AI",
@@ -27,11 +27,6 @@
       "nome": "Aggregate",
       "tipo": "n8n-nodes-base.aggregate",
       "typeVersion": 1
-    },
-    {
-      "nome": "Aguardar processamento do carrossel",
-      "tipo": "n8n-nodes-base.wait",
-      "typeVersion": 1.1
     },
     {
       "nome": "AI Agent",
@@ -70,11 +65,6 @@
       "typeVersion": 1
     },
     {
-      "nome": "Buscar capa",
-      "tipo": "@brave/n8n-nodes-brave-search.braveSearchTool",
-      "typeVersion": 1
-    },
-    {
       "nome": "Carregar curadorias PromoLiso AI",
       "tipo": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -85,21 +75,6 @@
       "tipo": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "alwaysOutputData": true
-    },
-    {
-      "nome": "Carrossel ainda processando?",
-      "tipo": "n8n-nodes-base.if",
-      "typeVersion": 2.3
-    },
-    {
-      "nome": "Carrossel pronto para publicar?",
-      "tipo": "n8n-nodes-base.if",
-      "typeVersion": 2.3
-    },
-    {
-      "nome": "Carrossel publicado?",
-      "tipo": "n8n-nodes-base.if",
-      "typeVersion": 2.3
     },
     {
       "nome": "Code in JavaScript",
@@ -144,17 +119,6 @@
       "linhas": 113
     },
     {
-      "nome": "Consultar status do carrossel",
-      "tipo": "n8n-nodes-instagram-integrations.instagram",
-      "typeVersion": 1,
-      "onError": "continueRegularOutput"
-    },
-    {
-      "nome": "Contêiner do carrossel criado?",
-      "tipo": "n8n-nodes-base.if",
-      "typeVersion": 2.3
-    },
-    {
       "nome": "Convert HTML to JPEG image",
       "tipo": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
@@ -166,42 +130,14 @@
       "typeVersion": 4.4
     },
     {
-      "nome": "Create a carousel post",
-      "tipo": "n8n-nodes-instagram-integrations.instagram",
-      "typeVersion": 1,
-      "onError": "continueRegularOutput"
-    },
-    {
-      "nome": "Create a story",
-      "tipo": "n8n-nodes-instagram-integrations.instagram",
-      "typeVersion": 1,
-      "onError": "continueRegularOutput"
-    },
-    {
-      "nome": "Criar imagem do story",
-      "tipo": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4
-    },
-    {
       "nome": "Decisão aprovada?",
       "tipo": "n8n-nodes-base.if",
       "typeVersion": 2.3
     },
     {
-      "nome": "Delete table or rows",
-      "tipo": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "desabilitado": true
-    },
-    {
       "nome": "Edit Fields",
       "tipo": "n8n-nodes-base.set",
       "typeVersion": 3.4
-    },
-    {
-      "nome": "Embeddings OpenAI",
-      "tipo": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
-      "typeVersion": 1.2
     },
     {
       "nome": "Encerrar após curadoria",
@@ -386,13 +322,6 @@
       "typeVersion": 2.3
     },
     {
-      "nome": "Interpretar status do carrossel",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "interpretar-status-do-carros.js",
-      "linhas": 22
-    },
-    {
       "nome": "Ler fila (portão)",
       "tipo": "n8n-nodes-base.dataTable",
       "typeVersion": 1
@@ -406,12 +335,6 @@
       "nome": "Loop Over Items",
       "tipo": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3
-    },
-    {
-      "nome": "Memória Postgres",
-      "tipo": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
-      "typeVersion": 1.3,
-      "desabilitado": true
     },
     {
       "nome": "Modelo de Confiabilidade PromoLiso AI",
@@ -444,12 +367,6 @@
       "typeVersion": 2,
       "codigo": "normalizar-noticias-promolis.js",
       "linhas": 330
-    },
-    {
-      "nome": "Obter noticias",
-      "tipo": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
-      "typeVersion": 1.3,
-      "desabilitado": true
     },
     {
       "nome": "Obter URL primeira imagem",
@@ -493,46 +410,11 @@
       "linhas": 204
     },
     {
-      "nome": "Preparar carrossel publicado",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-carrossel-publicado.js",
-      "linhas": 21
-    },
-    {
       "nome": "Preparar decisão manual da curadoria",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "preparar-decisao-manual-da-c.js",
       "linhas": 23
-    },
-    {
-      "nome": "Preparar falha ao criar carrossel",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-falha-ao-criar-carr.js",
-      "linhas": 36
-    },
-    {
-      "nome": "Preparar falha ao publicar carrossel",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-falha-ao-publicar-c.js",
-      "linhas": 41
-    },
-    {
-      "nome": "Preparar falha do story",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-falha-do-story.js",
-      "linhas": 17
-    },
-    {
-      "nome": "Preparar falha no processamento",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-falha-no-processame.js",
-      "linhas": 42
     },
     {
       "nome": "Preparar fila de curadoria",
@@ -542,25 +424,11 @@
       "linhas": 176
     },
     {
-      "nome": "Preparar publicação concluída",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-publicacao-concluid.js",
-      "linhas": 26
-    },
-    {
       "nome": "Preparar registro pendente",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
       "codigo": "preparar-registro-pendente.js",
       "linhas": 29
-    },
-    {
-      "nome": "Preparar verificação do carrossel",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "preparar-verificacao-do-carr.js",
-      "linhas": 8
     },
     {
       "nome": "Preservar retorno do Curador",
@@ -573,12 +441,6 @@
       "nome": "PromoLiso AI — Fase 1",
       "tipo": "n8n-nodes-base.stickyNote",
       "typeVersion": 1
-    },
-    {
-      "nome": "Publish a post",
-      "tipo": "n8n-nodes-instagram-integrations.instagram",
-      "typeVersion": 1,
-      "onError": "continueRegularOutput"
     },
     {
       "nome": "Registrar curadoria PromoLiso AI",
@@ -616,20 +478,6 @@
       "linhas": 10
     },
     {
-      "nome": "Resultado FALHA_PUBLICACAO",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "resultado-falha-publicacao.js",
-      "linhas": 13
-    },
-    {
-      "nome": "Resultado PUBLICADO",
-      "tipo": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "codigo": "resultado-publicado.js",
-      "linhas": 11
-    },
-    {
       "nome": "Resultado REJEITADO",
       "tipo": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -637,25 +485,10 @@
       "linhas": 10
     },
     {
-      "nome": "Salvar carrossel publicado",
-      "tipo": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1
-    },
-    {
-      "nome": "Salvar falha de publicação",
-      "tipo": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1
-    },
-    {
       "nome": "Salvar na fila",
       "tipo": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "onError": "continueRegularOutput"
-    },
-    {
-      "nome": "Salvar publicação concluída",
-      "tipo": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1
     },
     {
       "nome": "Salvar rejeição",
@@ -688,11 +521,6 @@
       "typeVersion": 1
     },
     {
-      "nome": "Story publicado?",
-      "tipo": "n8n-nodes-base.if",
-      "typeVersion": 2.3
-    },
-    {
       "nome": "Tentar outra pauta",
       "tipo": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3
@@ -709,11 +537,6 @@
     },
     {
       "nome": "Upload an asset from file data",
-      "tipo": "n8n-nodes-cloudinary.cloudinary",
-      "typeVersion": 1
-    },
-    {
-      "nome": "Upload an asset from file data1",
       "tipo": "n8n-nodes-cloudinary.cloudinary",
       "typeVersion": 1
     },
@@ -780,11 +603,6 @@
         "Preparar registro pendente"
       ]
     ],
-    "Aguardar processamento do carrossel": [
-      [
-        "Consultar status do carrossel"
-      ]
-    ],
     "Aprovar pauta curada": [
       [
         "Preparar decisão manual da curadoria"
@@ -809,30 +627,6 @@
     "Carregar histórico persistente": [
       [
         "Montar contexto editorial"
-      ]
-    ],
-    "Carrossel ainda processando?": [
-      [
-        "Aguardar processamento do carrossel"
-      ],
-      [
-        "Preparar falha no processamento"
-      ]
-    ],
-    "Carrossel pronto para publicar?": [
-      [
-        "Publish a post"
-      ],
-      [
-        "Carrossel ainda processando?"
-      ]
-    ],
-    "Carrossel publicado?": [
-      [
-        "Preparar carrossel publicado"
-      ],
-      [
-        "Preparar falha ao publicar carrossel"
       ]
     ],
     "Code in JavaScript": [
@@ -865,19 +659,6 @@
         "Unir resultados da curadoria"
       ]
     ],
-    "Consultar status do carrossel": [
-      [
-        "Interpretar status do carrossel"
-      ]
-    ],
-    "Contêiner do carrossel criado?": [
-      [
-        "Preparar verificação do carrossel"
-      ],
-      [
-        "Preparar falha ao criar carrossel"
-      ]
-    ],
     "Convert HTML to JPEG image": [
       [
         "Imagem do slide válida?"
@@ -888,21 +669,6 @@
         "Image Sharp1"
       ]
     ],
-    "Create a carousel post": [
-      [
-        "Contêiner do carrossel criado?"
-      ]
-    ],
-    "Create a story": [
-      [
-        "Story publicado?"
-      ]
-    ],
-    "Criar imagem do story": [
-      [
-        "Upload an asset from file data1"
-      ]
-    ],
     "Decisão aprovada?": [
       [
         "Fila: render story"
@@ -911,15 +677,11 @@
         "Registrar rejeição"
       ]
     ],
-    "Delete table or rows": [
-      []
-    ],
     "Edit Fields": [
       [
         "Split Out"
       ]
     ],
-    "Embeddings OpenAI": [],
     "Enriquecer: aplicar": [
       [
         "Configuração PromoLiso AI"
@@ -1057,11 +819,6 @@
         "Usar capa como fallback"
       ]
     ],
-    "Interpretar status do carrossel": [
-      [
-        "Carrossel pronto para publicar?"
-      ]
-    ],
     "Ler fila (portão)": [
       [
         "Portão da fila"
@@ -1149,44 +906,14 @@
         "Enriquecer: separar"
       ]
     ],
-    "Preparar carrossel publicado": [
-      [
-        "Salvar carrossel publicado"
-      ]
-    ],
     "Preparar decisão manual da curadoria": [
       [
         "Atualizar decisão da curadoria"
       ]
     ],
-    "Preparar falha ao criar carrossel": [
-      [
-        "Salvar falha de publicação"
-      ]
-    ],
-    "Preparar falha ao publicar carrossel": [
-      [
-        "Salvar falha de publicação"
-      ]
-    ],
-    "Preparar falha do story": [
-      [
-        "Salvar falha de publicação"
-      ]
-    ],
-    "Preparar falha no processamento": [
-      [
-        "Salvar falha de publicação"
-      ]
-    ],
     "Preparar fila de curadoria": [
       [
         "Há notícias novas?"
-      ]
-    ],
-    "Preparar publicação concluída": [
-      [
-        "Salvar publicação concluída"
       ]
     ],
     "Preparar registro pendente": [
@@ -1195,19 +922,9 @@
         "Verificar pauta repetida"
       ]
     ],
-    "Preparar verificação do carrossel": [
-      [
-        "Aguardar processamento do carrossel"
-      ]
-    ],
     "Preservar retorno do Curador": [
       [
         "Agente Verificador de Confiabilidade"
-      ]
-    ],
-    "Publish a post": [
-      [
-        "Carrossel publicado?"
       ]
     ],
     "Registrar curadoria PromoLiso AI": [
@@ -1238,21 +955,6 @@
         "Consolidar decisão determinística"
       ]
     ],
-    "Salvar carrossel publicado": [
-      [
-        "Criar imagem do story"
-      ]
-    ],
-    "Salvar falha de publicação": [
-      [
-        "Resultado FALHA_PUBLICACAO"
-      ]
-    ],
-    "Salvar publicação concluída": [
-      [
-        "Resultado PUBLICADO"
-      ]
-    ],
     "Salvar rejeição": [
       [
         "Resultado REJEITADO"
@@ -1271,14 +973,6 @@
     "Split Out": [
       [
         "Loop Over Items"
-      ]
-    ],
-    "Story publicado?": [
-      [
-        "Preparar publicação concluída"
-      ],
-      [
-        "Preparar falha do story"
       ]
     ],
     "Tentar outra pauta": [
@@ -1302,11 +996,6 @@
     "Upload an asset from file data": [
       [
         "Aggregate"
-      ]
-    ],
-    "Upload an asset from file data1": [
-      [
-        "Create a story"
       ]
     ],
     "Upload an asset from file data2": [
