@@ -50,4 +50,35 @@ function alvosDoHtml(html) {
   return alvos;
 }
 
-module.exports = { candidatosDaTag, primeiraQueResponde, alvosDoHtml };
+// APELIDO CURTO PARA A PONTE (02/10/2026). O Cloudinary recusa `image/fetch` cujo public_id passa
+// de 255 caracteres ("public_id (...) is too long", HTTP 400). Imagem do Blogger (GameBlast) pela
+// ponte passa de 330: em uma semana foram 7 URLs assim, e as 7 mataram a rodada — sempre a capa,
+// que é obrigatória. Aqui a URL longa vira `…/img?a=<id>` (~65 caracteres) e o apelido é gravado
+// em disco para a ponte achar a URL original. Abaixo do limite, a URL passa INTACTA: o caminho que
+// funciona hoje não muda em nada.
+const PONTE_U = 'https://n8n.promoliso.com.br/img?u=';
+const PONTE_A = 'https://n8n.promoliso.com.br/img?a=';
+const LIMITE_PUBLIC_ID = 230;   // o do Cloudinary é 255; folga para não morar na borda
+const RE_FETCH = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/fetch\/.*?\/)(https?(?::|%3A).*)$/i;
+
+const decodificar = (s) => { try { return decodeURIComponent(s); } catch (e) { return null; } };
+
+// `registrar(id, urlOriginal)` é injetado: no servidor grava o arquivo, no harness só anota.
+function encurtarPonte(url, registrar, hash) {
+  const m = RE_FETCH.exec(String(url || ''));
+  if (!m) return url;
+  // Na URL a remota vem codificada uma vez (https%3A%2F%2F…); o Cloudinary mede depois de decodificar.
+  const remota = /^https?%3A/i.test(m[2]) ? decodificar(m[2]) : m[2];
+  if (!remota || remota.length <= LIMITE_PUBLIC_ID) return url;
+  // Só a nossa ponte sabe servir apelido; URL longa de outro host segue como está.
+  if (!remota.startsWith(PONTE_U)) return url;
+  let original;
+  try { original = new URL(remota).searchParams.get('u'); } catch (e) { return url; }
+  if (!original || !/^https:\/\//i.test(original)) return url;
+  const id = hash(original).slice(0, 32);
+  registrar(id, original);
+  // Codificada como a remota de antes: um `?` cru viraria query string da URL do Cloudinary.
+  return m[1] + encodeURIComponent(PONTE_A + id);
+}
+
+module.exports = { candidatosDaTag, primeiraQueResponde, alvosDoHtml, encurtarPonte, LIMITE_PUBLIC_ID, PONTE_A, PONTE_U };

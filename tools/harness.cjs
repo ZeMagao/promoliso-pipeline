@@ -43,6 +43,7 @@ const VIVOS = [
   'vps/bin/test_promo_vigia.cjs',
   'vps/cdn/test_promo_cdn_jogo.cjs',
   'vps/cdn/test_promo_cdn_ponte.cjs',
+  'vps/cdn/test_promo_cdn_apelido.cjs',
 ];
 
 function todosOsHarnesses() {

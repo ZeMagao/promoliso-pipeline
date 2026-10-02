@@ -2,7 +2,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer-core');
-const { primeiraQueResponde, alvosDoHtml } = require('./candidatos.cjs');
+const crypto = require('crypto');
+const { primeiraQueResponde, alvosDoHtml, encurtarPonte } = require('./candidatos.cjs');
 let sharp = null;
 try { sharp = require('sharp'); } catch { /* sem sharp: supersample sem downscale controlado */ }
 
@@ -206,19 +207,34 @@ async function fetchImageDataUri(url) {
 
 // CAPA COM CANDIDATOS (24/09/2026). A regra de escolha mora em candidatos.cjs, sem dependencia
 // de Chrome nem de sharp, para o harness poder rodar offline. Aqui fica so a costura com o fetch.
+// APELIDO DA PONTE (02/10/2026): a regra mora em candidatos.cjs; aqui só se grava o arquivo que o
+// promo-cdn lê (mesmo usuário promo, mesmo disco). O diretório é o `_ponte/apelido` do cache dele.
+const DIR_APELIDO = process.env.PROMO_PONTE_APELIDO_DIR || '/opt/promoliso/cdn-cache/_ponte/apelido';
+const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
+function registrarApelido(id, original) {
+  const arquivo = path.join(DIR_APELIDO, id + '.url');
+  if (fs.existsSync(arquivo)) return;
+  fs.mkdirSync(DIR_APELIDO, { recursive: true });
+  const tmp = arquivo + '.' + process.pid + '.tmp';
+  fs.writeFileSync(tmp, original);
+  fs.renameSync(tmp, arquivo);
+  console.log('[imagem] apelido ' + id + ' para URL de ' + original.length + ' caracteres');
+}
+const encurtar = (url) => encurtarPonte(url, registrarApelido, sha256);
+
 async function inlineRemoteImages(html) {
   const alvos = alvosDoHtml(html);
   if (alvos.length > 10) {
     throw new Error('Quantidade de imagens acima do limite');
   }
   const resolvidas = await Promise.all(
-    alvos.map((a) => primeiraQueResponde(a.candidatos, fetchImageDataUri)),
+    alvos.map((a) => primeiraQueResponde(a.candidatos.map(encurtar), fetchImageDataUri)),
   );
   let inlined = html;
   for (let i = 0; i < alvos.length; i += 1) {
     // Troca a URL PRIMARIA pelo data URI de quem respondeu — pode ser um dos fallbacks.
     inlined = inlined.split(alvos[i].primaria).join(resolvidas[i].dataUri);
-    if (resolvidas[i].url !== alvos[i].primaria) {
+    if (resolvidas[i].url !== encurtar(alvos[i].primaria)) {
       console.log('[imagem] primaria falhou, usei candidato: ' + resolvidas[i].url.slice(0, 80));
     }
   }

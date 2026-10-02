@@ -27,6 +27,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const crypto = require('crypto');
 
 const CLOUD = process.env.PROMO_CDN_CLOUD || 'fy2n2qvr';
 const HOST = process.env.PROMO_CDN_HOST || '127.0.0.1';
@@ -247,6 +248,33 @@ function precisaDePonte(url) {
   return hostPermitido(url);
 }
 
+// NOME NO CACHE (02/10/2026). Era `base64url(url).slice(0, 120)` — os primeiros 90 bytes da URL. O
+// prefixo do WordPress do Adrenaline já gasta 57, e fotos da mesma matéria só diferem no fim:
+// medido em 57 execuções, 44 URLs distintas viravam 33 arquivos. As 5 fotos de
+// "the-last-of-us-day-2026-avatares-tema-ps5-steam-0N" caíam no MESMO arquivo, e a ponte servia a
+// mesma foto para os 5 slides. Hash da URL inteira: um arquivo por URL.
+function nomeNoCache(alvo) {
+  return crypto.createHash('sha256').update(String(alvo)).digest('hex');
+}
+
+// APELIDO CURTO (02/10/2026). O Cloudinary recusa `image/fetch` com public_id acima de 255
+// caracteres (x-cld-error "public_id (...) is too long"). A URL da ponte com uma imagem do Blogger
+// dentro passa de 330: medido, as 7 URLs assim em uma semana mataram as 7 rodadas onde apareceram,
+// e a pauta se perdeu nas 3 (fica APROVADO na curadoria e nunca é reavaliada).
+// O renderizador grava `<id>.url` com a URL original e pede `/img?a=<id>`; aqui só se LÊ. Quem
+// cria apelido é processo local com acesso ao disco — pela internet não se cria nenhum — e a URL
+// lida passa pela MESMA lista de hosts do `?u=`.
+const DIR_APELIDO = path.join(CACHE, '_ponte', 'apelido');
+const RE_APELIDO = /^[0-9a-f]{32}$/;
+function alvoDoApelido(id, dir) {
+  if (!RE_APELIDO.test(String(id || ''))) return null;
+  try {
+    return fs.readFileSync(path.join(dir || DIR_APELIDO, id + '.url'), 'utf8').trim() || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function buscarComNavegador(url) {
   const ctrl = new AbortController();
   const relogio = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -281,14 +309,21 @@ const servidor = http.createServer(async (req, res) => {
     return res.end('ok\n');
   }
   if (caminho === '/img') {
-    const alvo = new URL(req.url, 'http://x').searchParams.get('u') || '';
+    const qs = new URL(req.url, 'http://x').searchParams;
+    const apelido = qs.get('a');
+    const alvo = apelido ? (alvoDoApelido(apelido) || '') : (qs.get('u') || '');
+    if (apelido && !alvo) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      console.error('GET /img 404 apelido desconhecido: ' + String(apelido).slice(0, 40));
+      return res.end('apelido desconhecido\n');
+    }
     if (!hostPermitido(alvo)) {
       res.writeHead(403, { 'Content-Type': 'text/plain' });
       console.error('GET /img 403 host fora da lista: ' + String(alvo).slice(0, 80));
       return res.end('host nao permitido\n');
     }
     // Cache em disco pela URL: a mesma capa é pedida pelo Cloudinary mais de uma vez por peça.
-    const nome = Buffer.from(alvo).toString('base64url').slice(0, 120);
+    const nome = nomeNoCache(alvo);
     const arquivo = path.join(CACHE, '_ponte', nome + '.bin');
     try {
       let tipo = 'image/jpeg';
@@ -364,7 +399,7 @@ const servidor = http.createServer(async (req, res) => {
   }
 });
 
-module.exports = { paraCaminhoLocal, upstream, ROTA, CLOUD, baixar, confirmaNome, termosDaManchete, fotosDoJogo, normal, hostPermitido, precisaDePonte, HOSTS_PONTE };
+module.exports = { paraCaminhoLocal, upstream, ROTA, CLOUD, baixar, confirmaNome, termosDaManchete, fotosDoJogo, normal, hostPermitido, precisaDePonte, HOSTS_PONTE, nomeNoCache, alvoDoApelido, DIR_APELIDO, RE_APELIDO };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
