@@ -43,7 +43,7 @@ item de encanamento abaixo.
 
 | o quê | impacto medido | por que ainda não foi consertado |
 |---|---|---|
-| Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
+| Mesma regra em vários nós | 10 regras gêmeas (frescor 48 h em 4 lugares, faixa de slides em 3, piso da capa em 3, hosts e prefixo da ponte, nome do cloud, domínio, tetos das notas) | um Code node não importa código de outro; em vez de mexer em 8 nós, `design/test_regras_gemeas.cjs` (vivo) lê cada cópia do export e fica vermelho quando uma muda sozinha |
 | Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
 
 ## Últimos deploys

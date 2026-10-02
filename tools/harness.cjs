@@ -29,6 +29,7 @@ const RAIZ = path.join(__dirname, '..');
 
 // Lista explícita, não heurística: quem entra aqui é cobrado, e a escolha tem que ser de alguém.
 const VIVOS = [
+  'design/test_regras_gemeas.cjs',
   'design/test_cdn_publicador.cjs',
   'design/test_publicador_robustez.cjs',
   'design/test_dist_instagram.cjs',
