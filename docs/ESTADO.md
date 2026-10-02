@@ -7,7 +7,7 @@ os comandos de verificação estão no fim.
 
 | workflow | id | versão publicada | cadência |
 |---|---|---|---|
-| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `0f9b4bd8` (24/09 18:43) | de 2 em 2 h, horas pares BRT |
+| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `22bdc897` (02/10 16:52) | de 2 em 2 h, horas pares BRT |
 | Publicador (fila) | `E27F7yVdsZRj` | `85996042` (02/10 12:08) | 12:30 · 16:30 ter/qua/sex · 20:30 BRT |
 | Watchdog de saúde | `MJly91QFGKep` | `dfb31644` | 2× por dia |
 | Monitor de erros | `PRMLERR20260725A` | `9a276b27` | por evento (Error Trigger) |
@@ -51,6 +51,7 @@ item de encanamento abaixo.
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | allowlist de link aceita domínios oficiais citados como nome (battle.net, callofduty.com, minecraft.net, mojang.com): eram as 3 reprovações da semana, e a pauta do MW4 se perdeu | `22bdc897` |
 | 02/10 | capa do Blogger/GameBlast deixa de matar a rodada: URL acima de 230 caracteres vira apelido curto (`/img?a=`) — o Cloudinary recusa public_id > 255 e a pauta se perdia (3 das 57 rodadas). Ponte passa a nomear o cache pelo hash da URL inteira (44 URLs caíam em 33 arquivos; 5 fotos diferentes saíam iguais) | `promo-cdn` + `promo-renderer` |
 | 02/10 | nó do Instagram (`dist`): cada filho do carrossel tenta de novo sozinho (15/30/60 s, teto de 3 min), a mensagem do Meta chega no erro, filho sem id vira erro. Provado ao vivo sem publicar. Ainda: **reinstalar o pacote apaga o patch** — o vigia confere | `patch_dist_instagram.cjs` |
 | 02/10 | story ganha retry 3×5s (falhava calada ~1 em 17); peça com menos de 2 imagens sai da disputa em vez de travar todos os slots | `85996042` |

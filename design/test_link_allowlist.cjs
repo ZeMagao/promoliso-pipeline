@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { aplicar, lf, extrairBloco, MARCA } = require('./patch_link_allowlist.cjs');
+const citaveis = require('./patch_dominios_citaveis.cjs');
 
 const WFDIR = path.join(__dirname, '..', 'workflows', 'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq');
 const VALIDADOR = path.join(WFDIR, 'validar-antes-de-publicar.js');
@@ -33,7 +34,9 @@ const ok = (nome, cond, detalhe) => {
 
 const original = lf(fs.readFileSync(VALIDADOR, 'utf8'));
 const jaTem = original.includes(MARCA);
-const patchado = jaTem ? original : aplicar(original, false);
+// Com a allowlist no ar mas sem a lista de 02/10, leva ao texto novo: o harness mede a regra de hoje
+// nos dois estados, sem depender de qual patch o export já tem.
+const patchado = citaveis.normalizar(jaTem ? original : aplicar(original, false));
 console.log(jaTem ? '# o validador exportado JÁ tem a allowlist — conferindo o que está no ar'
                   : '# o validador ainda não tem — conferindo a troca');
 
@@ -119,6 +122,25 @@ ok('loja conhecida passa', loja.erros.length === 0, JSON.stringify(loja.linksFor
 const semLink = pauta('Segundo o PlayStation Blog, o jogo chega em março. Bora comentar?');
 ok('legenda sem link nenhum passa', semLink.erros.length === 0 && semLink.linksNoTexto.length === 0);
 
+// ── 6. domínios oficiais citados como nome (02/10/2026): as 3 reprovações reais da semana ──
+const mw4 = pauta('O game chega em 23 de outubro na Xbox PC, Battle.net e Steam, com SSD exigido no lugar de HD comum',
+  [], [{ host: 'callofduty.com' }]);
+ok('MW4 (exec 782): "Battle.net e Steam" passa', mw4.erros.length === 0, JSON.stringify(mw4.linksForaAllowlist));
+const mine = pauta('Segundo a Xbox Wire e o recap oficial da Mojang em minecraft.net, a Sift é descrita como vibrante',
+  [], [{ host: 'news.xbox.com' }]);
+ok('Minecraft (exec 746): "em minecraft.net" passa', mine.erros.length === 0, JSON.stringify(mine.linksForaAllowlist));
+for (const [nome, legenda] of [
+  ['domínio que só COMEÇA com battle.net', 'Resgate em battle.net.premio-gratis.com hoje'],
+  ['domínio que só TERMINA parecido', 'Cupom em freebattle.net agora'],
+  ['link explícito disfarçado', 'Acesse https://minecraft.net.premio.shop/skin'],
+  ['subdomínio de encurtador', 'Corre: mojang.bit.ly/abc'],
+]) {
+  const r = pauta(legenda);
+  ok('continua barrando: ' + nome, r.erros.length > 0, JSON.stringify(r.linksNoTexto));
+}
+ok('subdomínio oficial passa (news.blizzard.com já era primário; shop.battle.net agora também)',
+  pauta('Compre direto na shop.battle.net').erros.length === 0);
+
 // ── mensagens separadas, porque o alerta precisa dizer QUAL das duas ────────
 const explicito = pauta('vai em https://promo-falsa.test/x');  // TLD reservado: so vale pelo esquema
 const solto = pauta('vai em promo-falsa.shop');
@@ -127,6 +149,10 @@ ok('mensagem do domínio solto é própria', /citam dominio fora da allowlist/.t
 
 // ── ida e volta ─────────────────────────────────────────────────────────────
 ok('reverter e reaplicar volta byte a byte', aplicar(aplicar(patchado, true), false) === lf(patchado));
+ok('patch dos citáveis: reverter e reaplicar volta byte a byte',
+  citaveis.aplicar(citaveis.aplicar(patchado, true), false) === lf(patchado));
+ok('o bloco do patch da allowlist já descreve a regra nova', extrairBloco(aplicar(original.includes(MARCA)
+  ? aplicar(citaveis.normalizar(original), true) : original, false)).includes(citaveis.MARCA));
 let compila = true;
 try { new Function(patchado); } catch (e) { compila = false; }
 ok('validador patchado compila', compila);

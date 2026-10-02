@@ -904,9 +904,15 @@ if (
 // Por que isto existe: a legenda vai pro Instagram verbatim e e escrita pelo agente, que le feeds
 // RSS de terceiros. Sem esta checagem, uma injecao no feed publica o link que quiser no perfil.
 // Medido contra as pecas reais da amostra: zero bloqueios no conteudo legitimo de hoje.
+// Dominios oficiais que aparecem escritos como NOME, nao como link: "chega no Battle.net e na
+// Steam", "o recap da Mojang em minecraft.net". Medido em 02/10/2026: as 3 reprovacoes da
+// allowlist na semana foram estas, e a pauta do MW4 se perdeu nas duas tentativas. So entra
+// dominio primario de publisher/plataforma: nada de encurtador, loja de terceiro ou agregador.
+const dominiosCitaveis = ['battle.net', 'callofduty.com', 'minecraft.net', 'mojang.com'];
 const hostsPermitidosNoTexto = [
   ...dominiosPrimarios,
   ...dominiosLojas,
+  ...dominiosCitaveis,
   ...fontes.map((fonte) => fonte.host),
   'promoliso.com.br',
 ];
