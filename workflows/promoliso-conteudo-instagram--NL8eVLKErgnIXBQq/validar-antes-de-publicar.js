@@ -573,10 +573,17 @@ const fontesRecentes = fontes.filter((fonte) =>
   dataRecente(fonte.data_publicacao, janelaDias),
 );
 
+// `.all()` e nao `.item` (02/10/2026): o `.item` depende do rastreio de item pareado, que se
+// perde no laco "Tentar outra pauta" + AI Agent. Ele lancava erro, o catch devolvia [] calado e a
+// fonte perdia o material do candidato. Reexecutando as 58 validacoes da semana, producao so bate
+// com `.item` quebrado; a exec 822 (fonte primaria news.xbox.com) reprovou por isso. E a mesma
+// leitura que o `candidatoEditorialAprovado` acima ja fazia.
 let candidatosContexto = [];
 try {
-  candidatosContexto =
-    $('Montar contexto editorial').item.json.candidatos || [];
+  const refContexto = $('Montar contexto editorial');
+  candidatosContexto = (typeof refContexto.all === 'function' ? refContexto.all() : [refContexto.item])
+    .flatMap((item) => item?.json?.candidatos || [])
+    .filter(Boolean);
 } catch (error) {
   candidatosContexto = [];
 }
@@ -750,6 +757,8 @@ const plataformasGenericas = new Set([
   'epic',
   'gaming',
 ]);
+// Acervo que o proprio pipeline montou para ESTA pauta (materia + fotos oficiais do jogo).
+const acervoDoCandidato = new Set(imagensOficiaisDoCandidato.map(urlCanonica));
 const imagensAuditadas = imagensValidas.map((imagem, index) => {
   const slideIndex = index === 0 ? 0 : index - 1;
   const slide = Array.isArray(output.slides)
@@ -808,6 +817,13 @@ const imagensAuditadas = imagensValidas.map((imagem, index) => {
   const imagemDeHostOficial =
     hostIn(imagem.host, dominiosPrimarios) &&
     fontesPrimariasRelevantes.length > 0;
+  // FOTO OFICIAL DO JOGO (02/10/2026). O /jogo/fotos poe no acervo as screenshots da Steam do jogo
+  // CONFIRMADO; a URL e opaca (ss_<hash>.1920x1080.jpg) e a regra de palavras nunca casava: 14
+  // fotos reprovadas na semana. Foto da CDN da Steam que esta no acervo do candidato e da pauta
+  // por construcao. So Steam: a imagem unica de 608 px do gg.deals continua reprovando.
+  const fotoOficialDoJogo =
+    hostIn(imagem.host, ['steamstatic.com']) &&
+    acervoDoCandidato.has(urlCanonica(imagem.url));
   return {
     url: imagem.url,
     host: imagem.host,
@@ -816,6 +832,7 @@ const imagensAuditadas = imagensValidas.map((imagem, index) => {
     relevante:
       imagemDeHostOficial ||
       cdnXboxWireOficial ||
+      fotoOficialDoJogo ||
       coincidencias.length >= 2 ||
       coincidenciaEspecifica,
     baixa_resolucao: baixaResolucao,

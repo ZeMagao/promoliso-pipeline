@@ -7,7 +7,7 @@ os comandos de verificação estão no fim.
 
 | workflow | id | versão publicada | cadência |
 |---|---|---|---|
-| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `22bdc897` (02/10 16:52) | de 2 em 2 h, horas pares BRT |
+| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `d1ecf60f` (02/10 17:30) | de 2 em 2 h, horas pares BRT |
 | Publicador (fila) | `E27F7yVdsZRj` | `85996042` (02/10 12:08) | 12:30 · 16:30 ter/qua/sex · 20:30 BRT |
 | Watchdog de saúde | `MJly91QFGKep` | `dfb31644` | 2× por dia |
 | Monitor de erros | `PRMLERR20260725A` | `9a276b27` | por evento (Error Trigger) |
@@ -51,6 +51,7 @@ item de encanamento abaixo.
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | validador: foto oficial da Steam no acervo da pauta conta como relacionada (14 fotos reprovadas na semana); contexto do candidato lido com `.all()` — o `.item` falhava calado em produção. Bancada com as 58 validações reais: muda exatamente E-Day, Forest of Deceit ×2 e Next Week on Xbox | `d1ecf60f` |
 | 02/10 | repescagem: rodada do produtor que morre DEPOIS de validar devolve a pauta aprovada à disputa (uma vez), em vez de perdê-la para sempre; aviso no Telegram | `promo-repescagem.timer` |
 | 02/10 | allowlist de link aceita domínios oficiais citados como nome (battle.net, callofduty.com, minecraft.net, mojang.com): eram as 3 reprovações da semana, e a pauta do MW4 se perdeu | `22bdc897` |
 | 02/10 | capa do Blogger/GameBlast deixa de matar a rodada: URL acima de 230 caracteres vira apelido curto (`/img?a=`) — o Cloudinary recusa public_id > 255 e a pauta se perdia (3 das 57 rodadas). Ponte passa a nomear o cache pelo hash da URL inteira (44 URLs caíam em 33 arquivos; 5 fotos diferentes saíam iguais) | `promo-cdn` + `promo-renderer` |
