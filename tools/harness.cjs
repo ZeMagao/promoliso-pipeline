@@ -39,6 +39,7 @@ const VIVOS = [
   'design/test_url_attr.cjs',
   'design/test_link_allowlist.cjs',
   'design/test_validador_procedencia.cjs',
+  'design/test_wordpress_original.cjs',
   'design/test_capa_candidatos.cjs',
   'vps/renderer/test_capa_candidatos.cjs',
   'vps/bin/test_promo_vigia.cjs',

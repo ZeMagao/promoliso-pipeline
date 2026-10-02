@@ -97,8 +97,20 @@ const PARAMS_DE_TAMANHO = new Set([
   'strip', 'zoom', 'ssl', 'auto', 'format', 'fm', 'dpr', 'cs', 'compress', 'fill',
 ]);
 
-function semRedimensionar(url) {
+// MINIATURA DO WORDPRESS (02/10/2026): `foto-768x480.jpg` e a copia reduzida que o WordPress gera
+// de `foto.jpg`. Medido em 50 URLs reais de 5 hosts: o original existe em 50/50. So sai o sufixo
+// abaixo do piso da capa (1000x675); acima disso a foto ja serve e fica como esta.
+const RE_SUFIXO_WORDPRESS = /(\/wp-content\/uploads\/[^?#]*?)-(\d{2,4})x(\d{2,4})(\.(?:jpe?g|png|webp))(?=$|[?#])/i;
+function semSufixoDoWordPress(url) {
   const u = String(url || '');
+  const m = RE_SUFIXO_WORDPRESS.exec(u);
+  if (!m) return u;
+  if (Number(m[2]) >= 1000 && Number(m[3]) >= 675) return u;
+  return u.replace(RE_SUFIXO_WORDPRESS, '$1$4');
+}
+
+function semRedimensionar(url) {
+  const u = semSufixoDoWordPress(String(url || ''));
   if (!u) return u;
   const corte = u.indexOf('?');
   if (corte < 0) return u;

@@ -16,12 +16,11 @@
 //   node design/test_validador_procedencia.cjs
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 const proc = require('./patch_validador_procedencia.cjs');
 const citaveis = require('./patch_dominios_citaveis.cjs');
 
 const VALIDADOR = path.join(__dirname, '..', 'workflows', 'promoliso-conteudo-instagram--NL8eVLKErgnIXBQq', 'validar-antes-de-publicar.js');
-const { casos } = JSON.parse(fs.readFileSync(path.join(__dirname, 'validador_casos_20261002.json'), 'utf8'));
+const casos = require('./bancada_validador.cjs').carregarCasos();
 
 let falhas = 0;
 const ok = (nome, cond, detalhe) => {
@@ -35,20 +34,9 @@ const semProcedencia = proc.aplicar(novo, true);
 const daSemana = citaveis.aplicar(semProcedencia, true);   // o que rodou entre 25/09 e 02/10 16:52
 console.log(noAr.includes(proc.MARCA) ? '# o export JÁ tem a mudança — conferindo o que está no ar' : '# o export ainda não tem — conferindo a troca');
 
-function rodar(codigo, c, itemQuebrado) {
-  class D extends Date { constructor(...a) { super(...(a.length ? a : [c.relogio])); } static now() { return c.relogio; } }
-  const itens = c.contexto.map((json) => ({ json: JSON.parse(JSON.stringify(json)) }));
-  const ref = { all: () => itens, first: () => itens[0] };
-  if (itemQuebrado) Object.defineProperty(ref, 'item', { get() { throw new Error('Paired item data unavailable'); } });
-  else ref.item = itens[0];
-  const ctx = { $json: JSON.parse(JSON.stringify(c.entrada)), Date: D, console: { log() {}, warn() {}, error() {} },
-    $: (nome) => { if (nome !== 'Montar contexto editorial') throw new Error('nó inesperado: ' + nome); return ref; } };
-  vm.createContext(ctx);
-  const j = vm.runInContext('(function(){' + codigo + '\n})()', ctx, { timeout: 5000 })[0].json;
-  return { pauta_validada: j.pauta_validada, motivo_reprovacao: String(j.motivo_reprovacao || '') };
-}
-const chave = (c) => c.exec + '/' + c.tentativa;
-const igual = (a, b) => a.pauta_validada === b.pauta_validada && a.motivo_reprovacao === b.motivo_reprovacao;
+const bancada = require('./bancada_validador.cjs');
+const rodar = (codigo, c, itemQuebrado) => bancada.rodar(codigo, c, { itemQuebrado });
+const { chave, igual } = bancada;
 
 // 1. fidelidade
 const fieis = casos.filter((c) => igual(rodar(daSemana, c, true), c.producao));
