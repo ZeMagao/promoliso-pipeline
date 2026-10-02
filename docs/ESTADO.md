@@ -7,7 +7,7 @@ os comandos de verificação estão no fim.
 
 | workflow | id | versão publicada | cadência |
 |---|---|---|---|
-| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `191889bc` (02/10 17:42) | de 2 em 2 h, horas pares BRT |
+| Produtor (Conteúdo Instagram v7.2) | `NL8eVLKErgnIXBQq` | `22ddebed` (02/10 18:01) | de 2 em 2 h, horas pares BRT |
 | Publicador (fila) | `E27F7yVdsZRj` | `85996042` (02/10 12:08) | 12:30 · 16:30 ter/qua/sex · 20:30 BRT |
 | Watchdog de saúde | `MJly91QFGKep` | `dfb31644` | 2× por dia |
 | Monitor de erros | `PRMLERR20260725A` | `9a276b27` | por evento (Error Trigger) |
@@ -50,6 +50,8 @@ item de encanamento abaixo.
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | `deploy-vps.sh` recusa rodar com execução em andamento ou na janela de uma rodada (produtor nas horas pares, publicador às :30) — o deploy já comeu rodada 3 vezes | `deploy-vps.sh` |
+| 02/10 | feed da Intel: newsroom (403 em 43/43 rodadas) → `game.intel.com/us/feed/` (10/10 itens com imagem, só jogo) | `22ddebed` |
 | 02/10 | backup diário passa a levar o código e a configuração fora do banco (nó do Instagram com patches, renderizador, ponte, units, scripts, token, alertas): +55 MB por cópia; restauração ensaiada, 7020 arquivos idênticos | `promo-backup.sh` |
 | 02/10 | foto do WordPress entra como original, sem o sufixo `-768x480` de miniatura (6 reprovações na semana; original existe em 50/50 URLs medidas). Bancada: mudam exatamente as 6, todas para aprovado | `191889bc` |
 | 02/10 | validador: foto oficial da Steam no acervo da pauta conta como relacionada (14 fotos reprovadas na semana); contexto do candidato lido com `.all()` — o `.item` falhava calado em produção. Bancada com as 58 validações reais: muda exatamente E-Day, Forest of Deceit ×2 e Next Week on Xbox | `d1ecf60f` |

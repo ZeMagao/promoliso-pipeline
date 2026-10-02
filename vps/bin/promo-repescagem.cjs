@@ -12,8 +12,8 @@
 // novo, sem religar conexão (cirurgia de conexão foi o que derrubou a publicação por 3 dias em
 // 05/08). Molde: promo-fila-writeback.cjs, que já escreve no banco do n8n por timer.
 //
-// A REGRA. Execução do produtor com status `error`, que PASSOU na validação (`Pauta validada?`
-// soltou item no ramo verdadeiro) e terminou nas últimas JANELA_H horas. A linha APROVADO dela tem
+// A REGRA. Execução do produtor com status `error` que terminou nas últimas JANELA_H horas. A
+// linha APROVADO dela tem
 // a chave renomeada para `<chave>#repescagem-<exec>`: a deduplicação deixa de reconhecer a
 // notícia, que volta como candidata na rodada seguinte — se ainda estiver no feed. Medido: as 4
 // pautas perdidas da semana continuaram no feed por mais 1 a 9 rodadas.
@@ -22,7 +22,10 @@
 //  - uma repescagem por notícia: se já existe `<chave>#repescagem-*`, ela morreu duas vezes e não
 //    volta (vai aviso).
 //  - só renomeia a chave; nada de INSERT nem DELETE. A linha continua lá, com a história.
-//  - só rodada que morreu DEPOIS de validar: reprovação do validador não é falha, é veredito.
+//  - só rodada que MORREU (status `error`). Reprovação do validador não chega aqui: ela vai para
+//    "Tentar outra pauta" e a execução termina `success` — é veredito, não falha. Até 02/10 18h a
+//    regra também exigia "passou na validação", e por isso não cobriu a exec 825, morta DENTRO do
+//    validador por um deploy (Ghost of Yōtei): morte operacional antes do veredito.
 //  - `--seco` mostra tudo sem gravar e sem avisar.
 //
 //   node promo-repescagem.cjs                 repesca e avisa
@@ -50,7 +53,7 @@ function decidir(execs, linhas, chavesExistentes, agora, janelaH, jaVistos) {
   const desistir = [];
   const limite = agora - janelaH * 3600 * 1000;
   for (const e of execs) {
-    if (e.status !== 'error' || !e.validou || !(e.parou_em >= limite)) continue;
+    if (e.status !== 'error' || !(e.parou_em >= limite)) continue;
     if (jaVistos && jaVistos.has(String(e.id))) continue;
     for (const l of linhas) {
       if (String(l.id_execucao) !== String(e.id)) continue;

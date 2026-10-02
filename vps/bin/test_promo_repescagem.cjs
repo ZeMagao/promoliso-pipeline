@@ -29,8 +29,12 @@ ok('a chave antiga deixa de existir na tabela (é isso que faz a dedup soltar)',
 
 // 2. o que NÃO pode repescar
 ok('rodada que deu certo: nada', rodar([exec(800, { status: 'success' })], [linha(1, 800, 'k1')]).repescar.length === 0);
-ok('morreu ANTES de validar (validador nem aprovou): nada',
-  rodar([exec(752, { validou: false, ultimo_no: 'AI Agent' })], [linha(2, 752, 'k2')]).repescar.length === 0);
+// exec 825 (02/10 18:00): o deploy parou o n8n com o validador rodando — morreu ANTES do veredito
+ok('morreu antes de validar (deploy no meio, exec 825): repesca',
+  rodar([exec(825, { validou: false, ultimo_no: 'Validar antes de publicar' })], [linha(2043, 825, 'k-ghost')]).repescar.length === 1);
+// reprovação do validador não vira execução com erro: termina success e nunca chega aqui
+ok('reprovado pelo validador (execução success): nada',
+  rodar([exec(752, { status: 'success', validou: false })], [linha(2, 752, 'k2')]).repescar.length === 0);
 ok('pauta que só não foi escolhida (CANDIDATO): nada',
   rodar([exec(763)], [linha(3, 763, 'k3', { status_aprovacao: 'CANDIDATO' })]).repescar.length === 0);
 ok('linha de outra execução: nada', rodar([exec(763)], [linha(4, 999, 'k4')]).repescar.length === 0);
