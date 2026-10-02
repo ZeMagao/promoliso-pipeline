@@ -172,6 +172,27 @@ chown -R promo:promo /opt/promoliso/data
 systemctl start promo-n8n
 ```
 
+### Restaurar o código e a configuração (backup a partir de 03/10/2026)
+
+Desde 02/10 o `backup-<stamp>.tar.gz` traz um terceiro arquivo, `codigo-<stamp>.tar.gz`, com o que
+vive FORA do banco: o nó do Instagram com os dois patches (token e retry por filho), o
+renderizador com o `node_modules` (sharp nativo), a ponte, analytics, os scripts de
+`/usr/local/bin`, os 25 units, o Caddyfile, `/etc/promoliso` (Telegram e alerta), o token do
+Instagram e o estado do vigia. Os caminhos são relativos à raiz, então restaura no lugar:
+
+```bash
+cd /tmp && tar -xzf backup-<stamp>.tar.gz
+tar -tzf codigo-<stamp>.tar.gz | less            # conferir antes de sobrescrever
+tar -xzpf codigo-<stamp>.tar.gz -C /             # -p mantém as permissões (segredos em 600)
+systemctl daemon-reload
+systemctl restart promo-renderer promo-cdn caddy  # e o promo-n8n, se o nó do Instagram voltou
+```
+
+Não entra (reconstrói sozinho): o `node_modules` do n8n (`npm install n8n@2.30.4` em
+`/opt/promoliso`), o cache de imagens do `promo-cdn` e o `storage/` de binários de execução.
+**Ensaio feito em 02/10/2026**: 7020 arquivos extraídos, todos idênticos byte a byte ao que estava
+no ar, permissões dos segredos preservadas.
+
 ## Agendamentos (cron dos Schedule Triggers, BRT)
 
 | Workflow | Quando |

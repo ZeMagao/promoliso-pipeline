@@ -45,12 +45,12 @@ item de encanamento abaixo.
 |---|---|---|
 | Mesma regra duplicada | URL do Cloudinary em 3 nós; limite de imagens em 2 workflows | auditoria iniciada e incompleta |
 | Nós de IA pendurados sem uso | `Obter noticias` (pgvector) e `Embeddings OpenAI` não executam em nenhuma rodada; `Buscar capa` (Brave) e `Memória Postgres` estão desconectados; e o nó chamado `GPT 5.4 mini` é, na verdade, Anthropic `claude-sonnet-5` | limpeza cosmética, mas nome que mente já custou horas de diagnóstico neste projeto |
-| Backup não cobre o código | `analytics/`, units, scripts e serviços vivem só no disco do VPS; o código do nó do Instagram tem cópia em `vps/instagram-node/` desde 02/10 | o repositório cobre hoje; a origem do backup continua com 2 arquivos |
 
 ## Últimos deploys
 
 | data | o que entrou | versão |
 |---|---|---|
+| 02/10 | backup diário passa a levar o código e a configuração fora do banco (nó do Instagram com patches, renderizador, ponte, units, scripts, token, alertas): +55 MB por cópia; restauração ensaiada, 7020 arquivos idênticos | `promo-backup.sh` |
 | 02/10 | foto do WordPress entra como original, sem o sufixo `-768x480` de miniatura (6 reprovações na semana; original existe em 50/50 URLs medidas). Bancada: mudam exatamente as 6, todas para aprovado | `191889bc` |
 | 02/10 | validador: foto oficial da Steam no acervo da pauta conta como relacionada (14 fotos reprovadas na semana); contexto do candidato lido com `.all()` — o `.item` falhava calado em produção. Bancada com as 58 validações reais: muda exatamente E-Day, Forest of Deceit ×2 e Next Week on Xbox | `d1ecf60f` |
 | 02/10 | repescagem: rodada do produtor que morre DEPOIS de validar devolve a pauta aprovada à disputa (uma vez), em vez de perdê-la para sempre; aviso no Telegram | `promo-repescagem.timer` |
